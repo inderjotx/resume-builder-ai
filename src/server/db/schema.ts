@@ -193,113 +193,262 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   user: one(users, { fields: [subscriptions.userId], references: [users.id] }),
 }));
 
-// Define TypeScript types for the resume data
+
+
+
+type Proficiency = "beginner" | "intermediate" | "advanced" | "native";
+type SocialMediaPlatform = "linkedin" | "twitter" | "facebook" | "instagram" | "youtube" | "tiktok" | "snapchat" | "pinterest" | "reddit" | "other" | "website";
+
+// Updated ResumeData type
 type ResumeData = {
-  workExperience: Array<{
-    id: string;
-    iconId?: string;
-    companyName: string;
-    position: string;
-    startDate: string;
-    endDate?: string;
-    isCurrent: boolean;
-    description: string;
-    city?: string;
-    country?: string;
-  }>;
-  education: Array<{
-    id: string;
-    iconId?: string;
-    institutionName: string;
-    degree: string;
-    fieldOfStudy: string;
-    startDate: string;
-    endDate?: string;
-    city: string;
-    isCurrentlyStudying: boolean;
-    description: string;
-  }>;
-  skills: Array<{
-    id: string;
-    iconId?: string;
-    skillCategory: string;
-    skillTags: string[];
-  }>;
-  achievements: Array<{
-    id: string;
-    iconId?: string;
-    achievementTitle: string;
-    achievementDate: string;
-    achievementDescription: string;
-  }>;
-  awards: Array<{
-    id: string;
-    iconId?: string;
-    title: string;
-    date: string;
-    url?: string;
-    issuer: string;
-    description: string;
-  }>;
-  references: Array<{
-    id: string;
-    iconId?: string;
-    name: string;
-    position: string;
-    company: string;
-    email: string;
+  personalInfo: {
+    firstName: string;
+    lastName: string;
     phoneNumber: string;
-    relationship: string;
-  }>;
-  publications: Array<{
-    id: string;
+    email: string;
+    location: string;
+    dateOfBirth: string;
+    nationality: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+    website: string;
+    bio: string;
+  };
+  workExperience: {
     iconId?: string;
     title: string;
-    date: string;
-    url?: string;
-    description: string;
-  }>;
-  projects: Array<{
-    id: string;
+    items: Array<{
+      companyName: string;
+      position: string;
+      startDate: string;
+      endDate?: string;
+      isCurrent: boolean;
+      description: string;
+      city?: string;
+      country?: string;
+    }>;
+  };
+  education: {
     iconId?: string;
-    projectName: string;
-    description: string;
-    projectLink?: string;
-    city?: string;
-    country?: string;
-    startDate: string;
-    endDate?: string;
-    isCurrent: boolean;
-  }>;
-  languages: Array<{
-    id: string;
-    language: string;
-    proficiency: string;
-  }>;
-  socialMedia: Array<{
-    id: string;
-    iconId?: string;
-    platform: string;
-    url: string;
-  }>;
-  customSections: Array<{
-    id: string;
     title: string;
-    content: unknown;
-  }>;
-  metadata: {
-    lastUpdated: string;
-    version: string;
-    template?: string;
-    style?: {
-      theme: string;
-      font: string;
-      colors: Record<string, string>;
-    };
+    items: Array<{
+      institutionName: string;
+      degree: string;
+      fieldOfStudy: string;
+      startDate: string;
+      endDate?: string;
+      city: string;
+      isCurrentlyStudying: boolean;
+      description: string;
+    }>;
+  };
+  graphs: {
+    title: string;
+    iconId?: string;
+    items: Array<{
+      graphType: string;
+      graphData: string;
+    }>;
+  };
+  skills: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      skillCategory: string;
+      skillTags: string[];
+    }>;
+  };
+  achievements: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      achievementTitle: string;
+      achievementDate: string;
+      achievementDescription: string;
+    }>;
+  };
+  awards: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      title: string;
+      date: string;
+      url?: string;
+      issuer: string;
+      description: string;
+    }>;
+  };
+  references: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      name: string;
+      position: string;
+      company: string;
+      email: string;
+      phoneNumber: string;
+      relationship: string;
+    }>;
+  };
+  publications: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      title: string;
+      date: string;
+      url?: string;
+      description: string;
+    }>;
+  };
+  projects: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      projectName: string;
+      description: string;
+      projectLink?: string;
+      city?: string;
+      country?: string;
+      startDate: string;
+      endDate?: string;
+      isCurrent: boolean;
+    }>;
+  };
+  languages: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      language: string;
+      proficiency: Proficiency;
+    }>;
+  };
+  socialMedia: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      platform: SocialMediaPlatform;
+      url: string;
+    }>;
+  };
+  customSections: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      title: string;
+      content: unknown;
+    }>;
+  };
+  goals: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      goal: string;
+    }>;
+  };
+  voluntaryWork: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      organizationName: string;
+      role: string;
+      startDate: string;
+      endDate?: string;
+      isCurrent: boolean;
+      description: string;
+    }>;
+  };
+  certifications: {
+    iconId?: string;
+    title: string;
+    items: Array<{
+      certificationName: string;
+      certificationDate: string;
+      certificationAuthority: string;
+      certificationLink?: string;
+      description: string;
+    }>;
   };
 };
 
-// Update the resume table with JSONB
+
+
+export enum ResumeStatus {
+  Draft = "draft",
+  Published = "published",
+  Archived = "archived",
+}
+
+export enum IconVariant {
+  Solid = "solid",
+  Outline = "outline",
+}
+
+export enum DateFormat {
+  DayMonthYear = "DD/MM/YYYY",
+  MonthDayYear = "MM/DD/YYYY",
+  YearMonthDay = "YYYY/MM/DD",
+}
+
+export enum AddressFormat {
+  CityCountry = "city, country",
+  CountryCity = "country, city",
+}
+
+export enum PageSize {
+  A4 = "A4",
+  Letter = "letter",
+}
+
+export enum HeadlineCapitalization {
+  AsTyped = "asTyped",
+  Uppercase = "uppercase",
+  Lowercase = "lowercase",
+  Capitalize = "capitalize",
+}
+
+export enum IconType {
+  Bold = "bold",
+  Light = "light",
+  Regular = "regular",
+}
+
+export enum PageNumber {
+  NumbersShown = "numbersShown",
+  NumbersHidden = "numbersHidden",
+}
+
+type ResumeSettings = {
+  name: string;
+  color: string;
+  template: string;
+  format: number;
+  fontFace: string;
+  fontSize: string;
+  lineHeight: string;
+  headlineCapitalization: HeadlineCapitalization;
+  iconType: IconType;
+  pageFormat: PageSize;
+  pageNumber: PageNumber;
+  dateFormat: DateFormat;
+  background: {
+    className: string;
+    opacity: number;
+  };
+  addressFormat: {
+    order: string[][];
+    delimiter: string;
+  };
+};
+
+
+export const resumeStatus = pgEnum("resume_status", [
+  "draft",
+  "published",
+  "archived",
+]);
+
 export const resume = createTable("resume", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   userId: varchar("user_id", { length: 255 })
@@ -307,65 +456,46 @@ export const resume = createTable("resume", {
     .references(() => users.id),
   name: varchar("name", { length: 255 }).default("Untitled Resume"),
   isPublic: boolean("is_public").default(false),
-  data: jsonb("data").$type<ResumeData>().default('{}' as unknown as ResumeData),
+  data: jsonb("data").$type<Partial<ResumeData>>().default({}),
+  status: resumeStatus("status").default("draft"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
+
+  settings: jsonb("settings").$type<Partial<ResumeSettings>>().default({}),
 });
 
-// Keep the relations
+
+interface ColorOptions {
+  name: string,
+  image: string,
+}
+
+interface FontOptions {
+  fontFamily: string,
+  fontWeight: string,
+}
+
+
+export const template = createTable("template", {
+  id: varchar("id", { length: 255 }).notNull().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  colorOptions: jsonb("color_options").$type<ColorOptions[]>().default([]),
+  headlineCapitalization: boolean("headline_capitalization").default(false),
+  fontOptions: jsonb("font_options").$type<FontOptions[]>().default([]),
+  background: jsonb("background").$type<{
+    className: string,
+    opacity: number,
+  }>().default({ className: "bg-white", opacity: 1 }),
+});
+
+
+
 export const resumeRelations = relations(resume, ({ one }) => ({
   user: one(users, { fields: [resume.userId], references: [users.id] }),
 }));
 
 
-
-export const goals = createTable("goals", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  goal: text("goal").default(""),
-  iconId: varchar("icon_id", { length: 255 }).default(""),
-});
-
-
-
-export const graphs = createTable("graphs", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  iconId: varchar("icon_id", { length: 255 }).default(""),
-  graphType: varchar("graph_type", { length: 255 }).default(""),
-  graphData: jsonb("graph_data").default("{}"),
-});
-
-
-
-export const projects = createTable("projects", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  iconId: varchar("icon_id", { length: 255 }).default(""),
-  projectName: varchar("project_name", { length: 255 }).default(""),
-  description: text("description").default(""),
-  projectLink: varchar("project_link", { length: 255 }).default(""),
-  city: varchar("city", { length: 255 }).default(""),
-  country: varchar("country", { length: 255 }).default(""),
-  startDate: timestamp("start_date", { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`),
-  endDate: timestamp("end_date", { withTimezone: true }),
-  isCurrent: boolean("is_current").default(false),
-
-});
-
-
-
-export const languages = createTable("languages", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  language: varchar("language", { length: 255 }).default(""),
-  proficiency: varchar("proficiency", { length: 255 }).default(""),
-});
-
-
-export const socialMedia = createTable("social_media", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  iconId: varchar("icon_id", { length: 255 }).default(""),
-  platform: varchar("platform", { length: 255 }).default(""),
-  url: varchar("url", { length: 255 }).default(""),
-});
