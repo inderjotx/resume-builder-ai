@@ -10,6 +10,7 @@ import {
   useSensors,
   MeasuringStrategy,
 } from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
@@ -100,7 +101,7 @@ export default function EditorDashboard() {
     }),
   );
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
     if (active?.id !== over?.id) {
@@ -115,8 +116,8 @@ export default function EditorDashboard() {
 
   return (
     <div className="h-screen w-full bg-background">
-      <div className="hidden h-full lg:flex">
-        <div className="w-1/3 border-r">
+      <div className="grid flex-1 grid-cols-5">
+        <div className="col-span-2">
           <ScrollArea className="h-screen">
             <div className="p-4">
               <h2 className="mb-4 text-2xl font-bold">Editor</h2>
@@ -142,7 +143,7 @@ export default function EditorDashboard() {
             </div>
           </ScrollArea>
         </div>
-        <div className="flex-1">
+        <div className="col-span-3 flex-1">
           <ScrollArea className="h-screen">
             <DisplayContent />
           </ScrollArea>
