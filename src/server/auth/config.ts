@@ -1,7 +1,9 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
+import ResendProvider from "next-auth/providers/resend";
 
+import { env } from "@/env";
 import { db } from "@/server/db";
 import {
   accounts,
@@ -31,14 +33,14 @@ declare module "next-auth" {
   // }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
+
 export const authConfig = {
   providers: [
-    DiscordProvider,
+    GoogleProvider,
+    ResendProvider({
+      from: env.AUTH_RESEND_FROM,
+      apiKey: env.AUTH_RESEND_KEY,
+    }),
     /**
      * ...add more providers here.
      *
@@ -63,5 +65,8 @@ export const authConfig = {
         id: user.id,
       },
     }),
+  },
+  pages: {
+    signIn: "/sign-in",
   },
 } satisfies NextAuthConfig;

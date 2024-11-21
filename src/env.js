@@ -18,6 +18,8 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     CHROME_EXECUTABLE_PATH: z.string().optional(),
+    AUTH_RESEND_KEY: z.string(),
+    AUTH_RESEND_FROM: z.string(),
   },
 
   /**
@@ -40,6 +42,8 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     CHROME_EXECUTABLE_PATH: process.env.CHROME_EXECUTABLE_PATH,
+    AUTH_RESEND_KEY: process.env.AUTH_RESEND_KEY,
+    AUTH_RESEND_FROM: process.env.AUTH_RESEND_FROM,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
