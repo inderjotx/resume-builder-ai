@@ -1,5 +1,6 @@
-// todo : in future we are going to memoize all section and provide props using zustand
-import type { Resume, ResumeData, SectionKeys } from "@/server/db/schema";
+import { useResumeStore } from "@/store/resume/data-store";
+import { useSettingsStore } from "@/store/resume/settings-store";
+import type { SectionKeys } from "@/server/db/schema";
 import { SocialMediaPlatform } from "@/server/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -24,6 +25,8 @@ import {
   FileText,
   Dot,
   Globe,
+  Heading,
+  BriefcaseBusiness,
 } from "lucide-react";
 
 import {
@@ -61,195 +64,56 @@ export function SocialIcon({
   }
 }
 
-const safelyExtractData = (data: Resume["data"]) => {
-  const {
-    personalInfo = {} as ResumeData["personalInfo"],
-    workExperience = { items: [], title: "Work Experience" },
-    education = { items: [], title: "Education" },
-    skills = { items: [], title: "Skills" },
-    languages = { items: [], title: "Languages" },
-    ...rest
-  } = data ?? {};
+export function ClassyTemplate() {
+  const order = useSettingsStore((state) => state.order);
 
-  return {
-    personalInfo,
-    workExperience,
-    education,
-    skills,
-    languages,
-    ...rest,
-  };
-};
-
-interface SectionProps {
-  settings?: Resume["settings"];
-}
-
-interface HeaderSectionProps extends SectionProps {
-  personalInfo?: ResumeData["personalInfo"];
-}
-
-interface WorkExperienceSectionProps extends SectionProps {
-  workExperience?: ResumeData["workExperience"];
-}
-
-interface EducationSectionProps extends SectionProps {
-  education?: ResumeData["education"];
-}
-
-interface SkillsSectionProps extends SectionProps {
-  skills?: ResumeData["skills"];
-}
-
-interface LanguagesSectionProps extends SectionProps {
-  languages?: ResumeData["languages"];
-}
-
-interface ProjectsSectionProps extends SectionProps {
-  projects?: ResumeData["projects"];
-}
-
-interface CertificationsSectionProps extends SectionProps {
-  certifications?: ResumeData["certifications"];
-}
-
-interface AchievementsSectionProps extends SectionProps {
-  achievements?: ResumeData["achievements"];
-}
-
-export function ClassyTemplate({
-  resume: { data, settings, order },
-}: {
-  resume: Resume;
-}) {
-  const extractedData = safelyExtractData(data);
-
-  const sectionMap: Record<SectionKeys, React.ComponentType<SectionProps>> = {
-    personalInfo: () => (
-      <HeaderSection
-        personalInfo={extractedData?.personalInfo}
-        settings={settings}
-      />
-    ),
-    workExperience: () => (
-      <WorkExperienceSection
-        workExperience={extractedData.workExperience}
-        settings={settings}
-      />
-    ),
-    education: () => (
-      <EducationSection
-        education={extractedData.education}
-        settings={settings}
-      />
-    ),
-    skills: () => (
-      <SkillsSection skills={extractedData.skills} settings={settings} />
-    ),
-    languages: () => (
-      <LanguagesSection
-        languages={extractedData.languages}
-        settings={settings}
-      />
-    ),
-    projects: () => (
-      <ProjectsSection projects={extractedData.projects} settings={settings} />
-    ),
-    certifications: () => (
-      <CertificationsSection
-        certifications={extractedData.certifications}
-        settings={settings}
-      />
-    ),
-    achievements: () => (
-      <AchievementsSection
-        achievements={extractedData.achievements}
-        settings={settings}
-      />
-    ),
-    goals: () => (
-      <GoalsSection goals={extractedData.goals} settings={settings} />
-    ),
-    voluntaryWork: () => (
-      <VoluntaryWorkSection
-        voluntaryWork={extractedData.voluntaryWork}
-        settings={settings}
-      />
-    ),
-    graphs: () => (
-      <GraphsSection graphs={extractedData.graphs} settings={settings} />
-    ),
-    awards: () => (
-      <AwardsSection awards={extractedData.awards} settings={settings} />
-    ),
-    references: () => (
-      <ReferencesSection
-        references={extractedData.references}
-        settings={settings}
-      />
-    ),
-    publications: () => (
-      <PublicationsSection
-        publications={extractedData.publications}
-        settings={settings}
-      />
-    ),
-    socialMedia: () => (
-      <SocialMediaSection
-        socialMedia={extractedData.socialMedia}
-        settings={settings}
-      />
-    ),
-    customSections: () => (
-      <CustomSectionsSection
-        customSections={extractedData.customSections}
-        settings={settings}
-      />
-    ),
+  const sectionMap: Record<SectionKeys, React.ComponentType> = {
+    personalInfo: HeaderSection,
+    workExperience: WorkExperienceSection,
+    education: EducationSection,
+    skills: SkillsSection,
+    languages: LanguagesSection,
+    projects: ProjectsSection,
+    certifications: CertificationsSection,
+    achievements: AchievementsSection,
+    goals: GoalsSection,
+    voluntaryWork: VoluntaryWorkSection,
+    graphs: GraphsSection,
+    awards: AwardsSection,
+    references: ReferencesSection,
+    publications: PublicationsSection,
+    socialMedia: SocialMediaSection,
+    customSections: CustomSectionsSection,
   };
 
   return (
-    <div className="mx-auto aspect-[1/1.4142] max-w-4xl border bg-white p-6 shadow-lg">
+    <div className="mx-auto aspect-[1/1.4142] max-w-4xl border bg-white p-6 shadow-lg lg:min-w-[600px]">
       {order?.map((section) => {
         const SectionComponent = sectionMap[section];
-        return <SectionComponent key={section} settings={settings} />;
+        return <SectionComponent key={section} />;
       })}
-
-      {/* <HeaderSection
-        personalInfo={extractedData.personalInfo}
-        settings={settings}
-      />
-      <Separator className="my-8" />
-
-      <WorkExperienceSection
-        workExperience={extractedData.workExperience}
-        settings={settings}
-      />
-      <EducationSection
-        education={extractedData.education}
-        settings={settings}
-      />
-      <SkillsSection skills={extractedData.skills} settings={settings} />
-      <LanguagesSection
-        languages={extractedData.languages}
-        settings={settings}
-      />
-      <ProjectsSection projects={extractedData.projects} settings={settings} />
-      <CertificationsSection
-        certifications={extractedData.certifications}
-        settings={settings}
-      />
-      <AchievementsSection
-        achievements={extractedData.achievements}
-        settings={settings}
-      /> */}
     </div>
   );
 }
 
-function HeaderSection({ personalInfo, settings }: HeaderSectionProps) {
+function HeaderSection() {
+  const personalInfo = useResumeStore((state) => state.personalInfo);
+  const settings = useSettingsStore((state) => state.settings);
+  const personalInfoVisible = useResumeStore(
+    (state) => state.personalInfoVisible,
+  );
+
+  if (!personalInfoVisible) return null;
+
   return (
     <header className="mb-8">
+      <h2
+        className="mb-4 flex items-center gap-2 text-2xl font-semibold"
+        style={{ color: settings?.color }}
+      >
+        <Heading />
+        {personalInfo?.title}
+      </h2>
       <h1
         className="mb-4 text-4xl font-bold"
         style={{ color: settings?.color }}
@@ -291,13 +155,14 @@ function HeaderSection({ personalInfo, settings }: HeaderSectionProps) {
   );
 }
 
-function WorkExperienceSection({
-  workExperience,
-  settings,
-}: WorkExperienceSectionProps) {
-  if (!workExperience?.items?.length) {
-    return null;
-  }
+function WorkExperienceSection() {
+  const workExperience = useResumeStore((state) => state.workExperience);
+  const settings = useSettingsStore((state) => state.settings);
+  const workExperienceVisible = useResumeStore(
+    (state) => state.workExperienceVisible,
+  );
+
+  if (!workExperienceVisible) return null;
 
   return (
     <section className="mb-8">
@@ -306,10 +171,10 @@ function WorkExperienceSection({
         style={{ color: settings?.color }}
       >
         <Briefcase className="h-5 w-5" />
-        {workExperience.title}
+        {workExperience?.title}
       </h2>
       <div className="space-y-4">
-        {workExperience.items.map((job, index) => (
+        {workExperience?.items?.map((job, index) => (
           <Card key={index} className="p-4">
             <div className="flex items-start justify-between">
               <div>
@@ -336,14 +201,20 @@ function WorkExperienceSection({
   );
 }
 
-function EducationSection({ education, settings }: EducationSectionProps) {
+function EducationSection() {
+  const education = useResumeStore((state) => state.education);
+  const settings = useSettingsStore((state) => state.settings);
+  const educationVisible = useResumeStore((state) => state.educationVisible);
+
+  if (!educationVisible) return null;
+
   return (
     <section className="mb-8">
       <h2
         className="mb-4 flex items-center gap-2 text-2xl font-semibold"
         style={{ color: settings?.color }}
       >
-        <GraduationCap className="h-5 w-5" />
+        <GraduationCap className="size-6" />
         {education?.title}
       </h2>
       <div className="space-y-4">
@@ -371,7 +242,13 @@ function EducationSection({ education, settings }: EducationSectionProps) {
   );
 }
 
-function SkillsSection({ skills, settings }: SkillsSectionProps) {
+function SkillsSection() {
+  const skills = useResumeStore((state) => state.skills);
+  const settings = useSettingsStore((state) => state.settings);
+  const skillsVisible = useResumeStore((state) => state.skillsVisible);
+
+  if (!skillsVisible) return null;
+
   return (
     <section className="mb-8">
       <h2
@@ -399,7 +276,13 @@ function SkillsSection({ skills, settings }: SkillsSectionProps) {
   );
 }
 
-function LanguagesSection({ languages, settings }: LanguagesSectionProps) {
+function LanguagesSection() {
+  const languages = useResumeStore((state) => state.languages);
+  const settings = useSettingsStore((state) => state.settings);
+  const languagesVisible = useResumeStore((state) => state.languagesVisible);
+
+  if (!languagesVisible) return null;
+
   return (
     <section className="mb-8">
       <h2
@@ -421,7 +304,13 @@ function LanguagesSection({ languages, settings }: LanguagesSectionProps) {
   );
 }
 
-function ProjectsSection({ projects, settings }: ProjectsSectionProps) {
+function ProjectsSection() {
+  const projects = useResumeStore((state) => state.projects);
+  const settings = useSettingsStore((state) => state.settings);
+  const projectsVisible = useResumeStore((state) => state.projectsVisible);
+
+  if (!projectsVisible) return null;
+
   return (
     <section className="mb-8">
       <h2
@@ -468,10 +357,15 @@ function ProjectsSection({ projects, settings }: ProjectsSectionProps) {
   );
 }
 
-function CertificationsSection({
-  certifications,
-  settings,
-}: CertificationsSectionProps) {
+function CertificationsSection() {
+  const certifications = useResumeStore((state) => state.certifications);
+  const settings = useSettingsStore((state) => state.settings);
+  const certificationsVisible = useResumeStore(
+    (state) => state.certificationsVisible,
+  );
+
+  if (!certificationsVisible) return null;
+
   return (
     <section className="mb-8">
       <h2
@@ -516,10 +410,15 @@ function CertificationsSection({
   );
 }
 
-function AchievementsSection({
-  achievements,
-  settings,
-}: AchievementsSectionProps) {
+function AchievementsSection() {
+  const achievements = useResumeStore((state) => state.achievements);
+  const settings = useSettingsStore((state) => state.settings);
+  const achievementsVisible = useResumeStore(
+    (state) => state.achievementsVisible,
+  );
+
+  if (!achievementsVisible) return null;
+
   return (
     <section className="mb-8">
       <h2
@@ -548,14 +447,12 @@ function AchievementsSection({
   );
 }
 
-function GoalsSection({
-  goals,
-  settings,
-}: {
-  goals?: ResumeData["goals"];
-  settings?: Resume["settings"];
-}) {
-  if (!goals?.items?.length) return null;
+function GoalsSection() {
+  const goals = useResumeStore((state) => state.goals);
+  const settings = useSettingsStore((state) => state.settings);
+  const goalsVisible = useResumeStore((state) => state.goalsVisible);
+
+  if (!goalsVisible) return null;
 
   return (
     <section className="mb-8">
@@ -567,7 +464,7 @@ function GoalsSection({
         {goals?.title ?? "Goals"}
       </h2>
       <div className="space-y-2">
-        {goals.items.map((item, index) => (
+        {goals?.items?.map((item, index) => (
           <div key={index} className="flex items-start gap-2">
             <Dot className="mt-1 h-4 w-4 shrink-0" />
             <p>{item.goal}</p>
@@ -578,14 +475,14 @@ function GoalsSection({
   );
 }
 
-function VoluntaryWorkSection({
-  voluntaryWork,
-  settings,
-}: {
-  voluntaryWork?: ResumeData["voluntaryWork"];
-  settings?: Resume["settings"];
-}) {
-  if (!voluntaryWork?.items?.length) return null;
+function VoluntaryWorkSection() {
+  const voluntaryWork = useResumeStore((state) => state.voluntaryWork);
+  const settings = useSettingsStore((state) => state.settings);
+  const voluntaryWorkVisible = useResumeStore(
+    (state) => state.voluntaryWorkVisible,
+  );
+
+  if (!voluntaryWorkVisible) return null;
 
   return (
     <section className="mb-8">
@@ -597,7 +494,7 @@ function VoluntaryWorkSection({
         {voluntaryWork?.title ?? "Voluntary Work"}
       </h2>
       <div className="space-y-4">
-        {voluntaryWork.items.map((work, index) => (
+        {voluntaryWork?.items?.map((work, index) => (
           <Card key={index} className="p-4">
             <div className="flex items-start justify-between">
               <div>
@@ -621,14 +518,12 @@ function VoluntaryWorkSection({
   );
 }
 
-function GraphsSection({
-  graphs,
-  settings,
-}: {
-  graphs?: ResumeData["graphs"];
-  settings?: Resume["settings"];
-}) {
-  if (!graphs?.items?.length) return null;
+function GraphsSection() {
+  const graphs = useResumeStore((state) => state.graphs);
+  const settings = useSettingsStore((state) => state.settings);
+  const graphsVisible = useResumeStore((state) => state.graphsVisible);
+
+  if (!graphsVisible) return null;
 
   return (
     <section className="mb-8">
@@ -640,7 +535,7 @@ function GraphsSection({
         {graphs?.title}
       </h2>
       <div className="space-y-4">
-        {graphs.items.map((graph, index) => (
+        {graphs?.items?.map((graph, index) => (
           <div key={index}>
             {/* Note: You'll need to implement actual graph rendering based on graphType and graphData */}
             <div className="rounded-lg border p-4">
@@ -654,14 +549,12 @@ function GraphsSection({
   );
 }
 
-function AwardsSection({
-  awards,
-  settings,
-}: {
-  awards?: ResumeData["awards"];
-  settings?: Resume["settings"];
-}) {
-  if (!awards?.items?.length) return null;
+function AwardsSection() {
+  const awards = useResumeStore((state) => state.awards);
+  const settings = useSettingsStore((state) => state.settings);
+  const awardsVisible = useResumeStore((state) => state.awardsVisible);
+
+  if (!awardsVisible) return null;
 
   return (
     <section className="mb-8">
@@ -673,7 +566,7 @@ function AwardsSection({
         {awards?.title}
       </h2>
       <div className="space-y-4">
-        {awards.items.map((award, index) => (
+        {awards?.items?.map((award, index) => (
           <Card key={index} className="p-4">
             <div className="flex items-start justify-between">
               <h3 className="font-semibold">{award?.title}</h3>
@@ -701,14 +594,12 @@ function AwardsSection({
   );
 }
 
-function ReferencesSection({
-  references,
-  settings,
-}: {
-  references?: ResumeData["references"];
-  settings?: Resume["settings"];
-}) {
-  if (!references?.items?.length) return null;
+function ReferencesSection() {
+  const references = useResumeStore((state) => state.references);
+  const settings = useSettingsStore((state) => state.settings);
+  const referencesVisible = useResumeStore((state) => state.referencesVisible);
+
+  if (!referencesVisible) return null;
 
   return (
     <section className="mb-8">
@@ -720,7 +611,7 @@ function ReferencesSection({
         {references?.title}
       </h2>
       <div className="grid gap-4 md:grid-cols-2">
-        {references.items.map((ref, index) => (
+        {references?.items?.map((ref, index) => (
           <Card key={index} className="p-4">
             <h3 className="font-semibold">{ref?.name}</h3>
             <div className="text-sm text-muted-foreground">
@@ -750,14 +641,14 @@ function ReferencesSection({
   );
 }
 
-function PublicationsSection({
-  publications,
-  settings,
-}: {
-  publications?: ResumeData["publications"];
-  settings?: Resume["settings"];
-}) {
-  if (!publications?.items?.length) return null;
+function PublicationsSection() {
+  const publications = useResumeStore((state) => state.publications);
+  const settings = useSettingsStore((state) => state.settings);
+  const publicationsVisible = useResumeStore(
+    (state) => state.publicationsVisible,
+  );
+
+  if (!publicationsVisible) return null;
 
   return (
     <section className="mb-8">
@@ -769,7 +660,7 @@ function PublicationsSection({
         {publications?.title}
       </h2>
       <div className="space-y-4">
-        {publications.items.map((pub, index) => (
+        {publications?.items?.map((pub, index) => (
           <Card key={index} className="p-4">
             <div className="flex items-start justify-between">
               <h3 className="font-semibold">{pub?.title}</h3>
@@ -796,14 +687,14 @@ function PublicationsSection({
   );
 }
 
-function SocialMediaSection({
-  socialMedia,
-  settings,
-}: {
-  socialMedia?: ResumeData["socialMedia"];
-  settings?: Resume["settings"];
-}) {
-  if (!socialMedia?.items?.length) return null;
+function SocialMediaSection() {
+  const socialMedia = useResumeStore((state) => state.socialMedia);
+  const settings = useSettingsStore((state) => state.settings);
+  const socialMediaVisible = useResumeStore(
+    (state) => state.socialMediaVisible,
+  );
+
+  if (!socialMediaVisible) return null;
 
   return (
     <section className="mb-8">
@@ -815,7 +706,7 @@ function SocialMediaSection({
         {socialMedia?.title}
       </h2>
       <div className="grid gap-4 sm:grid-cols-2">
-        {socialMedia.items.map((item, index) => (
+        {socialMedia?.items?.map((item, index) => (
           <a
             key={index}
             href={item.url}
@@ -832,14 +723,14 @@ function SocialMediaSection({
   );
 }
 
-function CustomSectionsSection({
-  customSections,
-  settings,
-}: {
-  customSections?: ResumeData["customSections"];
-  settings?: Resume["settings"];
-}) {
-  if (!customSections?.items?.length) return null;
+function CustomSectionsSection() {
+  const customSections = useResumeStore((state) => state.customSections);
+  const settings = useSettingsStore((state) => state.settings);
+  const customSectionsVisible = useResumeStore(
+    (state) => state.customSectionsVisible,
+  );
+
+  if (!customSectionsVisible) return null;
 
   return (
     <section className="mb-8">
@@ -851,13 +742,13 @@ function CustomSectionsSection({
         {customSections?.title}
       </h2>
       <div className="space-y-4">
-        {customSections.items.map((section, index) => (
+        {customSections?.items?.map((section, index) => (
           <Card key={index} className="p-4">
             <h3 className="font-semibold">{section?.title}</h3>
             <div className="mt-2">
               {/* Render content based on its type */}
               {typeof section?.content === "string" ? (
-                <p className="text-sm">{section.content}</p>
+                <p className="text-sm">{section?.content}</p>
               ) : (
                 <pre className="text-sm">
                   {JSON.stringify(section?.content, null, 2)}
