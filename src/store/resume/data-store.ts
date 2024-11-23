@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { ResumeData, } from '@/server/db/schema'
 import { DEFAULT_DATA } from '@/server/db/schema'
 import type { StateCreator } from 'zustand'
+import { devtools } from 'zustand/middleware'
 
 
 type PersonalInfoSlice = {
@@ -150,7 +151,7 @@ const createProjectsSlice: StateCreator<ResumeStore, [], [], ProjectsSlice> = (s
 })
 
 const createLanguagesSlice: StateCreator<ResumeStore, [], [], LanguagesSlice> = (set) => ({
-    languages: undefined,
+    languages: DEFAULT_DATA.languages,
     languagesVisible: false,
     updateLanguages: (data) => set((state) => ({
         languages: { ...state.languages, ...data }
@@ -159,7 +160,7 @@ const createLanguagesSlice: StateCreator<ResumeStore, [], [], LanguagesSlice> = 
 })
 
 const createAchievementsSlice: StateCreator<ResumeStore, [], [], AchievementsSlice> = (set) => ({
-    achievements: undefined,
+    achievements: DEFAULT_DATA.achievements,
     achievementsVisible: false,
     updateAchievements: (data) => set((state) => ({
         achievements: { ...state.achievements, ...data }
@@ -168,7 +169,7 @@ const createAchievementsSlice: StateCreator<ResumeStore, [], [], AchievementsSli
 })
 
 const createAwardsSlice: StateCreator<ResumeStore, [], [], AwardsSlice> = (set) => ({
-    awards: undefined,
+    awards: DEFAULT_DATA.awards,
     awardsVisible: false,
     updateAwards: (data) => set((state) => ({
         awards: { ...state.awards, ...data }
@@ -177,7 +178,7 @@ const createAwardsSlice: StateCreator<ResumeStore, [], [], AwardsSlice> = (set) 
 })
 
 const createCertificationsSlice: StateCreator<ResumeStore, [], [], CertificationsSlice> = (set) => ({
-    certifications: undefined,
+    certifications: DEFAULT_DATA.certifications,
     certificationsVisible: false,
     updateCertifications: (data) => set((state) => ({
         certifications: { ...state.certifications, ...data }
@@ -186,7 +187,7 @@ const createCertificationsSlice: StateCreator<ResumeStore, [], [], Certification
 })
 
 const createReferencesSlice: StateCreator<ResumeStore, [], [], ReferencesSlice> = (set) => ({
-    references: undefined,
+    references: DEFAULT_DATA.references,
     referencesVisible: false,
     updateReferences: (data) => set((state) => ({
         references: { ...state.references, ...data }
@@ -195,7 +196,7 @@ const createReferencesSlice: StateCreator<ResumeStore, [], [], ReferencesSlice> 
 })
 
 const createPublicationsSlice: StateCreator<ResumeStore, [], [], PublicationsSlice> = (set) => ({
-    publications: undefined,
+    publications: DEFAULT_DATA.publications,
     publicationsVisible: false,
     updatePublications: (data) => set((state) => ({
         publications: { ...state.publications, ...data }
@@ -204,7 +205,7 @@ const createPublicationsSlice: StateCreator<ResumeStore, [], [], PublicationsSli
 })
 
 const createSocialMediaSlice: StateCreator<ResumeStore, [], [], SocialMediaSlice> = (set) => ({
-    socialMedia: undefined,
+    socialMedia: DEFAULT_DATA.socialMedia,
     socialMediaVisible: false,
     updateSocialMedia: (data) => set((state) => ({
         socialMedia: { ...state.socialMedia, ...data }
@@ -213,7 +214,7 @@ const createSocialMediaSlice: StateCreator<ResumeStore, [], [], SocialMediaSlice
 })
 
 const createVoluntaryWorkSlice: StateCreator<ResumeStore, [], [], VoluntaryWorkSlice> = (set) => ({
-    voluntaryWork: undefined,
+    voluntaryWork: DEFAULT_DATA.voluntaryWork,
     voluntaryWorkVisible: false,
     updateVoluntaryWork: (data) => set((state) => ({
         voluntaryWork: { ...state.voluntaryWork, ...data }
@@ -222,7 +223,7 @@ const createVoluntaryWorkSlice: StateCreator<ResumeStore, [], [], VoluntaryWorkS
 })
 
 const createGoalsSlice: StateCreator<ResumeStore, [], [], GoalsSlice> = (set) => ({
-    goals: undefined,
+    goals: DEFAULT_DATA.goals,
     goalsVisible: false,
     updateGoals: (data) => set((state) => ({
         goals: { ...state.goals, ...data }
@@ -231,7 +232,7 @@ const createGoalsSlice: StateCreator<ResumeStore, [], [], GoalsSlice> = (set) =>
 })
 
 const createGraphsSlice: StateCreator<ResumeStore, [], [], GraphsSlice> = (set) => ({
-    graphs: undefined,
+    graphs: DEFAULT_DATA.graphs,
     graphsVisible: false,
     updateGraphs: (data) => set((state) => ({
         graphs: { ...state.graphs, ...data }
@@ -271,7 +272,7 @@ interface ResumeStore extends
     data: Partial<ResumeData>
 }
 
-export const useResumeStore = create<ResumeStore>((set, get, ...rest) => ({
+export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>(devtools((set, get, ...rest) => ({
     ...createPersonalInfoSlice(set, get, ...rest),
     ...createWorkExperienceSlice(set, get, ...rest),
     ...createEducationSlice(set, get, ...rest),
@@ -321,4 +322,7 @@ export const useResumeStore = create<ResumeStore>((set, get, ...rest) => ({
 
         return updates;
     }),
+}), {
+    name: "resume-store",
+    store: "resume-store"
 }))

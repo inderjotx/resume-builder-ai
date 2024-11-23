@@ -1,6 +1,20 @@
 "use client";
 
 import { useState } from "react";
+// import PersonalInfoForm from "./forms/user-info-form";
+// import WorkExperienceForm from "./forms/work-experience-form";
+// import EducationForm from "./forms/education-form";
+// import SkillForm from "./forms/skill-form";
+// import AchievementForm from "./forms/achivement-form";
+// import AwardsForm from "./forms/awards-form";
+// import CertificateForm from "./forms/certificate-form";
+// import GoalsForm from "./forms/goals-form";
+// import ReferenceForm from "./forms/reference-form";
+// import SocialMediaForm from "./forms/social-media-form";
+// import VoluntaryForm from "./forms/voluntary-form";
+import LanguagesForm from "./forms/languages-form";
+import ProjectsForm from "./forms/projects-form";
+import PublicationsForm from "./forms/publication-form";
 import {
   DndContext,
   closestCenter,
@@ -18,8 +32,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DraggableCard from "./dragable-cards";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import DraggableCard from "./dragable-cards";
 import DisplayContent from "./display-content";
 
 const initialCards = [
@@ -117,8 +131,11 @@ export default function EditorDashboard() {
   return (
     <div className="h-screen w-full bg-background">
       <div className="grid flex-1 grid-cols-5">
-        <div className="col-span-2">
-          <ScrollArea className="h-screen">
+        <div className="col-span-5 lg:col-span-2">
+          <header className="flex h-10 w-full items-center justify-center border-b">
+            Top
+          </header>
+          <ScrollArea className="h-[calc(100vh-2.5rem)]">
             <div className="p-4">
               <h2 className="mb-4 text-2xl font-bold">Editor</h2>
               <DndContext
@@ -135,23 +152,41 @@ export default function EditorDashboard() {
                   items={cards}
                   strategy={verticalListSortingStrategy}
                 >
-                  {cards.map((card) => (
+                  {/* {cards.map((card) => (
                     <DraggableCard key={card.id} card={card} />
-                  ))}
+                  ))} */}
+                  {/* <PersonalInfoForm /> */}
+                  {/* <WorkExperienceForm /> */}
+                  {/* <EducationForm /> */}
+                  {/* <SkillForm /> */}
+                  {/* <AchievementForm /> */}
+                  {/* <AwardsForm /> */}
+                  {/* <CertificateForm /> */}
+
+                  {/* <GoalsForm /> */}
+                  {/* <ReferenceForm /> */}
+                  {/* <SocialMediaForm /> */}
+                  {/* <VoluntaryForm /> */}
+                  {/* <LanguagesForm /> */}
+                  <ProjectsForm />
+                  {/* <PublicationsForm /> */}
                 </SortableContext>
               </DndContext>
             </div>
           </ScrollArea>
         </div>
-        <div className="col-span-3 flex-1">
-          <ScrollArea className="h-screen">
+        <div className="col-span-3 hidden flex-1 lg:grid">
+          <header className="flex h-10 w-full items-center justify-center border-b">
+            Top
+          </header>
+          <ScrollArea className="h-[calc(100vh-2.5rem)]">
             <DisplayContent />
           </ScrollArea>
         </div>
       </div>
 
       {/* Mobile Layout */}
-      <div className="h-full lg:hidden">
+      {/* <div className="h-full lg:hidden">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
           <div className="h-[calc(100vh-56px)]">
             <TabsContent value="editor" className="m-0 h-full">
@@ -195,7 +230,7 @@ export default function EditorDashboard() {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-      </div>
+      </div> */}
     </div>
   );
 }

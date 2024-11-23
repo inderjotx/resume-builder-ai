@@ -222,6 +222,8 @@ export type ResumeData = {
   personalInfo?: {
     iconId?: string;
     title: string;
+    titleBefore?: string;
+    titleAfter?: string;
     firstName?: string;
     lastName?: string;
     phoneNumber?: string;
@@ -235,6 +237,7 @@ export type ResumeData = {
     country?: string;
     website?: string;
     bio?: string;
+    customFields?: Record<string, string>;
   };
   workExperience?: {
     iconId?: string;
@@ -488,6 +491,38 @@ export const DEFAULT_DATA: Partial<ResumeData> = {
   },
   projects: {
     title: "Projects",
+    items: [],
+  },
+  achievements: {
+    title: "Achievements",
+    items: [],
+  },
+  awards: {
+    title: "Awards",
+    items: [],
+  },
+  references: {
+    title: "References",
+    items: [],
+  },
+  publications: {
+    title: "Publications",
+    items: [],
+  },
+  voluntaryWork: {
+    title: "Voluntary Work",
+    items: [],
+  },
+  certifications: {
+    title: "Certifications",
+    items: [],
+  },
+  languages: {
+    title: "Languages",
+    items: [],
+  },
+  socialMedia: {
+    title: "Social Media",
     items: [],
   },
 };

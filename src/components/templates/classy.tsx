@@ -26,7 +26,6 @@ import {
   Dot,
   Globe,
   Heading,
-  BriefcaseBusiness,
 } from "lucide-react";
 
 import {
@@ -87,7 +86,7 @@ export function ClassyTemplate() {
   };
 
   return (
-    <div className="mx-auto aspect-[1/1.4142] max-w-4xl border bg-white p-6 shadow-lg lg:min-w-[600px]">
+    <div className="mx-auto aspect-[1/1.4142] max-w-4xl border bg-white p-6 shadow-lg lg:w-[600px]">
       {order?.map((section) => {
         const SectionComponent = sectionMap[section];
         return <SectionComponent key={section} />;
@@ -108,17 +107,15 @@ function HeaderSection() {
   return (
     <header className="mb-8">
       <h2
-        className="mb-4 flex items-center gap-2 text-2xl font-semibold"
+        className="flex items-center gap-2 text-2xl font-semibold"
         style={{ color: settings?.color }}
       >
         <Heading />
         {personalInfo?.title}
       </h2>
-      <h1
-        className="mb-4 text-4xl font-bold"
-        style={{ color: settings?.color }}
-      >
-        {personalInfo?.firstName} {personalInfo?.lastName}
+      <h1 className="text-4xl font-bold" style={{ color: settings?.color }}>
+        {personalInfo?.titleAfter} {personalInfo?.firstName}{" "}
+        {personalInfo?.lastName}
       </h1>
       <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
         {personalInfo?.email && (
@@ -149,7 +146,9 @@ function HeaderSection() {
         )}
       </div>
       {personalInfo?.bio && (
-        <p className="mt-4 text-muted-foreground">{personalInfo.bio}</p>
+        <p className="mt-4 truncate text-wrap text-muted-foreground">
+          {personalInfo.bio}
+        </p>
       )}
     </header>
   );
@@ -417,7 +416,7 @@ function AchievementsSection() {
     (state) => state.achievementsVisible,
   );
 
-  if (!achievementsVisible) return null;
+  // if (!achievementsVisible) return null;
 
   return (
     <section className="mb-8">
