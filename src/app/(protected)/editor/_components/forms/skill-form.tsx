@@ -34,8 +34,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { GripVertical, Lightbulb } from "lucide-react";
-import { DynamicInput } from "@/components/ui/dynamic-input";
+import { GripVertical } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -236,132 +235,126 @@ export default function SkillForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
+        className="flex flex-col gap-4 rounded-md border bg-background"
       >
-        <div className="flex items-center gap-2">
-          <Lightbulb className="size-6" />
-          <DynamicInput
-            as="h2"
-            initialValue="Skills"
-            className="text-lg font-semibold"
-            onSave={(value) => form.setValue("title", value)}
-          />
-        </div>
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always,
-            },
-          }}
-        >
-          <Accordion
-            type="single"
-            value={activeAccordion ?? undefined}
-            onValueChange={(value) => setActiveAccordion(value)}
-            collapsible
-            className="flex w-full flex-col gap-4"
+        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
           >
-            <SortableContext
-              items={fields.map((field) => field.id)}
-              strategy={verticalListSortingStrategy}
+            <Accordion
+              type="single"
+              value={activeAccordion ?? undefined}
+              onValueChange={(value) => setActiveAccordion(value)}
+              collapsible
+              className="flex w-full flex-col gap-4"
             >
-              {fields.map((field, index) => (
-                <SortableAccordionItem
-                  key={field.id}
-                  id={field.id}
-                  value={`item-${index}-skill`}
-                  className="rounded-lg border bg-muted/40 p-1"
-                  onRemove={remove}
-                  index={index}
-                  isActive={activeAccordion === `item-${index}-skill`}
-                >
-                  <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.skillCategory`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-muted-foreground">
-                            Skill Category
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="e.g., Programming Languages"
-                              {...field}
-                              className="bg-background"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+              <SortableContext
+                items={fields.map((field) => field.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field, index) => (
+                  <SortableAccordionItem
+                    key={field.id}
+                    id={field.id}
+                    value={`item-${index}-skill`}
+                    className="rounded-lg border bg-muted/40 p-1"
+                    onRemove={remove}
+                    index={index}
+                    isActive={activeAccordion === `item-${index}-skill`}
+                  >
+                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.skillCategory`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-muted-foreground">
+                              Skill Category
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="e.g., Programming Languages"
+                                {...field}
+                                className="bg-background"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <div className="space-y-2">
-                      <FormLabel className="text-muted-foreground">
-                        Skill Tags
-                      </FormLabel>
-                      <div className="flex flex-wrap gap-2">
-                        {form
-                          .watch(`items.${index}.skillTags`)
-                          ?.map((tag, tagIndex) => (
-                            <Badge key={tagIndex} variant="secondary">
-                              {tag}
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="ml-1 h-4 w-4 p-0"
-                                onClick={() => removeSkillTag(index, tagIndex)}
-                              >
-                                <X className="h-3 w-3" />
-                              </Button>
-                            </Badge>
-                          ))}
-                      </div>
-                      <div className="flex gap-2">
-                        <Input
-                          placeholder="Add a skill tag"
-                          id={`skill-newTag-${index}`}
-                          // value={newTag}
-                          // onChange={(e) => setNewTag(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
+                      <div className="space-y-2">
+                        <FormLabel className="text-muted-foreground">
+                          Skill Tags
+                        </FormLabel>
+                        <div className="flex flex-wrap gap-2">
+                          {form
+                            .watch(`items.${index}.skillTags`)
+                            ?.map((tag, tagIndex) => (
+                              <Badge key={tagIndex} variant="secondary">
+                                {tag}
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="ml-1 h-4 w-4 p-0"
+                                  onClick={() =>
+                                    removeSkillTag(index, tagIndex)
+                                  }
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </Badge>
+                            ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="Add a skill tag"
+                            id={`skill-newTag-${index}`}
+                            // value={newTag}
+                            // onChange={(e) => setNewTag(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                addSkillTag(index);
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => {
                               addSkillTag(index);
-                            }
-                          }}
-                        />
-                        <Button
-                          type="button"
-                          onClick={() => {
-                            addSkillTag(index);
-                          }}
-                        >
-                          Add
-                        </Button>
+                            }}
+                          >
+                            Add
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </AccordionContent>
-                </SortableAccordionItem>
-              ))}
-            </SortableContext>
+                    </AccordionContent>
+                  </SortableAccordionItem>
+                ))}
+              </SortableContext>
 
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-2"
-              onClick={handleAddSkillCategory}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Skill Category
-            </Button>
-          </Accordion>
-        </DndContext>
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-2"
+                onClick={handleAddSkillCategory}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Skill Category
+              </Button>
+            </Accordion>
+          </DndContext>
+        </div>
       </form>
     </Form>
   );

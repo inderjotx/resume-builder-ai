@@ -22,11 +22,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, CalendarIcon, BookOpen } from "lucide-react";
+import { Plus, Trash2, CalendarIcon } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { DynamicInput } from "@/components/ui/dynamic-input";
 import {
   Accordion,
   AccordionContent,
@@ -247,174 +246,169 @@ export default function PublicationForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
+        className="flex flex-col gap-4 rounded-md border bg-background"
       >
-        <div className="flex items-center gap-2">
-          <BookOpen className="size-6" />
-          <DynamicInput
-            as="h2"
-            initialValue="Publications"
-            className="text-lg font-semibold"
-            onSave={(value) => form.setValue("title", value)}
-          />
-        </div>
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always,
-            },
-          }}
-        >
-          <Accordion
-            type="single"
-            value={activeAccordion ?? undefined}
-            onValueChange={(value) => setActiveAccordion(value)}
-            collapsible
-            className="flex w-full flex-col gap-4"
+        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
           >
-            <SortableContext
-              items={fields.map((field) => field.id)}
-              strategy={verticalListSortingStrategy}
+            <Accordion
+              type="single"
+              value={activeAccordion ?? undefined}
+              onValueChange={(value) => setActiveAccordion(value)}
+              collapsible
+              className="flex w-full flex-col gap-4"
             >
-              {fields.map((field, index) => (
-                <SortableAccordionItem
-                  key={field.id}
-                  id={field.id}
-                  value={`item-${index}-publication`}
-                  className="rounded-lg border bg-muted/40 p-1"
-                  onRemove={remove}
-                  index={index}
-                  isActive={activeAccordion === `item-${index}-publication`}
-                >
-                  <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                    <div className="flex flex-col gap-2">
-                      <FormField
-                        control={form.control}
-                        name={`items.${index}.title`}
-                        render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <FormLabel className="text-muted-foreground">
-                              Title
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Publication Title"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+              <SortableContext
+                items={fields.map((field) => field.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field, index) => (
+                  <SortableAccordionItem
+                    key={field.id}
+                    id={field.id}
+                    value={`item-${index}-publication`}
+                    className="rounded-lg border bg-muted/40 p-1"
+                    onRemove={remove}
+                    index={index}
+                    isActive={activeAccordion === `item-${index}-publication`}
+                  >
+                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
+                      <div className="flex flex-col gap-2">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.title`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                Title
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Publication Title"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <FormField
-                        control={form.control}
-                        name={`items.${index}.date`}
-                        render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <FormLabel className="text-muted-foreground">
-                              Publication Date
-                            </FormLabel>
-                            <FormControl>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full justify-start text-left font-normal",
-                                      !field.value && "text-muted-foreground",
-                                    )}
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.date`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                Publication Date
+                              </FormLabel>
+                              <FormControl>
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full justify-start text-left font-normal",
+                                        !field.value && "text-muted-foreground",
+                                      )}
+                                    >
+                                      <CalendarIcon className="mr-2 h-4 w-4" />
+                                      {field.value ? (
+                                        format(new Date(field.value), "PPP")
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent
+                                    align="start"
+                                    className="w-auto p-0"
                                   >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {field.value ? (
-                                      format(new Date(field.value), "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  align="start"
-                                  className="w-auto p-0"
-                                >
-                                  <Calendar
-                                    mode="single"
-                                    captionLayout="dropdown-buttons"
-                                    selected={
-                                      field.value
-                                        ? new Date(field.value)
-                                        : undefined
-                                    }
-                                    onSelect={(date) =>
-                                      field.onChange(date?.toISOString())
-                                    }
-                                    fromYear={1960}
-                                    toYear={2030}
-                                  />
-                                </PopoverContent>
-                              </Popover>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                                    <Calendar
+                                      mode="single"
+                                      captionLayout="dropdown-buttons"
+                                      selected={
+                                        field.value
+                                          ? new Date(field.value)
+                                          : undefined
+                                      }
+                                      onSelect={(date) =>
+                                        field.onChange(date?.toISOString())
+                                      }
+                                      fromYear={1960}
+                                      toYear={2030}
+                                    />
+                                  </PopoverContent>
+                                </Popover>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <FormField
-                        control={form.control}
-                        name={`items.${index}.url`}
-                        render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <FormLabel className="text-muted-foreground">
-                              URL
-                            </FormLabel>
-                            <FormControl>
-                              <Input placeholder="Publication URL" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.url`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                URL
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Publication URL"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <FormField
-                        control={form.control}
-                        name={`items.${index}.description`}
-                        render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <FormLabel className="text-muted-foreground">
-                              Description
-                            </FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="Describe your publication"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </AccordionContent>
-                </SortableAccordionItem>
-              ))}
-            </SortableContext>
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.description`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                Description
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Describe your publication"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </AccordionContent>
+                  </SortableAccordionItem>
+                ))}
+              </SortableContext>
 
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-2"
-              onClick={handleCreatePublicationForm}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Publication
-            </Button>
-          </Accordion>
-        </DndContext>
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-2"
+                onClick={handleCreatePublicationForm}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Publication
+              </Button>
+            </Accordion>
+          </DndContext>
+        </div>
       </form>
     </Form>
   );

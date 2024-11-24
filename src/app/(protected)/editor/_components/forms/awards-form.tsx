@@ -44,7 +44,6 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { GripVertical, Trophy } from "lucide-react";
-import { DynamicInput } from "@/components/ui/dynamic-input";
 import {
   Accordion,
   AccordionContent,
@@ -238,18 +237,8 @@ export default function AwardsForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
+        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border bg-background px-4 py-5"
       >
-        <div className="flex items-center gap-2">
-          <Trophy className="size-6" />
-          <DynamicInput
-            as="h2"
-            initialValue="Awards"
-            className="text-lg font-semibold"
-            onSave={(value) => form.setValue("title", value)}
-          />
-        </div>
-
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

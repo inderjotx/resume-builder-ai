@@ -19,14 +19,13 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
 import { useSettingsStore } from "@/store/resume/settings-store";
-import { DynamicInput } from "@/components/ui/dynamic-input";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Heart, CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -234,196 +233,191 @@ export default function VoluntaryForm() {
 
   return (
     <Form {...form}>
-      <form className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4">
-        <div className="flex items-center gap-2">
-          <Heart className="size-6" />
-          <DynamicInput
-            as="h2"
-            initialValue="Voluntary Work"
-            className="text-lg font-semibold"
-            onSave={(value) => {
-              form.setValue("title", value);
+      <form
+        // onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 rounded-md border bg-background"
+      >
+        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
             }}
-          />
-        </div>
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-          measuring={{
-            droppable: { strategy: MeasuringStrategy.Always },
-          }}
-        >
-          <Accordion
-            type="single"
-            value={activeAccordion ?? undefined}
-            onValueChange={(value) => setActiveAccordion(value)}
-            collapsible
-            className="flex w-full flex-col gap-4"
           >
-            <SortableContext
-              items={fields.map((field) => field.id)}
-              strategy={verticalListSortingStrategy}
+            <Accordion
+              type="single"
+              value={activeAccordion ?? undefined}
+              onValueChange={(value) => setActiveAccordion(value)}
+              collapsible
+              className="flex w-full flex-col gap-4"
             >
-              {fields.map((field, index) => (
-                <SortableAccordionItem
-                  key={field.id}
-                  id={field.id}
-                  value={`item-${index}-voluntary`}
-                  className="rounded-lg border bg-muted/40 p-1"
-                  onRemove={remove}
-                  index={index}
-                  isActive={activeAccordion === `item-${index}-voluntary`}
-                >
-                  <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.organizationName`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Organization Name
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+              <SortableContext
+                items={fields.map((field) => field.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field, index) => (
+                  <SortableAccordionItem
+                    key={field.id}
+                    id={field.id}
+                    value={`item-${index}-voluntary`}
+                    className="rounded-lg border bg-muted/40 p-1"
+                    onRemove={remove}
+                    index={index}
+                    isActive={activeAccordion === `item-${index}-voluntary`}
+                  >
+                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.organizationName`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Organization Name
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.role`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Role
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.role`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Role
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="col-span-2 grid grid-cols-2 gap-2">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.startDate`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                Start Date
-                              </FormLabel>
-                              <FormControl>
-                                <CalendarInput
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  calendarProps={{
-                                    mode: "single",
-                                    selected: field.value
-                                      ? new Date(field.value)
-                                      : undefined,
-                                    onSelect: (date) =>
-                                      field.onChange(
-                                        date ? date.toISOString() : undefined,
-                                      ),
-                                    initialFocus: true,
-                                  }}
-                                  disabled={!visibility}
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="col-span-2 grid grid-cols-2 gap-2">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.startDate`}
+                            render={({ field }) => (
+                              <FormItem className="space-y-0">
+                                <FormLabel className="text-muted-foreground">
+                                  Start Date
+                                </FormLabel>
+                                <FormControl>
+                                  <CalendarInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    calendarProps={{
+                                      mode: "single",
+                                      selected: field.value
+                                        ? new Date(field.value)
+                                        : undefined,
+                                      onSelect: (date) =>
+                                        field.onChange(
+                                          date ? date.toISOString() : undefined,
+                                        ),
+                                      initialFocus: true,
+                                    }}
+                                    disabled={!visibility}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.endDate`}
+                            render={({ field }) => (
+                              <FormItem className="space-y-0">
+                                <FormLabel className="text-muted-foreground">
+                                  End Date
+                                </FormLabel>
+                                <FormControl>
+                                  <CalendarInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    calendarProps={{
+                                      mode: "single",
+                                      selected: field.value
+                                        ? new Date(field.value)
+                                        : undefined,
+                                      onSelect: (date) =>
+                                        field.onChange(
+                                          date ? date.toISOString() : undefined,
+                                        ),
+                                      initialFocus: true,
+                                    }}
+                                    disabled={!visibility}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="col-span-1 flex items-center justify-center">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.isCurrent`}
+                            render={({ field }) => (
+                              <FormItem className="mt-4 flex items-center gap-2 space-y-0">
+                                <FormLabel className="text-muted-foreground">
+                                  Current Role
+                                </FormLabel>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
                                 />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.endDate`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                End Date
-                              </FormLabel>
-                              <FormControl>
-                                <CalendarInput
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  calendarProps={{
-                                    mode: "single",
-                                    selected: field.value
-                                      ? new Date(field.value)
-                                      : undefined,
-                                    onSelect: (date) =>
-                                      field.onChange(
-                                        date ? date.toISOString() : undefined,
-                                      ),
-                                    initialFocus: true,
-                                  }}
-                                  disabled={!visibility}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
 
-                      <div className="col-span-1 flex items-center justify-center">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.isCurrent`}
-                          render={({ field }) => (
-                            <FormItem className="mt-4 flex items-center gap-2 space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                Current Role
-                              </FormLabel>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Description
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea {...field} />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </AccordionContent>
+                  </SortableAccordionItem>
+                ))}
+              </SortableContext>
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.description`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Description
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </AccordionContent>
-                </SortableAccordionItem>
-              ))}
-            </SortableContext>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-2"
-              onClick={handleCreateVoluntaryForm}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Voluntary Work
-            </Button>
-          </Accordion>
-        </DndContext>
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-2"
+                onClick={handleCreateVoluntaryForm}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Voluntary Work
+              </Button>
+            </Accordion>
+          </DndContext>
+        </div>
       </form>
     </Form>
   );

@@ -43,7 +43,6 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { DynamicInput } from "@/components/ui/dynamic-input";
 import {
   Accordion,
   AccordionContent,
@@ -243,16 +242,6 @@ export default function CertificateForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
       >
-        <div className="flex items-center gap-2">
-          <Award className="size-6" />
-          <DynamicInput
-            as="h2"
-            initialValue="Certifications"
-            className="text-lg font-semibold"
-            onSave={(value) => form.setValue("title", value)}
-          />
-        </div>
-
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

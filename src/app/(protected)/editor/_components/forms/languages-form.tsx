@@ -14,7 +14,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Globe, GripVertical } from "lucide-react";
+import { Plus, Trash2, GripVertical } from "lucide-react";
 import { type ResumeData, Proficiency } from "@/server/db/schema";
 import {
   Select,
@@ -41,7 +41,6 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { DynamicInput } from "@/components/ui/dynamic-input";
 import {
   Accordion,
   AccordionContent,
@@ -224,113 +223,108 @@ export default function LanguagesForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
+        className="flex flex-col gap-4 rounded-md border bg-background"
       >
-        <div className="flex items-center gap-2">
-          <Globe className="size-6" />
-          <DynamicInput
-            as="h2"
-            initialValue="Languages"
-            className="text-lg font-semibold"
-            onSave={(value) => form.setValue("title", value)}
-          />
-        </div>
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always,
-            },
-          }}
-        >
-          <Accordion
-            type="single"
-            value={activeAccordion ?? undefined}
-            onValueChange={(value) => setActiveAccordion(value)}
-            collapsible
-            className="flex w-full flex-col gap-4"
+        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
           >
-            <SortableContext
-              items={fields.map((field) => field.id)}
-              strategy={verticalListSortingStrategy}
+            <Accordion
+              type="single"
+              value={activeAccordion ?? undefined}
+              onValueChange={(value) => setActiveAccordion(value)}
+              collapsible
+              className="flex w-full flex-col gap-4"
             >
-              {fields.map((field, index) => (
-                <SortableAccordionItem
-                  key={field.id}
-                  id={field.id}
-                  value={`item-${index}-language`}
-                  className="rounded-lg border bg-muted/40 p-1"
-                  onRemove={remove}
-                  index={index}
-                  isActive={activeAccordion === `item-${index}-language`}
-                >
-                  <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.language`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Language
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter language..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.proficiency`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Proficiency
-                          </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
+              <SortableContext
+                items={fields.map((field) => field.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field, index) => (
+                  <SortableAccordionItem
+                    key={field.id}
+                    id={field.id}
+                    value={`item-${index}-language`}
+                    className="rounded-lg border bg-muted/40 p-1"
+                    onRemove={remove}
+                    index={index}
+                    isActive={activeAccordion === `item-${index}-language`}
+                  >
+                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.language`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Language
+                            </FormLabel>
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select proficiency level" />
-                              </SelectTrigger>
+                              <Input
+                                placeholder="Enter language..."
+                                {...field}
+                              />
                             </FormControl>
-                            <SelectContent>
-                              {Object.values(Proficiency).map((level) => (
-                                <SelectItem key={level} value={level}>
-                                  {level.charAt(0).toUpperCase() +
-                                    level.slice(1)}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </AccordionContent>
-                </SortableAccordionItem>
-              ))}
-            </SortableContext>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-2"
-              onClick={() => append({})}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Language
-            </Button>
-          </Accordion>
-        </DndContext>
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.proficiency`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Proficiency
+                            </FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select proficiency level" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {Object.values(Proficiency).map((level) => (
+                                  <SelectItem key={level} value={level}>
+                                    {level.charAt(0).toUpperCase() +
+                                      level.slice(1)}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </AccordionContent>
+                  </SortableAccordionItem>
+                ))}
+              </SortableContext>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-2"
+                onClick={() => append({})}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Language
+              </Button>
+            </Accordion>
+          </DndContext>
+        </div>
       </form>
     </Form>
   );

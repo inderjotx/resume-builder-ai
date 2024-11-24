@@ -1,6 +1,5 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
-import { DynamicInput } from "@/components/ui/dynamic-input";
 import {
   Accordion,
   AccordionContent,
@@ -9,7 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { BriefcaseBusiness, CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -225,112 +224,77 @@ export default function WorkExperienceForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
+        className="flex flex-col gap-4 rounded-md border bg-background"
       >
-        <div className="flex items-center gap-2">
-          <BriefcaseBusiness className="size-6" />
-          <DynamicInput
-            as="h2"
-            initialValue="Work Experience"
-            className="text-lg font-semibold"
-            onSave={(value) => form.setValue("title", value)}
-          />
-        </div>
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always,
-            },
-          }}
-        >
-          <Accordion
-            type="single"
-            value={activeAccordion ?? undefined}
-            onValueChange={(value) => setActiveAccordion(value)}
-            collapsible
-            className="flex w-full flex-col gap-4"
+        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
           >
-            <SortableContext
-              items={fields.map((field) => field.id)}
-              strategy={verticalListSortingStrategy}
+            <Accordion
+              type="single"
+              value={activeAccordion ?? undefined}
+              onValueChange={(value) => setActiveAccordion(value)}
+              collapsible
+              className="flex w-full flex-col gap-4"
             >
-              {fields.map((field, index) => (
-                <SortableAccordionItem
-                  key={field.id}
-                  id={field.id}
-                  value={`item-${index}-work-experience`}
-                  className="rounded-lg border bg-muted/40 p-1"
-                  onRemove={remove}
-                  index={index}
-                  isActive={activeAccordion === `item-${index}-work-experience`}
-                >
-                  <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                    <div className="flex flex-col gap-2">
-                      <FormField
-                        control={form.control}
-                        name={`experiences.${index}.companyName`}
-                        render={({ field }) => (
-                          <FormItem className="space-y-0">
-                            <FormLabel className="text-muted-foreground">
-                              Company Name
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder=""
-                                {...field}
-                                className="bg-background"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`experiences.${index}.position`}
-                        render={(field) => (
-                          <FormItem className="space-y-0">
-                            <FormLabel className="text-muted-foreground">
-                              Position
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder=""
-                                {...field}
-                                className="bg-background"
-                              />
-                            </FormControl>
-                            <FormDescription />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-5 gap-2">
-                      <div className="col-span-4 grid grid-cols-4 gap-2">
+              <SortableContext
+                items={fields.map((field) => field.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field, index) => (
+                  <SortableAccordionItem
+                    key={field.id}
+                    id={field.id}
+                    value={`item-${index}-work-experience`}
+                    className="rounded-lg border bg-muted/40 p-1"
+                    onRemove={remove}
+                    index={index}
+                    isActive={
+                      activeAccordion === `item-${index}-work-experience`
+                    }
+                  >
+                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
+                      <div className="flex flex-col gap-2">
                         <FormField
                           control={form.control}
-                          name={`experiences.${index}.startDate`}
+                          name={`experiences.${index}.companyName`}
                           render={({ field }) => (
-                            <FormItem className="col-span-2 space-y-0">
+                            <FormItem className="space-y-0">
                               <FormLabel className="text-muted-foreground">
-                                Start Date
+                                Company Name
                               </FormLabel>
                               <FormControl>
-                                <CalendarInput
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  calendarProps={{
-                                    fromYear: 1960,
-                                    toYear: new Date().getFullYear(),
-                                    toDate: new Date(),
-                                  }}
+                                <Input
+                                  placeholder=""
+                                  {...field}
+                                  className="bg-background"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`experiences.${index}.position`}
+                          render={(field) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                Position
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder=""
+                                  {...field}
+                                  className="bg-background"
                                 />
                               </FormControl>
                               <FormDescription />
@@ -338,37 +302,132 @@ export default function WorkExperienceForm() {
                             </FormItem>
                           )}
                         />
+                      </div>
 
-                        <FormField
-                          control={form.control}
-                          name={`experiences.${index}.endDate`}
-                          render={({ field }) => (
-                            <FormItem className="col-span-2 space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                End Date
-                              </FormLabel>
-                              <FormControl>
-                                <CalendarInput
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  disabled={form.getValues(
-                                    `experiences.${index}.isCurrent`,
-                                  )}
-                                  calendarProps={{
-                                    fromYear:
-                                      new Date(
+                      <div className="grid grid-cols-5 gap-2">
+                        <div className="col-span-4 grid grid-cols-4 gap-2">
+                          <FormField
+                            control={form.control}
+                            name={`experiences.${index}.startDate`}
+                            render={({ field }) => (
+                              <FormItem className="col-span-2 space-y-0">
+                                <FormLabel className="text-muted-foreground">
+                                  Start Date
+                                </FormLabel>
+                                <FormControl>
+                                  <CalendarInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    calendarProps={{
+                                      fromYear: 1960,
+                                      toYear: new Date().getFullYear(),
+                                      toDate: new Date(),
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`experiences.${index}.endDate`}
+                            render={({ field }) => (
+                              <FormItem className="col-span-2 space-y-0">
+                                <FormLabel className="text-muted-foreground">
+                                  End Date
+                                </FormLabel>
+                                <FormControl>
+                                  <CalendarInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    disabled={form.getValues(
+                                      `experiences.${index}.isCurrent`,
+                                    )}
+                                    calendarProps={{
+                                      fromYear:
+                                        new Date(
+                                          form.getValues(
+                                            `experiences.${index}.startDate`,
+                                          ) ?? "",
+                                        ).getFullYear() || 1960,
+                                      toYear: new Date().getFullYear(),
+                                      fromDate: new Date(
                                         form.getValues(
                                           `experiences.${index}.startDate`,
                                         ) ?? "",
-                                      ).getFullYear() || 1960,
-                                    toYear: new Date().getFullYear(),
-                                    fromDate: new Date(
-                                      form.getValues(
-                                        `experiences.${index}.startDate`,
-                                      ) ?? "",
-                                    ),
-                                    toDate: new Date(),
-                                  }}
+                                      ),
+                                      toDate: new Date(),
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="col-span-1 flex items-center justify-center">
+                          <FormField
+                            control={form.control}
+                            name={`experiences.${index}.isCurrent`}
+                            render={({ field }) => (
+                              <FormItem className="mt-6 flex items-center gap-2 space-y-0">
+                                <FormLabel
+                                  htmlFor="isCurrent"
+                                  className="text-muted-foreground"
+                                >
+                                  Is Current
+                                </FormLabel>
+                                <Checkbox
+                                  id="isCurrent"
+                                  className="bg-background"
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <FormField
+                          control={form.control}
+                          name={`experiences.${index}.city`}
+                          render={(field) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                City
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder=""
+                                  {...field}
+                                  className="bg-background"
+                                />
+                              </FormControl>
+                              <FormDescription />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`experiences.${index}.country`}
+                          render={(field) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                Country
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder=""
+                                  {...field}
+                                  className="bg-background"
                                 />
                               </FormControl>
                               <FormDescription />
@@ -378,106 +437,40 @@ export default function WorkExperienceForm() {
                         />
                       </div>
 
-                      <div className="col-span-1 flex items-center justify-center">
-                        <FormField
-                          control={form.control}
-                          name={`experiences.${index}.isCurrent`}
-                          render={({ field }) => (
-                            <FormItem className="mt-6 flex items-center gap-2 space-y-0">
-                              <FormLabel
-                                htmlFor="isCurrent"
-                                className="text-muted-foreground"
-                              >
-                                Is Current
-                              </FormLabel>
-                              <Checkbox
-                                id="isCurrent"
-                                className="bg-background"
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
                       <FormField
                         control={form.control}
-                        name={`experiences.${index}.city`}
+                        name={`experiences.${index}.description`}
                         render={(field) => (
                           <FormItem className="space-y-0">
                             <FormLabel className="text-muted-foreground">
-                              City
+                              Description
                             </FormLabel>
                             <FormControl>
-                              <Input
-                                placeholder=""
-                                {...field}
+                              <Textarea
+                                {...field?.field}
                                 className="bg-background"
                               />
                             </FormControl>
-                            <FormDescription />
-                            <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name={`experiences.${index}.country`}
-                        render={(field) => (
-                          <FormItem className="space-y-0">
-                            <FormLabel className="text-muted-foreground">
-                              Country
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder=""
-                                {...field}
-                                className="bg-background"
-                              />
-                            </FormControl>
-                            <FormDescription />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    </AccordionContent>
+                  </SortableAccordionItem>
+                ))}
+              </SortableContext>
 
-                    <FormField
-                      control={form.control}
-                      name={`experiences.${index}.description`}
-                      render={(field) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Description
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field?.field}
-                              className="bg-background"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </AccordionContent>
-                </SortableAccordionItem>
-              ))}
-            </SortableContext>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-2"
-              onClick={handleCreateAccordion}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Work Experience
-            </Button>
-          </Accordion>
-        </DndContext>
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-2"
+                onClick={handleCreateAccordion}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Work Experience
+              </Button>
+            </Accordion>
+          </DndContext>
+        </div>
       </form>
     </Form>
   );

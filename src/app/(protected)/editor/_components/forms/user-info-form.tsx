@@ -25,9 +25,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useResumeStore } from "@/store/resume/data-store";
-import { ResumeData } from "@/server/db/schema";
-import { DynamicInput } from "@/components/ui/dynamic-input";
-import { User } from "lucide-react";
+import { type ResumeData } from "@/server/db/schema";
+// import { DynamicInput } from "@/components/ui/dynamic-input";
+// import { User } from "lucide-react";
 
 const formSchema = z.object({
   titleBefore: z.string().optional(),
@@ -55,7 +55,7 @@ export default function PersonalInfoForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      dateOfBirth: new Date(),
+      ...updatePersonalInfo,
     },
     mode: "onChange",
   });
@@ -75,21 +75,9 @@ export default function PersonalInfoForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
+        className="flex flex-col gap-4 rounded-md border bg-background"
       >
-        <div className="flex items-center gap-2">
-          <User className="size-6" />
-          <DynamicInput
-            as="h2"
-            initialValue="Personal Information"
-            className="text-lg font-semibold"
-            onSave={(value) => {
-              // Optional: Handle title updates if needed
-            }}
-          />
-        </div>
-
-        <div className="flex flex-col gap-4 rounded-lg border bg-muted/40 p-4">
+        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-6">
               <FormField
