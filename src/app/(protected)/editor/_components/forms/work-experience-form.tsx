@@ -1,5 +1,6 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
+import { DynamicInput } from "@/components/ui/dynamic-input";
 import {
   Accordion,
   AccordionContent,
@@ -66,11 +67,13 @@ const workExperienceSchema = z.object({
 });
 
 const formSchema = z.object({
+  title: z.string().optional(),
   experiences: z.array(workExperienceSchema),
 });
 
 function SortableAccordionItem({
   id,
+  value,
   children,
   className,
   onRemove,
@@ -80,6 +83,7 @@ function SortableAccordionItem({
   id: string;
   children: React.ReactNode;
   className?: string;
+  value: string;
   onRemove: (index: number) => void;
   index: number;
   isActive: boolean;
@@ -110,7 +114,7 @@ function SortableAccordionItem({
     <AccordionItem
       ref={setNodeRef}
       style={style}
-      value={id}
+      value={value}
       className={className}
     >
       <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
@@ -143,12 +147,14 @@ function SortableAccordionItem({
 }
 
 export default function WorkExperienceForm() {
+  const [stableIds, setStableIds] = useState<string[]>([]);
   const { workExperience, updateWorkExperience } = useResumeStore();
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      title: workExperience?.title,
       experiences: workExperience?.items ?? [],
     },
     mode: "onChange",
@@ -159,10 +165,18 @@ export default function WorkExperienceForm() {
     name: "experiences",
   });
 
+  useEffect(() => {
+    if (fields.length !== stableIds.length) {
+      setStableIds(fields.map((field) => field.id));
+    }
+  }, [fields.length]);
+
   const handleCreateAccordion = () => {
     append({});
-    const index = fields.length;
-    setActiveAccordion(`item-${index}-work-experience`);
+    setTimeout(() => {
+      const newId = form.getValues("experiences").length - 1;
+      setActiveAccordion(`item-${newId}-work-experience`);
+    }, 0);
   };
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -175,6 +189,7 @@ export default function WorkExperienceForm() {
       console.log(value);
       const data = {
         items: value.experiences,
+        title: value.title ?? "",
       } as ResumeData["workExperience"];
       updateWorkExperience(data);
     });
@@ -196,9 +211,8 @@ export default function WorkExperienceForm() {
       const oldIndex = fields.findIndex((field) => field.id === active.id);
       const newIndex = fields.findIndex((field) => field.id === over.id);
 
-      arrayMove(fields, oldIndex, newIndex);
+      setStableIds(arrayMove(stableIds, oldIndex, newIndex));
 
-      // swap the values
       const value = form.getValues("experiences");
       const buffer = value[oldIndex];
       const newValue = [...value];
@@ -208,6 +222,12 @@ export default function WorkExperienceForm() {
       // @ts-ignore
       newValue[newIndex] = buffer;
       form.setValue("experiences", newValue);
+
+      if (activeAccordion === `item-${oldIndex}-work-experience`) {
+        setActiveAccordion(`item-${newIndex}-work-experience`);
+      } else if (activeAccordion === `item-${newIndex}-work-experience`) {
+        setActiveAccordion(`item-${oldIndex}-work-experience`);
+      }
     }
   };
 
@@ -219,7 +239,12 @@ export default function WorkExperienceForm() {
       >
         <div className="flex items-center gap-2">
           <BriefcaseBusiness className="size-6" />
-          <h2 className="text-lg font-semibold">{workExperience?.title}</h2>
+          <DynamicInput
+            as="h2"
+            initialValue="Work Experience"
+            className="text-lg font-semibold"
+            onSave={(value) => form.setValue("title", value)}
+          />
         </div>
 
         <DndContext
@@ -248,10 +273,11 @@ export default function WorkExperienceForm() {
                 <SortableAccordionItem
                   key={field.id}
                   id={field.id}
+                  value={`item-${index}-work-experience`}
                   className="rounded-lg border bg-muted/40 p-1"
                   onRemove={remove}
                   index={index}
-                  isActive={activeAccordion === field.id}
+                  isActive={activeAccordion === `item-${index}-work-experience`}
                 >
                   <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
                     <div className="flex flex-col gap-2">
