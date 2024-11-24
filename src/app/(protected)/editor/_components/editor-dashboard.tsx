@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 // import PersonalInfoForm from "./forms/user-info-form";
-// import WorkExperienceForm from "./forms/work-experience-form";
+import WorkExperienceForm from "./forms/work-experience-form";
 // import EducationForm from "./forms/education-form";
 // import SkillForm from "./forms/skill-form";
 // import AchievementForm from "./forms/achivement-form";
@@ -12,9 +12,9 @@ import { useState } from "react";
 // import ReferenceForm from "./forms/reference-form";
 // import SocialMediaForm from "./forms/social-media-form";
 // import VoluntaryForm from "./forms/voluntary-form";
-import LanguagesForm from "./forms/languages-form";
-import ProjectsForm from "./forms/projects-form";
-import PublicationsForm from "./forms/publication-form";
+// import LanguagesForm from "./forms/languages-form";
+// import ProjectsForm from "./forms/projects-form";
+// import PublicationsForm from "./forms/publication-form";
 import {
   DndContext,
   closestCenter,
@@ -156,7 +156,7 @@ export default function EditorDashboard() {
                     <DraggableCard key={card.id} card={card} />
                   ))} */}
                   {/* <PersonalInfoForm /> */}
-                  {/* <WorkExperienceForm /> */}
+                  <WorkExperienceForm />
                   {/* <EducationForm /> */}
                   {/* <SkillForm /> */}
                   {/* <AchievementForm /> */}
@@ -168,7 +168,7 @@ export default function EditorDashboard() {
                   {/* <SocialMediaForm /> */}
                   {/* <VoluntaryForm /> */}
                   {/* <LanguagesForm /> */}
-                  <ProjectsForm />
+                  {/* <ProjectsForm /> */}
                   {/* <PublicationsForm /> */}
                 </SortableContext>
               </DndContext>

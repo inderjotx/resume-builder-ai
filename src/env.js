@@ -20,6 +20,8 @@ export const env = createEnv({
     CHROME_EXECUTABLE_PATH: z.string().optional(),
     AUTH_RESEND_KEY: z.string(),
     AUTH_RESEND_FROM: z.string(),
+    STRIPE_API_KEY: z.string(),
+    STRIPE_API_SECRET: z.string(),
   },
 
   /**
@@ -44,6 +46,8 @@ export const env = createEnv({
     CHROME_EXECUTABLE_PATH: process.env.CHROME_EXECUTABLE_PATH,
     AUTH_RESEND_KEY: process.env.AUTH_RESEND_KEY,
     AUTH_RESEND_FROM: process.env.AUTH_RESEND_FROM,
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
+    STRIPE_API_SECRET: process.env.STRIPE_API_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

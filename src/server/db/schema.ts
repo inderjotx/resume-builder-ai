@@ -73,6 +73,7 @@ export const users = createTable("user", {
   country: varchar("country", { length: 255 }).default(""),
   website: varchar("website", { length: 200 }).default(""),
   bio: text("bio").default(""),
+  credits: integer("credits").notNull().default(0),
 });
 
 
@@ -164,30 +165,86 @@ export const status = pgEnum("status", [
   "unpaid",
 ]);
 
+export const subscriptionStatus = pgEnum("subscription_status", [
+  "active",
+  "canceled",
+  "expired",
+  "past_due",
+]);
+
+export const planType = pgEnum("plan_type", [
+  "free",
+  "growth",
+  "professional",
+]);
+
+export const billingInterval = pgEnum("billing_interval", [
+  "monthly",
+  "yearly",
+]);
+
+export const creditTransactionType = pgEnum("credit_transaction_type", [
+  "subscription_credit",
+  "ai_resume_generation",
+  "refund",
+  "manual_adjustment",
+  "credit_expiry",
+]);
+
 export const subscriptions = createTable(
   "subscription",
   {
-    id: varchar("id", { length: 255 }).notNull().primaryKey(),
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
-    status: status("status").notNull(),
-    subscriptionId: varchar("subscription_id", { length: 255 }).notNull(),
-    priceId: varchar("price_id", { length: 255 }).notNull(),
-    cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
-    cancelAt: timestamp("cancel_at", { withTimezone: true }),
+    stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
+    stripePriceId: varchar("stripe_price_id", { length: 255 }).notNull(),
+    stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }).notNull().unique(),
+    status: subscriptionStatus("status").notNull(),
+    plan: planType("plan").notNull(),
+    interval: billingInterval("interval").notNull(),
+    startDate: timestamp("start_date", { withTimezone: true }).defaultNow().notNull(),
+    endDate: timestamp("end_date", { withTimezone: true }),
     canceledAt: timestamp("canceled_at", { withTimezone: true }),
-    currentPeriodStart: timestamp("current_period_start", { withTimezone: true }).notNull(),
-    currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
+    lastCreditRefresh: timestamp("last_credit_refresh", { withTimezone: true }).defaultNow().notNull(),
+    nextCreditRefresh: timestamp("next_credit_refresh", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
       .notNull(),
-    endedAt: timestamp("ended_at", { withTimezone: true }),
   },
   (subscription) => ({
     userIdIdx: index("subscription_user_id_idx").on(subscription.userId),
   })
 );
+
+export const creditLogs = createTable(
+  "credit_log",
+  {
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    amount: integer("amount").notNull(),
+    type: creditTransactionType("type").notNull(),
+    description: varchar("description", { length: 255 }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (creditLog) => ({
+    userIdIdx: index("credit_log_user_id_idx").on(creditLog.userId),
+  })
+);
+
+export const creditLogsRelations = relations(creditLogs, ({ one }) => ({
+  user: one(users, { fields: [creditLogs.userId], references: [users.id] }),
+}));
 
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   user: one(users, { fields: [subscriptions.userId], references: [users.id] }),
