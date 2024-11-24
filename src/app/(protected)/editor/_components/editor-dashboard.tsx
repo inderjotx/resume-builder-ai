@@ -1,20 +1,20 @@
 "use client";
 
 import { useState } from "react";
-// import PersonalInfoForm from "./forms/user-info-form";
+import PersonalInfoForm from "./forms/user-info-form";
 import WorkExperienceForm from "./forms/work-experience-form";
-// import EducationForm from "./forms/education-form";
-// import SkillForm from "./forms/skill-form";
-// import AchievementForm from "./forms/achivement-form";
-// import AwardsForm from "./forms/awards-form";
-// import CertificateForm from "./forms/certificate-form";
-// import GoalsForm from "./forms/goals-form";
-// import ReferenceForm from "./forms/reference-form";
-// import SocialMediaForm from "./forms/social-media-form";
-// import VoluntaryForm from "./forms/voluntary-form";
-// import LanguagesForm from "./forms/languages-form";
-// import ProjectsForm from "./forms/projects-form";
-// import PublicationsForm from "./forms/publication-form";
+import EducationForm from "./forms/education-form";
+import SkillForm from "./forms/skill-form";
+import AchievementForm from "./forms/achivement-form";
+import AwardsForm from "./forms/awards-form";
+import CertificateForm from "./forms/certificate-form";
+import GoalsForm from "./forms/goals-form";
+import ReferenceForm from "./forms/reference-form";
+import SocialMediaForm from "./forms/social-media-form";
+import VoluntaryForm from "./forms/voluntary-form";
+import LanguagesForm from "./forms/languages-form";
+import ProjectsForm from "./forms/projects-form";
+import PublicationsForm from "./forms/publication-form";
 import {
   DndContext,
   closestCenter,
@@ -37,66 +37,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import DisplayContent from "./display-content";
 
 const initialCards = [
-  {
-    id: "1",
-    title: "Getting Started",
-    content: "Learn the basics of our platform...",
-  },
-  {
-    id: "2",
-    title: "Advanced Features",
-    content: "Explore advanced features and capabilities...",
-  },
-  {
-    id: "3",
-    title: "Best Practices",
-    content: "Follow these guidelines for optimal results...",
-  },
-  {
-    id: "4",
-    title: "Troubleshooting",
-    content: "Common issues and their solutions...",
-  },
-  {
-    id: "5",
-    title: "API Reference",
-    content: "Complete API documentation and examples...",
-  },
-  {
-    id: "6",
-    title: "Security Guidelines",
-    content: "Important security considerations...",
-  },
-  {
-    id: "7",
-    title: "Performance Tips",
-    content: "Optimize your application performance...",
-  },
-  {
-    id: "8",
-    title: "Deployment Guide",
-    content: "Step-by-step deployment instructions...",
-  },
-  {
-    id: "9",
-    title: "Troubleshooting",
-    content: "Common issues and their solutions...",
-  },
-  {
-    id: "10",
-    title: "API Reference",
-    content: "Complete API documentation and examples...",
-  },
-  {
-    id: "11",
-    title: "Security Guidelines",
-    content: "Important security considerations...",
-  },
-  {
-    id: "12",
-    title: "Performance Tips",
-    content: "Optimize your application performance...",
-  },
   {
     id: "13",
     title: "Deployment Guide",
@@ -136,8 +76,8 @@ export default function EditorDashboard() {
             Top
           </header>
           <ScrollArea className="h-[calc(100vh-2.5rem)]">
-            <div className="p-4">
-              <h2 className="mb-4 text-2xl font-bold">Editor</h2>
+            <div className="space-y-4 p-4">
+              <h2 className="text-2xl font-bold">Editor</h2>
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
@@ -152,24 +92,21 @@ export default function EditorDashboard() {
                   items={cards}
                   strategy={verticalListSortingStrategy}
                 >
-                  {/* {cards.map((card) => (
-                    <DraggableCard key={card.id} card={card} />
-                  ))} */}
-                  {/* <PersonalInfoForm /> */}
+                  <PersonalInfoForm />
                   <WorkExperienceForm />
-                  {/* <EducationForm /> */}
-                  {/* <SkillForm /> */}
-                  {/* <AchievementForm /> */}
-                  {/* <AwardsForm /> */}
-                  {/* <CertificateForm /> */}
+                  <EducationForm />
+                  <SkillForm />
+                  <AchievementForm />
+                  <AwardsForm />
+                  <CertificateForm />
 
-                  {/* <GoalsForm /> */}
-                  {/* <ReferenceForm /> */}
-                  {/* <SocialMediaForm /> */}
-                  {/* <VoluntaryForm /> */}
-                  {/* <LanguagesForm /> */}
-                  {/* <ProjectsForm /> */}
-                  {/* <PublicationsForm /> */}
+                  <GoalsForm />
+                  <ReferenceForm />
+                  <SocialMediaForm />
+                  <VoluntaryForm />
+                  <LanguagesForm />
+                  <ProjectsForm />
+                  <PublicationsForm />
                 </SortableContext>
               </DndContext>
             </div>

@@ -26,6 +26,8 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useResumeStore } from "@/store/resume/data-store";
 import { ResumeData } from "@/server/db/schema";
+import { DynamicInput } from "@/components/ui/dynamic-input";
+import { User } from "lucide-react";
 
 const formSchema = z.object({
   titleBefore: z.string().optional(),
@@ -73,276 +75,344 @@ export default function PersonalInfoForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-3xl flex-col gap-4 py-10"
+        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
       >
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="titleBefore"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormControl>
-                    <Input placeholder="Title Before" type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="titleAfter"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormControl>
-                    <Input placeholder="Title After" type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+        <div className="flex items-center gap-2">
+          <User className="size-6" />
+          <DynamicInput
+            as="h2"
+            initialValue="Personal Information"
+            className="text-lg font-semibold"
+            onSave={(value) => {
+              // Optional: Handle title updates if needed
+            }}
+          />
         </div>
 
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    First Name
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="" type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    Last Name
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="" type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    Phone number
-                  </FormLabel>
-                  <FormControl className="w-full">
-                    <PhoneInput
-                      placeholder="Placeholder"
-                      {...field}
-                      defaultCountry="TR"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="nationality"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    Nationality
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" type="" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="dateOfBirth"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    Date of birth
-                  </FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        onSelect={(date) => field.onChange(date?.toISOString())}
-                        initialFocus
+        <div className="flex flex-col gap-4 rounded-lg border bg-muted/40 p-4">
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="titleBefore"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormControl>
+                      <Input
+                        placeholder="Title Before"
+                        type="text"
+                        className="bg-background"
+                        {...field}
                       />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="titleAfter"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormControl>
+                      <Input
+                        placeholder="Title After"
+                        type="text"
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
 
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="website"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    Website
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" type="" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      First Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder=""
+                        type="text"
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      Last Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder=""
+                        type="text"
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
+
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      Phone number
+                    </FormLabel>
+                    <FormControl className="w-full">
+                      <PhoneInput
+                        placeholder=""
+                        className="bg-background"
+                        {...field}
+                        defaultCountry="TR"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="nationality"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      Nationality
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder=""
+                        type="text"
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="dateOfBirth"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      Date of birth
+                    </FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full bg-background pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="website"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      Website
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder=""
+                        type=""
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      Address
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder=""
+                        type=""
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      City
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder=""
+                        type=""
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="postalCode"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      Postal Code
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder=""
+                        type=""
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="col-span-6">
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel className="text-muted-foreground">
+                      Country
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder=""
+                        type=""
+                        className="bg-background"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <FormField
+            control={form.control}
+            name="bio"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel className="text-muted-foreground">Bio</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder=""
+                    className="resize-none bg-background"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    Address
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" type="" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">City</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" type="" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="postalCode"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    Postal Code
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" type="" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="country"
-              render={({ field }) => (
-                <FormItem className="space-y-0">
-                  <FormLabel className="text-muted-foreground">
-                    Country
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" type="" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem className="space-y-0">
-              <FormLabel className="text-muted-foreground">Bio</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Placeholder"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );

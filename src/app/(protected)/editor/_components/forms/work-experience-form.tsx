@@ -46,7 +46,6 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -113,7 +112,7 @@ function SortableAccordionItem({
   return (
     <AccordionItem
       ref={setNodeRef}
-      style={style}
+      style={style as unknown as React.CSSProperties}
       value={value}
       className={className}
     >
@@ -147,7 +146,6 @@ function SortableAccordionItem({
 }
 
 export default function WorkExperienceForm() {
-  const [stableIds, setStableIds] = useState<string[]>([]);
   const { workExperience, updateWorkExperience } = useResumeStore();
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
@@ -164,12 +162,6 @@ export default function WorkExperienceForm() {
     control: form.control,
     name: "experiences",
   });
-
-  useEffect(() => {
-    if (fields.length !== stableIds.length) {
-      setStableIds(fields.map((field) => field.id));
-    }
-  }, [fields.length]);
 
   const handleCreateAccordion = () => {
     append({});
@@ -210,8 +202,6 @@ export default function WorkExperienceForm() {
     if (over && active.id !== over.id) {
       const oldIndex = fields.findIndex((field) => field.id === active.id);
       const newIndex = fields.findIndex((field) => field.id === over.id);
-
-      setStableIds(arrayMove(stableIds, oldIndex, newIndex));
 
       const value = form.getValues("experiences");
       const buffer = value[oldIndex];
