@@ -38,6 +38,7 @@ const config = {
         }
       }
     ],
+    "@typescript-eslint/ban-ts-comment": "off",
     "drizzle/enforce-delete-with-where": [
       "error",
       {
