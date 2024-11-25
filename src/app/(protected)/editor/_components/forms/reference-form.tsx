@@ -1,7 +1,6 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import { z } from "zod";
 import {
   Form,
@@ -136,8 +135,8 @@ export default function ReferenceForm() {
   const updateReferencesVisibility = useResumeStore(
     (store) => store.updateReferencesVisibility,
   );
-  const order = useSettingsStore((store) => store.order);
-  const setOrder = useSettingsStore((store) => store.setOrder);
+  const order = useResumeStore((store) => store.order);
+  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({

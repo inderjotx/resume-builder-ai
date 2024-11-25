@@ -4,22 +4,22 @@ import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 
 interface EditableTextProps {
-  initialValue: string;
+  value: string;
   as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p";
-  onSave: (newValue: string) => void;
+  onValueChange: (newValue: string) => void;
   className?: string;
   inputClassName?: string;
 }
 
 export function DynamicInput({
-  initialValue,
+  value,
   as: Element,
-  onSave,
+  onValueChange,
   className = "",
   inputClassName = "",
 }: EditableTextProps) {
+  const [internalValue, setInternalValue] = useState(value);
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -28,35 +28,36 @@ export function DynamicInput({
     }
   }, [isEditing]);
 
-  const handleClick = () => {
+  const handleClick = (
+    e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    e.stopPropagation();
     setIsEditing(true);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   onValueChange(e.target.value);
+  // };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setIsEditing(false);
-      onSave(value);
+      onValueChange(internalValue);
     } else if (e.key === "Escape") {
       setIsEditing(false);
-      setValue(initialValue);
     }
   };
 
   const handleBlur = () => {
     setIsEditing(false);
-    onSave(value);
   };
 
   if (isEditing) {
     return (
       <Input
         ref={inputRef}
-        value={value}
-        onChange={handleChange}
+        value={internalValue}
+        onChange={(e) => setInternalValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         className={`mt-1 ${inputClassName}`}
@@ -65,18 +66,16 @@ export function DynamicInput({
     );
   }
 
-  console.log({ value });
-
   return (
     <Element
       onClick={handleClick}
       className={`cursor-pointer rounded border bg-gray-100 px-2 py-1 ${className}`}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && handleClick()}
+      onKeyDown={(e) => e.key === "Enter" && setIsEditing(true)}
       aria-label={`Click to edit ${Element}`}
     >
-      {value}
+      {internalValue}
     </Element>
   );
 }

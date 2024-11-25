@@ -1,8 +1,7 @@
-import { useResumeStore } from "@/store/resume/data-store";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import type { SectionKeys } from "@/server/db/schema";
 import { SocialMediaPlatform } from "@/server/db/schema";
 import { Badge } from "@/components/ui/badge";
+import { useResumeStore } from "@/store/resume/data-store";
 import { Card } from "@/components/ui/card";
 import {
   GraduationCap,
@@ -64,7 +63,7 @@ export function SocialIcon({
 }
 
 export function ClassyTemplate() {
-  const order = useSettingsStore((state) => state.order);
+  const order = useResumeStore((state) => state.order);
 
   const sectionMap: Record<SectionKeys, React.ComponentType> = {
     personalInfo: HeaderSection,
@@ -97,7 +96,7 @@ export function ClassyTemplate() {
 
 function HeaderSection() {
   const personalInfo = useResumeStore((state) => state.personalInfo);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const personalInfoVisible = useResumeStore(
     (state) => state.personalInfoVisible,
   );
@@ -156,7 +155,7 @@ function HeaderSection() {
 
 function WorkExperienceSection() {
   const workExperience = useResumeStore((state) => state.workExperience);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const workExperienceVisible = useResumeStore(
     (state) => state.workExperienceVisible,
   );
@@ -202,7 +201,7 @@ function WorkExperienceSection() {
 
 function EducationSection() {
   const education = useResumeStore((state) => state.education);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const educationVisible = useResumeStore((state) => state.educationVisible);
 
   if (!educationVisible) return null;
@@ -243,7 +242,7 @@ function EducationSection() {
 
 function SkillsSection() {
   const skills = useResumeStore((state) => state.skills);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const skillsVisible = useResumeStore((state) => state.skillsVisible);
 
   if (!skillsVisible) return null;
@@ -277,7 +276,7 @@ function SkillsSection() {
 
 function LanguagesSection() {
   const languages = useResumeStore((state) => state.languages);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const languagesVisible = useResumeStore((state) => state.languagesVisible);
 
   if (!languagesVisible) return null;
@@ -305,7 +304,7 @@ function LanguagesSection() {
 
 function ProjectsSection() {
   const projects = useResumeStore((state) => state.projects);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const projectsVisible = useResumeStore((state) => state.projectsVisible);
 
   if (!projectsVisible) return null;
@@ -358,7 +357,7 @@ function ProjectsSection() {
 
 function CertificationsSection() {
   const certifications = useResumeStore((state) => state.certifications);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const certificationsVisible = useResumeStore(
     (state) => state.certificationsVisible,
   );
@@ -411,7 +410,7 @@ function CertificationsSection() {
 
 function AchievementsSection() {
   const achievements = useResumeStore((state) => state.achievements);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const achievementsVisible = useResumeStore(
     (state) => state.achievementsVisible,
   );
@@ -448,7 +447,7 @@ function AchievementsSection() {
 
 function GoalsSection() {
   const goals = useResumeStore((state) => state.goals);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const goalsVisible = useResumeStore((state) => state.goalsVisible);
 
   if (!goalsVisible) return null;
@@ -476,7 +475,7 @@ function GoalsSection() {
 
 function VoluntaryWorkSection() {
   const voluntaryWork = useResumeStore((state) => state.voluntaryWork);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const voluntaryWorkVisible = useResumeStore(
     (state) => state.voluntaryWorkVisible,
   );
@@ -519,7 +518,7 @@ function VoluntaryWorkSection() {
 
 function GraphsSection() {
   const graphs = useResumeStore((state) => state.graphs);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const graphsVisible = useResumeStore((state) => state.graphsVisible);
 
   if (!graphsVisible) return null;
@@ -550,7 +549,7 @@ function GraphsSection() {
 
 function AwardsSection() {
   const awards = useResumeStore((state) => state.awards);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const awardsVisible = useResumeStore((state) => state.awardsVisible);
 
   if (!awardsVisible) return null;
@@ -595,7 +594,7 @@ function AwardsSection() {
 
 function ReferencesSection() {
   const references = useResumeStore((state) => state.references);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const referencesVisible = useResumeStore((state) => state.referencesVisible);
 
   if (!referencesVisible) return null;
@@ -642,7 +641,7 @@ function ReferencesSection() {
 
 function PublicationsSection() {
   const publications = useResumeStore((state) => state.publications);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const publicationsVisible = useResumeStore(
     (state) => state.publicationsVisible,
   );
@@ -688,7 +687,7 @@ function PublicationsSection() {
 
 function SocialMediaSection() {
   const socialMedia = useResumeStore((state) => state.socialMedia);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const socialMediaVisible = useResumeStore(
     (state) => state.socialMediaVisible,
   );
@@ -724,7 +723,7 @@ function SocialMediaSection() {
 
 function CustomSectionsSection() {
   const customSections = useResumeStore((state) => state.customSections);
-  const settings = useSettingsStore((state) => state.settings);
+  const settings = useResumeStore((state) => state.settings);
   const customSectionsVisible = useResumeStore(
     (state) => state.customSectionsVisible,
   );

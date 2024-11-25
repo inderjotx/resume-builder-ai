@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-// import { useSettingsStore } from "@/store/resume/settings-store";
-// import { DynamicInput } from "@/components/ui/dynamic-input";
+import { Undo, Redo } from "lucide-react";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { type ResumeData } from "@/server/db/schema";
 import PersonalInfoForm from "./forms/user-info-form";
 import WorkExperienceForm from "./forms/work-experience-form";
 import EducationForm from "./forms/education-form";
@@ -61,18 +61,20 @@ import {
   BriefcaseBusiness,
   User,
 } from "lucide-react";
+import { useResumeStore, useUpdateTitle } from "@/store/resume/data-store";
+import { DynamicInput } from "@/components/ui/dynamic-input";
 
 function SortableAccordionItem({
   id,
   value,
   children,
-  title,
+  // title,
   icon: Icon,
 }: {
-  id: string;
+  id: keyof ResumeData;
   value: string;
   children: React.ReactNode;
-  title: string;
+  // title,
   icon: LucideIcon;
 }) {
   const {
@@ -83,6 +85,8 @@ function SortableAccordionItem({
     transition,
     isDragging,
   } = useSortable({ id });
+
+  const { title, setTitle } = useUpdateTitle(id);
 
   const style = {
     transform: transform
@@ -103,18 +107,19 @@ function SortableAccordionItem({
     >
       <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
         <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-8 cursor-grab touch-none"
+          <div
+            className="flex size-8 cursor-grab touch-none items-center justify-center rounded-md hover:bg-muted"
             {...attributes}
             {...listeners}
           >
             <GripVertical className="h-4 w-4" />
-          </Button>
+          </div>
           <Icon className="size-5" />
-          <h2 className="text-base">{title}</h2>
+          <DynamicInput
+            as="h3"
+            value={title}
+            onValueChange={(value) => setTitle(value)}
+          />
         </div>
       </AccordionTrigger>
       <AccordionContent className="p-4">{children}</AccordionContent>
@@ -124,17 +129,27 @@ function SortableAccordionItem({
 
 export default function EditorDashboard() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
-  // const { order } = useSettingsStore((store) => store.order);
-  // const { settings } = useSettingsStore((store) => store.settings);
-  const [formOrder, setFormOrder] = useState([
+  const undo = useResumeStore((store) => store.undo);
+  const redo = useResumeStore((store) => store.redo);
+  const canUndo = useResumeStore((store) => store.canUndo);
+  const canRedo = useResumeStore((store) => store.canRedo);
+
+  const [formOrder, setFormOrder] = useState<
     {
-      id: "personal-info",
+      id: keyof ResumeData;
+      title: string;
+      component: () => JSX.Element;
+      icon: LucideIcon;
+    }[]
+  >([
+    {
+      id: "personalInfo",
       title: "Personal Information",
       component: PersonalInfoForm,
       icon: User,
     },
     {
-      id: "work-experience",
+      id: "workExperience",
       title: "Work Experience",
       component: WorkExperienceForm,
       icon: BriefcaseBusiness,
@@ -164,7 +179,7 @@ export default function EditorDashboard() {
       icon: Award,
     },
     {
-      id: "certificates",
+      id: "certifications",
       title: "Certificates",
       component: CertificateForm,
       icon: Award,
@@ -182,13 +197,13 @@ export default function EditorDashboard() {
       icon: Users,
     },
     {
-      id: "social-media",
+      id: "socialMedia",
       title: "Social Media",
       component: SocialMediaForm,
       icon: Share2,
     },
     {
-      id: "voluntary",
+      id: "voluntaryWork",
       title: "Voluntary Work",
       component: VoluntaryForm,
       icon: Heart,
@@ -263,14 +278,14 @@ export default function EditorDashboard() {
                     value={activeSection ?? undefined}
                     onValueChange={setActiveSection}
                     collapsible
-                    className="flex w-full flex-col gap-4"
+                    className="flex w-full flex-col gap-4 pb-20"
                   >
                     {formOrder.map((form) => (
                       <SortableAccordionItem
                         key={form.id}
                         id={form.id}
                         value={form.id}
-                        title={form.title}
+                        // title={form.title}
                         icon={form.icon}
                       >
                         <form.component />
@@ -285,6 +300,24 @@ export default function EditorDashboard() {
         <div className="col-span-3 hidden flex-1 lg:grid">
           <header className="flex h-10 w-full items-center justify-center border-b">
             Top
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={undo}
+                disabled={!canUndo}
+              >
+                <Undo className="size-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={redo}
+                disabled={!canRedo}
+              >
+                <Redo className="size-4" />
+              </Button>
+            </div>
           </header>
           <ScrollArea className="h-[calc(100vh-2.5rem)]">
             <DisplayContent />

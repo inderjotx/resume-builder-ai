@@ -3,6 +3,8 @@ import type { ResumeData, } from '@/server/db/schema'
 import { DEFAULT_DATA } from '@/server/db/schema'
 import type { StateCreator } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { DEFAULT_SECTIONS, type ResumeSettings, type SectionKeys } from "@/server/db/schema"
+import { useEffect } from 'react'
 
 
 type PersonalInfoSlice = {
@@ -103,7 +105,27 @@ type AchievementsSlice = {
     updateAchievementsVisibility: (visible: boolean) => void
 }
 
+type OrderSlice = {
+    order: SectionKeys[]
+    setOrder: (order: SectionKeys[]) => void
+}
 
+type SettingsSlice = {
+    settings: Partial<ResumeSettings>
+    updateSettings: (data: Partial<ResumeSettings>) => void
+}
+
+// Add new types for history slice
+type HistorySlice = {
+    past: ResumeDataStore[]
+    future: ResumeDataStore[]
+    undo: () => void
+    redo: () => void
+    canUndo: () => boolean
+    canRedo: () => boolean
+    saveState: () => void // New method to manually save state
+    ignoreNext: () => void // Helper to ignore next state change
+}
 
 const createPersonalInfoSlice: StateCreator<ResumeStore, [], [], PersonalInfoSlice> = (set) => ({
     personalInfo: DEFAULT_DATA.personalInfo,
@@ -249,6 +271,73 @@ const createCustomSectionsSlice: StateCreator<ResumeStore, [], [], CustomSection
     updateCustomSectionsVisibility: (visible) => set(() => ({ customSectionsVisible: visible })),
 })
 
+const createOrderSlice: StateCreator<ResumeStore, [], [], OrderSlice> = (set) => ({
+    order: DEFAULT_SECTIONS,
+    setOrder: (order) => set(() => ({ order })),
+})
+
+const createSettingsSlice: StateCreator<ResumeStore, [], [], SettingsSlice> = (set) => ({
+    settings: {},
+    updateSettings: (data) => set((state) => ({
+        settings: { ...state.settings, ...data }
+    })),
+})
+
+const createHistorySlice: StateCreator<ResumeStore, [], [], HistorySlice> = (set, get) => {
+    let ignoreNextUpdate = false;
+
+    return {
+        past: [],
+        future: [],
+        ignoreNext: () => {
+            ignoreNextUpdate = true;
+        },
+        saveState: () => {
+            if (ignoreNextUpdate) {
+                ignoreNextUpdate = false;
+                return;
+            }
+            set((state) => ({
+                past: [...state.past, get().getData()],
+                future: [],
+            }))
+        },
+        undo: () => set((state) => {
+            console.log("undo",);
+            if (state.past.length === 0) return state;
+            const previous = state.past[state.past.length - 1];
+            const newPast = state.past.slice(0, -1);
+
+            state.ignoreNext(); // Prevent recording this change
+            return {
+                past: newPast,
+                future: [get().getData(), ...state.future],
+                ...previous
+            }
+        }),
+        redo: () => set((state) => {
+            console.log("redo");
+            if (state.future.length === 0) return state;
+            const next = state.future[0];
+            const newFuture = state.future.slice(1);
+
+            state.ignoreNext(); // Prevent recording this change
+            return {
+                past: [...state.past, get().getData()],
+                future: newFuture,
+                ...next
+            }
+        }),
+        canUndo: () => get().past.length > 0,
+        canRedo: () => get().future.length > 0,
+    }
+}
+
+interface ResumeDataStore {
+    data: Partial<ResumeData>
+    settings: Partial<ResumeSettings>
+    order: SectionKeys[]
+}
 
 // Main store type combining all slices
 interface ResumeStore extends
@@ -267,9 +356,15 @@ interface ResumeStore extends
     VoluntaryWorkSlice,
     GoalsSlice,
     GraphsSlice,
-    CustomSectionsSlice {
-    setFullData: (data: Partial<ResumeData>) => void,
-    data: Partial<ResumeData>
+    CustomSectionsSlice,
+    OrderSlice,
+    SettingsSlice,
+    HistorySlice {
+    getData: () => ResumeDataStore
+    updateData: (data: Partial<ResumeData>) => void
+    // setFullData: (data: Partial<ResumeData>) => void,
+    updateAll: (data: ResumeDataStore) => void,
+    // data: Partial<ResumeData>
 }
 
 export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>(devtools((set, get, ...rest) => ({
@@ -289,33 +384,54 @@ export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>
     ...createGoalsSlice(set, get, ...rest),
     ...createGraphsSlice(set, get, ...rest),
     ...createCustomSectionsSlice(set, get, ...rest),
+    ...createOrderSlice(set, get, ...rest),
+    ...createSettingsSlice(set, get, ...rest),
+    ...createHistorySlice(set, get, ...rest),
 
-    data: {
-        ...get()?.personalInfo,
-        ...get()?.workExperience,
-        ...get()?.education,
-        ...get()?.skills,
-        ...get()?.projects,
-        ...get()?.languages,
-        ...get()?.achievements,
-        ...get()?.awards,
-        ...get()?.certifications,
-        ...get()?.references,
-        ...get()?.publications,
-        ...get()?.socialMedia,
-        ...get()?.voluntaryWork,
-        ...get()?.goals,
-        ...get()?.graphs,
-        ...get()?.customSections,
-    },
+    getData: () => ({
+        data: {
+            personalInfo: get()?.personalInfo,
+            workExperience: get()?.workExperience,
+            education: get()?.education,
+            skills: get()?.skills,
+            projects: get()?.projects,
+            languages: get()?.languages,
+            achievements: get()?.achievements,
+            awards: get()?.awards,
+            certifications: get()?.certifications,
+            references: get()?.references,
+            publications: get()?.publications,
+            socialMedia: get()?.socialMedia,
+            voluntaryWork: get()?.voluntaryWork,
+            goals: get()?.goals,
+            graphs: get()?.graphs,
+            customSections: get()?.customSections,
+        },
+        settings: get().settings,
+        order: get().order,
+    }),
+
+    updateAll: (data) => set(() => {
+
+        const resumeData = data.data;
+        const resumeSettings = data.settings;
+        const resumeOrder = data.order;
+
+        return {
+            ...resumeData,
+            ...resumeSettings,
+            ...resumeOrder
+        }
 
 
-    setFullData: (data) => set(() => {
+    }),
+
+    updateData: (data) => set(() => {
+
         const updates: Partial<ResumeStore> = {};
 
         (Object.keys(data) as Array<keyof typeof data>).forEach(key => {
             if (data[key]) {
-                // @ts-expect-error
                 updates[key] = data[key]
             }
         });
@@ -326,3 +442,50 @@ export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>
     name: "resume-store",
     store: "resume-store"
 }))
+
+
+export const useUpdateTitle = (id: keyof ResumeData) => {
+
+    const store = useResumeStore.getState()
+
+
+
+    const setTitle = (title: string) => {
+        store.updateData({
+            [id]: {
+                title
+            }
+        })
+    }
+
+
+    return { setTitle, title: store[id]?.title ?? "" }
+}
+
+// Setup subscription in a custom hook
+export const useResumeHistory = () => {
+    const saveState = useResumeStore((state) => state.saveState);
+    const undo = useResumeStore((state) => state.undo);
+    const redo = useResumeStore((state) => state.redo);
+    const canUndo = useResumeStore((state) => state.canUndo);
+    const canRedo = useResumeStore((state) => state.canRedo);
+
+
+    useEffect(() => {
+        // Setup subscription to store changes
+        const unsubscribe = useResumeStore.subscribe(
+            () => {
+                saveState();
+            }
+        );
+
+        return () => unsubscribe();
+    }, []);
+
+    return {
+        undo,
+        redo,
+        canUndo,
+        canRedo,
+    };
+};

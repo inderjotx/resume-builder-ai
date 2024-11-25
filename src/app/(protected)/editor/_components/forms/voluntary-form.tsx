@@ -2,7 +2,6 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -18,7 +17,6 @@ import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import {
   Accordion,
   AccordionContent,
@@ -52,6 +50,7 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { GripVertical } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const voluntarySchema = z.object({
   organizationName: z.string().optional(),
@@ -150,8 +149,8 @@ export default function VoluntaryForm() {
   const setVisibility = useResumeStore(
     (store) => store.updateVoluntaryWorkVisibility,
   );
-  const order = useSettingsStore((store) => store.order);
-  const setOrder = useSettingsStore((store) => store.setOrder);
+  const order = useResumeStore((store) => store.order);
+  const setOrder = useResumeStore((store) => store.setOrder);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -393,8 +392,12 @@ export default function VoluntaryForm() {
                               Description
                             </FormLabel>
                             <FormControl>
-                              <Textarea {...field} />
+                              <RichTextEditor
+                                content={field.value ?? ""}
+                                onValueChange={field.onChange}
+                              />
                             </FormControl>
+                            <FormMessage />
                           </FormItem>
                         )}
                       />

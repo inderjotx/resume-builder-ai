@@ -1,6 +1,9 @@
-import React from "react";
-import UserInfoForm from "../_components/forms/user-info-form";
+"use client";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { useState } from "react";
 
-export default function page() {
-  return <UserInfoForm />;
+export default function FormPage() {
+  const [content, setContent] = useState("");
+
+  return <RichTextEditor content={content} onValueChange={setContent} />;
 }

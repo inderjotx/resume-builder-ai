@@ -2,7 +2,6 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -18,7 +17,6 @@ import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, GripVertical, CalendarIcon } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import {
   Accordion,
   AccordionContent,
@@ -51,6 +49,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const educationSchema = z.object({
   institutionName: z.string().optional(),
@@ -207,8 +206,8 @@ export default function EducationForm() {
   const setVisibility = useResumeStore(
     (store) => store.updateEducationVisibility,
   );
-  const order = useSettingsStore((store) => store.order);
-  const setOrder = useSettingsStore((store) => store.setOrder);
+  const order = useResumeStore((store) => store.order);
+  const setOrder = useResumeStore((store) => store.setOrder);
 
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
@@ -259,10 +258,8 @@ export default function EducationForm() {
 
   const handleCreateAccordion = () => {
     append({});
-    setTimeout(() => {
-      const newId = fields.length - 1;
-      setActiveAccordion(`item-${newId}-education`);
-    }, 0);
+    const newId = fields.length;
+    setActiveAccordion(`item-${newId}-education`);
   };
 
   const sensors = useSensors(
@@ -476,7 +473,10 @@ export default function EducationForm() {
                               Description
                             </FormLabel>
                             <FormControl>
-                              <Textarea {...field} />
+                              <RichTextEditor
+                                content={field.value ?? ""}
+                                onValueChange={field.onChange}
+                              />
                             </FormControl>
                           </FormItem>
                         )}

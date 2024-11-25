@@ -16,7 +16,6 @@ import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import {
   DndContext,
   MeasuringStrategy,
@@ -126,7 +125,7 @@ function SortableAccordionItem({
 export default function GoalsForm() {
   const { goals, updateGoals } = useResumeStore();
   const { goalsVisible, updateGoalsVisibility } = useResumeStore();
-  const { order, setOrder } = useSettingsStore();
+  const { order, setOrder } = useResumeStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

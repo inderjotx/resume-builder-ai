@@ -1,7 +1,6 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import {
   Popover,
   PopoverContent,
@@ -9,7 +8,6 @@ import {
 } from "@/components/ui/popover";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormField,
@@ -50,6 +48,7 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { GripVertical } from "lucide-react";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const achievementSchema = z.object({
   achievementTitle: z.string().optional(),
@@ -146,8 +145,9 @@ export default function AchievementForm() {
   const updateAchievementsVisibility = useResumeStore(
     (store) => store.updateAchievementsVisibility,
   );
-  const order = useSettingsStore((store) => store.order);
-  const setOrder = useSettingsStore((store) => store.setOrder);
+
+  const order = useResumeStore((store) => store.order);
+  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -331,10 +331,9 @@ export default function AchievementForm() {
                               Description
                             </FormLabel>
                             <FormControl>
-                              <Textarea
-                                placeholder="Describe your achievement"
-                                {...field}
-                                className="bg-background"
+                              <RichTextEditor
+                                content={field.value ?? ""}
+                                onValueChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />

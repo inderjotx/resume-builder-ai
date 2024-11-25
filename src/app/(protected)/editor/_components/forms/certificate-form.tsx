@@ -1,7 +1,6 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import {
   Popover,
   PopoverContent,
@@ -9,7 +8,6 @@ import {
 } from "@/components/ui/popover";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormField,
@@ -49,6 +47,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const certificateSchema = z.object({
   certificationName: z.string().optional(),
@@ -147,8 +146,8 @@ export default function CertificateForm() {
   const updateCertificationsVisibility = useResumeStore(
     (store) => store.updateCertificationsVisibility,
   );
-  const order = useSettingsStore((store) => store.order);
-  const setOrder = useSettingsStore((store) => store.setOrder);
+  const order = useResumeStore((store) => store.order);
+  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -394,9 +393,9 @@ export default function CertificateForm() {
                               Description
                             </FormLabel>
                             <FormControl>
-                              <Textarea
-                                placeholder="Describe your certification"
-                                {...field}
+                              <RichTextEditor
+                                content={field.value ?? ""}
+                                onValueChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />

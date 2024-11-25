@@ -1,7 +1,6 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import {
   Popover,
   PopoverContent,
@@ -9,7 +8,6 @@ import {
 } from "@/components/ui/popover";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormField,
@@ -50,6 +48,7 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { GripVertical } from "lucide-react";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const publicationSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -148,8 +147,8 @@ export default function PublicationForm() {
   const updatePublicationsVisibility = useResumeStore(
     (store) => store.updatePublicationsVisibility,
   );
-  const order = useSettingsStore((store) => store.order);
-  const setOrder = useSettingsStore((store) => store.setOrder);
+  const order = useResumeStore((store) => store.order);
+  const setOrder = useResumeStore((store) => store.setOrder);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -383,10 +382,9 @@ export default function PublicationForm() {
                               Description
                             </FormLabel>
                             <FormControl>
-                              <Textarea
-                                placeholder="Describe your publication"
-                                {...field}
-                                className="bg-background"
+                              <RichTextEditor
+                                content={field.value ?? ""}
+                                onValueChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />

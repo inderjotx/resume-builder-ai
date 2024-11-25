@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/popover";
 import { z } from "zod";
 import { Calendar } from "@/components/ui/calendar";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -52,6 +51,7 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { GripVertical } from "lucide-react";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const workExperienceSchema = z.object({
   companyName: z.string().optional(),
@@ -176,8 +176,6 @@ export default function WorkExperienceForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      console.log("form value after swap");
-      console.log(value);
       const data = {
         items: value.experiences,
         title: value.title ?? "",
@@ -194,7 +192,6 @@ export default function WorkExperienceForm() {
     }),
   );
 
-  console.log(fields.map((field) => field.id));
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -440,15 +437,15 @@ export default function WorkExperienceForm() {
                       <FormField
                         control={form.control}
                         name={`experiences.${index}.description`}
-                        render={(field) => (
+                        render={({ field }) => (
                           <FormItem className="space-y-0">
                             <FormLabel className="text-muted-foreground">
                               Description
                             </FormLabel>
                             <FormControl>
-                              <Textarea
-                                {...field?.field}
-                                className="bg-background"
+                              <RichTextEditor
+                                content={field.value ?? ""}
+                                onValueChange={field.onChange}
                               />
                             </FormControl>
                           </FormItem>

@@ -1,7 +1,6 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useSettingsStore } from "@/store/resume/settings-store";
 import { z } from "zod";
 import {
   Form,
@@ -138,8 +137,8 @@ export default function LanguagesForm() {
   const updateLanguagesVisibility = useResumeStore(
     (store) => store.updateLanguagesVisibility,
   );
-  const order = useSettingsStore((store) => store.order);
-  const setOrder = useSettingsStore((store) => store.setOrder);
+  const order = useResumeStore((store) => store.order);
+  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -193,6 +192,14 @@ export default function LanguagesForm() {
     });
     return () => subscription.unsubscribe();
   }, [form.watch, updateLanguages, form]);
+
+  const handleCreateAccordion = () => {
+    append({
+      language: "",
+      proficiency: Proficiency.Beginner,
+    });
+    setActiveAccordion(`item-${fields.length}-language`);
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -317,7 +324,7 @@ export default function LanguagesForm() {
                 type="button"
                 variant="dashed"
                 className="mt-2"
-                onClick={() => append({})}
+                onClick={handleCreateAccordion}
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Language

@@ -278,7 +278,7 @@ export enum SocialMediaPlatform {
 export type ResumeData = {
   personalInfo?: {
     iconId?: string;
-    title: string;
+    title?: string;
     titleBefore?: string;
     titleAfter?: string;
     firstName?: string;
@@ -298,7 +298,7 @@ export type ResumeData = {
   };
   workExperience?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       companyName?: string;
       position?: string;
@@ -312,7 +312,7 @@ export type ResumeData = {
   };
   education?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       institutionName?: string;
       degree?: string;
@@ -325,7 +325,7 @@ export type ResumeData = {
     }>;
   };
   graphs?: {
-    title: string;
+    title?: string;
     iconId?: string;
     items?: Array<{
       graphType?: string;
@@ -334,7 +334,7 @@ export type ResumeData = {
   };
   skills?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       skillCategory?: string;
       skillTags?: string[];
@@ -342,8 +342,8 @@ export type ResumeData = {
   };
   achievements?: {
     iconId?: string;
-    title: string;
-    items: Array<{
+    title?: string;
+    items?: Array<{
       achievementTitle?: string;
       achievementDate?: string;
       achievementDescription?: string;
@@ -351,7 +351,7 @@ export type ResumeData = {
   };
   awards?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       title?: string;
       date?: string;
@@ -362,8 +362,8 @@ export type ResumeData = {
   };
   references?: {
     iconId?: string;
-    title: string;
-    items: Array<{
+    title?: string;
+    items?: Array<{
       name?: string;
       position?: string;
       company?: string;
@@ -374,17 +374,17 @@ export type ResumeData = {
   };
   publications?: {
     iconId?: string;
-    title: string;
-    items: Array<{
-      title: string;
-      date: string;
+    title?: string;
+    items?: Array<{
+      title?: string;
+      date?: string;
       url?: string;
       description?: string;
     }>;
   };
   projects?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       projectName?: string;
       description?: string;
@@ -398,7 +398,7 @@ export type ResumeData = {
   };
   languages?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       language?: string;
       proficiency?: Proficiency;
@@ -406,7 +406,7 @@ export type ResumeData = {
   };
   socialMedia?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       platform?: SocialMediaPlatform;
       url?: string;
@@ -414,7 +414,7 @@ export type ResumeData = {
   };
   customSections?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       title?: string;
       content?: unknown;
@@ -441,7 +441,7 @@ export type ResumeData = {
   };
   certifications?: {
     iconId?: string;
-    title: string;
+    title?: string;
     items?: Array<{
       certificationName?: string;
       certificationDate?: string;
@@ -556,6 +556,14 @@ export const DEFAULT_DATA: Partial<ResumeData> = {
   },
   awards: {
     title: "Awards",
+    items: [],
+  },
+  graphs: {
+    title: "Graphs",
+    items: [],
+  },
+  goals: {
+    title: "Goals",
     items: [],
   },
   references: {

@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { useResumeStore } from "@/store/resume/data-store";
 import { type ResumeData } from "@/server/db/schema";
 // import { DynamicInput } from "@/components/ui/dynamic-input";
@@ -390,10 +390,9 @@ export default function PersonalInfoForm() {
               <FormItem className="space-y-0">
                 <FormLabel className="text-muted-foreground">Bio</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder=""
-                    className="resize-none bg-background"
-                    {...field}
+                  <RichTextEditor
+                    content={field.value}
+                    onValueChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
