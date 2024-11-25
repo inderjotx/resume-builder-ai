@@ -230,7 +230,7 @@ export default function ReferenceForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 rounded-md border bg-background"
+        className="flex flex-col gap-4 rounded-md"
       >
         <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
           <DndContext
@@ -260,12 +260,12 @@ export default function ReferenceForm() {
                     key={field.id}
                     id={field.id}
                     value={`item-${index}-ref`}
-                    className="rounded-lg border bg-muted/40 p-1"
+                    className="rounded-lg border bg-background"
                     onRemove={remove}
                     index={index}
                     isActive={activeAccordion === `item-${index}-ref`}
                   >
-                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
+                    <AccordionContent className="relative flex flex-col gap-4 rounded-lg p-4">
                       <FormField
                         control={form.control}
                         name={`items.${index}.name`}
@@ -375,7 +375,7 @@ export default function ReferenceForm() {
 
               <Button
                 type="button"
-                variant="outline"
+                variant="dashed"
                 className="mt-2"
                 onClick={handleCreateAccordion}
               >

@@ -246,7 +246,7 @@ export default function PublicationForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 rounded-md border bg-background"
+        className="flex flex-col gap-4 rounded-md"
       >
         <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
           <DndContext
@@ -276,122 +276,123 @@ export default function PublicationForm() {
                     key={field.id}
                     id={field.id}
                     value={`item-${index}-publication`}
-                    className="rounded-lg border bg-muted/40 p-1"
+                    className="rounded-lg border bg-background"
                     onRemove={remove}
                     index={index}
                     isActive={activeAccordion === `item-${index}-publication`}
                   >
-                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                      <div className="flex flex-col gap-2">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.title`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                Title
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Publication Title"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                    <AccordionContent className="relative flex flex-col gap-4 rounded-lg p-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.title`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Title
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Publication Title"
+                                {...field}
+                                className="bg-background"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.date`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                Publication Date
-                              </FormLabel>
-                              <FormControl>
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant={"outline"}
-                                      className={cn(
-                                        "w-full justify-start text-left font-normal",
-                                        !field.value && "text-muted-foreground",
-                                      )}
-                                    >
-                                      <CalendarIcon className="mr-2 h-4 w-4" />
-                                      {field.value ? (
-                                        format(new Date(field.value), "PPP")
-                                      ) : (
-                                        <span>Pick a date</span>
-                                      )}
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent
-                                    align="start"
-                                    className="w-auto p-0"
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.date`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Publication Date
+                            </FormLabel>
+                            <FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !field.value && "text-muted-foreground",
+                                    )}
                                   >
-                                    <Calendar
-                                      mode="single"
-                                      captionLayout="dropdown-buttons"
-                                      selected={
-                                        field.value
-                                          ? new Date(field.value)
-                                          : undefined
-                                      }
-                                      onSelect={(date) =>
-                                        field.onChange(date?.toISOString())
-                                      }
-                                      fromYear={1960}
-                                      toYear={2030}
-                                    />
-                                  </PopoverContent>
-                                </Popover>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {field.value ? (
+                                      format(new Date(field.value), "PPP")
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  align="start"
+                                  className="w-auto p-0"
+                                >
+                                  <Calendar
+                                    mode="single"
+                                    captionLayout="dropdown-buttons"
+                                    selected={
+                                      field.value
+                                        ? new Date(field.value)
+                                        : undefined
+                                    }
+                                    onSelect={(date) =>
+                                      field.onChange(date?.toISOString())
+                                    }
+                                    fromYear={1960}
+                                    toYear={2030}
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.url`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                URL
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Publication URL"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.url`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              URL
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Publication URL"
+                                {...field}
+                                className="bg-background"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.description`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                Description
-                              </FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  placeholder="Describe your publication"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Description
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Describe your publication"
+                                {...field}
+                                className="bg-background"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </AccordionContent>
                   </SortableAccordionItem>
                 ))}
@@ -399,7 +400,7 @@ export default function PublicationForm() {
 
               <Button
                 type="button"
-                variant="outline"
+                variant="dashed"
                 className="mt-2"
                 onClick={handleCreatePublicationForm}
               >

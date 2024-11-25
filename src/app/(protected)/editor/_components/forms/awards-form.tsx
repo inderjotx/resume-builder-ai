@@ -43,7 +43,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { GripVertical, Trophy } from "lucide-react";
+import { GripVertical } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -237,190 +237,178 @@ export default function AwardsForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border bg-background px-4 py-5"
+        className="flex flex-col gap-4 rounded-md"
       >
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always,
-            },
-          }}
-        >
-          <Accordion
-            type="single"
-            value={activeAccordion ?? undefined}
-            onValueChange={(value) => setActiveAccordion(value)}
-            collapsible
-            className="flex w-full flex-col gap-4"
+        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
           >
-            <SortableContext
-              items={fields.map((field) => field.id)}
-              strategy={verticalListSortingStrategy}
+            <Accordion
+              type="single"
+              value={activeAccordion ?? undefined}
+              onValueChange={(value) => setActiveAccordion(value)}
+              collapsible
+              className="flex w-full flex-col gap-4"
             >
-              {fields.map((field, index) => (
-                <SortableAccordionItem
-                  key={field.id}
-                  id={field.id}
-                  value={`item-${index}-award`}
-                  className="rounded-lg border bg-muted/40 p-1"
-                  onRemove={remove}
-                  index={index}
-                  isActive={activeAccordion === `item-${index}-award`}
-                >
-                  <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.title`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Award Title
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Award Title" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+              <SortableContext
+                items={fields.map((field) => field.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field, index) => (
+                  <SortableAccordionItem
+                    key={field.id}
+                    id={field.id}
+                    value={`item-${index}-award`}
+                    className="rounded-lg border bg-background"
+                    onRemove={remove}
+                    index={index}
+                    isActive={activeAccordion === `item-${index}-award`}
+                  >
+                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.title`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Award Title
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Award Title" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.date`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Date Received
-                          </FormLabel>
-                          <FormControl>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full justify-start text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.date`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Date Received
+                            </FormLabel>
+                            <FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !field.value && "text-muted-foreground",
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {field.value ? (
+                                      format(new Date(field.value), "PPP")
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  align="start"
+                                  className="w-auto p-0"
                                 >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {field.value ? (
-                                    format(new Date(field.value), "PPP")
-                                  ) : (
-                                    <span>Pick a date</span>
-                                  )}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                align="start"
-                                className="w-auto p-0"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  captionLayout="dropdown-buttons"
-                                  selected={
-                                    field.value
-                                      ? new Date(field.value)
-                                      : undefined
-                                  }
-                                  onSelect={(date) =>
-                                    field.onChange(date?.toISOString())
-                                  }
-                                  fromYear={1900}
-                                  toYear={new Date().getFullYear()}
-                                />
-                              </PopoverContent>
-                            </Popover>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                                  <Calendar
+                                    mode="single"
+                                    captionLayout="dropdown-buttons"
+                                    selected={
+                                      field.value
+                                        ? new Date(field.value)
+                                        : undefined
+                                    }
+                                    onSelect={(date) =>
+                                      field.onChange(date?.toISOString())
+                                    }
+                                    fromYear={1900}
+                                    toYear={new Date().getFullYear()}
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.issuer`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Issuer
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Award Issuer" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.issuer`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Issuer
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Award Issuer" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.url`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            URL
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Award URL" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.url`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              URL
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="Award URL" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.description`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Description
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Describe your award"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </AccordionContent>
-                </SortableAccordionItem>
-              ))}
-            </SortableContext>
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Description
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Describe your award"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </AccordionContent>
+                  </SortableAccordionItem>
+                ))}
+              </SortableContext>
 
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-2"
-              onClick={handleCreateAccordion}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Award
-            </Button>
-          </Accordion>
-        </DndContext>
+              <Button
+                type="button"
+                variant="dashed"
+                className="mt-2"
+                onClick={handleCreateAccordion}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Award
+              </Button>
+            </Accordion>
+          </DndContext>
+        </div>
       </form>
     </Form>
   );
 }
-
-const CalendarInput = ({
-  value,
-  onChange,
-  calendarProps,
-  disabled,
-}: {
-  value: string | undefined;
-  calendarProps?: React.ComponentProps<typeof Calendar>;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}) => {
-  // ... copy the CalendarInput component implementation from achievements form ...
-};

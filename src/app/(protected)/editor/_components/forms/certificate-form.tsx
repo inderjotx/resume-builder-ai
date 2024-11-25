@@ -240,181 +240,186 @@ export default function CertificateForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-md border p-4"
+        className="flex flex-col gap-4 rounded-md"
       >
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always,
-            },
-          }}
-        >
-          <Accordion
-            type="single"
-            value={activeAccordion ?? undefined}
-            onValueChange={(value) => setActiveAccordion(value)}
-            collapsible
-            className="flex w-full flex-col gap-4"
+        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
           >
-            <SortableContext
-              items={fields.map((field) => field.id)}
-              strategy={verticalListSortingStrategy}
+            <Accordion
+              type="single"
+              value={activeAccordion ?? undefined}
+              onValueChange={(value) => setActiveAccordion(value)}
+              collapsible
+              className="flex w-full flex-col gap-4"
             >
-              {fields.map((field, index) => (
-                <SortableAccordionItem
-                  key={field.id}
-                  id={field.id}
-                  value={`item-${index}-cert`}
-                  className="rounded-lg border bg-muted/40 p-1"
-                  onRemove={remove}
-                  index={index}
-                  isActive={activeAccordion === `item-${index}-cert`}
-                >
-                  <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.certificationName`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Certification Name
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Certification Name"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+              <SortableContext
+                items={fields.map((field) => field.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field, index) => (
+                  <SortableAccordionItem
+                    key={field.id}
+                    id={field.id}
+                    value={`item-${index}-cert`}
+                    className="rounded-lg border bg-background"
+                    onRemove={remove}
+                    index={index}
+                    isActive={activeAccordion === `item-${index}-cert`}
+                  >
+                    <AccordionContent className="relative flex flex-col gap-4 rounded-lg p-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.certificationName`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Certification Name
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Certification Name"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.certificationDate`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Date Received
-                          </FormLabel>
-                          <FormControl>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full justify-start text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.certificationDate`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Date Received
+                            </FormLabel>
+                            <FormControl>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !field.value && "text-muted-foreground",
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {field.value ? (
+                                      format(new Date(field.value), "PPP")
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  align="start"
+                                  className="w-auto p-0"
                                 >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {field.value ? (
-                                    format(new Date(field.value), "PPP")
-                                  ) : (
-                                    <span>Pick a date</span>
-                                  )}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                align="start"
-                                className="w-auto p-0"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  captionLayout="dropdown-buttons"
-                                  selected={
-                                    field.value
-                                      ? new Date(field.value)
-                                      : undefined
-                                  }
-                                  onSelect={(date) =>
-                                    field.onChange(date?.toISOString())
-                                  }
-                                  fromYear={1900}
-                                  toYear={new Date().getFullYear()}
-                                />
-                              </PopoverContent>
-                            </Popover>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                                  <Calendar
+                                    mode="single"
+                                    captionLayout="dropdown-buttons"
+                                    selected={
+                                      field.value
+                                        ? new Date(field.value)
+                                        : undefined
+                                    }
+                                    onSelect={(date) =>
+                                      field.onChange(date?.toISOString())
+                                    }
+                                    fromYear={1900}
+                                    toYear={new Date().getFullYear()}
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.certificationAuthority`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Certification Authority
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Certification Authority"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.certificationAuthority`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Certification Authority
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Certification Authority"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.certificationLink`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Certification Link
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Certification URL" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.certificationLink`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Certification Link
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Certification URL"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.description`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel className="text-muted-foreground">
-                            Description
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Describe your certification"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </AccordionContent>
-                </SortableAccordionItem>
-              ))}
-            </SortableContext>
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Description
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Describe your certification"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </AccordionContent>
+                  </SortableAccordionItem>
+                ))}
+              </SortableContext>
 
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-2"
-              onClick={handleCreateAccordion}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Certification
-            </Button>
-          </Accordion>
-        </DndContext>
+              <Button
+                type="button"
+                variant="dashed"
+                className="mt-2"
+                onClick={handleCreateAccordion}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Certificate
+              </Button>
+            </Accordion>
+          </DndContext>
+        </div>
       </form>
     </Form>
   );

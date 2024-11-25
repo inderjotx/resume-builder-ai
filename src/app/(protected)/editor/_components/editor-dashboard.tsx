@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useSettingsStore } from "@/store/resume/settings-store";
-import { DynamicInput } from "@/components/ui/dynamic-input";
+// import { useSettingsStore } from "@/store/resume/settings-store";
+// import { DynamicInput } from "@/components/ui/dynamic-input";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import PersonalInfoForm from "./forms/user-info-form";
 import WorkExperienceForm from "./forms/work-experience-form";
@@ -115,14 +115,6 @@ function SortableAccordionItem({
           </Button>
           <Icon className="size-5" />
           <h2 className="text-base">{title}</h2>
-          {/* <DynamicInput
-            as="span"
-            initialValue={title}
-            className="text-lg font-semibold"
-            onSave={(value) => {
-              // Handle title updates if needed
-            }}
-          /> */}
         </div>
       </AccordionTrigger>
       <AccordionContent className="p-4">{children}</AccordionContent>

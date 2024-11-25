@@ -297,7 +297,7 @@ export default function ProjectsForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 rounded-md border bg-background"
+        className="flex flex-col gap-4 rounded-md"
       >
         <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
           <DndContext
@@ -327,152 +327,46 @@ export default function ProjectsForm() {
                     key={field.id}
                     id={field.id}
                     value={`item-${index}-project`}
-                    className="rounded-lg border bg-muted/40 p-1"
+                    className="rounded-lg border bg-background"
                     onRemove={remove}
                     index={index}
                     isActive={activeAccordion === `item-${index}-project`}
                   >
-                    <AccordionContent className="relative flex flex-col gap-2 rounded-lg p-4">
-                      <div className="flex flex-col gap-2">
+                    <AccordionContent className="relative flex flex-col gap-4 rounded-lg p-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.projectName`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Project Name
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Project Name"
+                                {...field}
+                                className="bg-background"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
-                          name={`items.${index}.projectName`}
+                          name={`items.${index}.city`}
                           render={({ field }) => (
                             <FormItem className="space-y-0">
                               <FormLabel className="text-muted-foreground">
-                                Project Name
-                              </FormLabel>
-                              <FormControl>
-                                <Input placeholder="Project Name" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <div className="grid grid-cols-2 gap-2">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.city`}
-                            render={({ field }) => (
-                              <FormItem className="space-y-0">
-                                <FormLabel className="text-muted-foreground">
-                                  City
-                                </FormLabel>
-                                <FormControl>
-                                  <Input placeholder="City" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.country`}
-                            render={({ field }) => (
-                              <FormItem className="space-y-0">
-                                <FormLabel className="text-muted-foreground">
-                                  Country
-                                </FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Country" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-2">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.startDate`}
-                            render={({ field }) => (
-                              <FormItem className="space-y-0">
-                                <FormLabel className="text-muted-foreground">
-                                  Start Date
-                                </FormLabel>
-                                <FormControl>
-                                  <CalendarInput
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    calendarProps={{
-                                      fromDate: new Date(0),
-                                      toDate: new Date(2100, 0, 1),
-                                      fromYear: 1960,
-                                      toYear: 2030,
-                                    }}
-                                    disabled={form.watch(
-                                      `items.${index}.isCurrent`,
-                                    )}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.endDate`}
-                            render={({ field }) => (
-                              <FormItem className="space-y-0">
-                                <FormLabel className="text-muted-foreground">
-                                  End Date
-                                </FormLabel>
-                                <FormControl>
-                                  <CalendarInput
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    calendarProps={{
-                                      fromDate: new Date(0),
-                                      toDate: new Date(2100, 0, 1),
-                                      fromYear: 1960,
-                                      toYear: 2030,
-                                    }}
-                                    disabled={form.watch(
-                                      `items.${index}.isCurrent`,
-                                    )}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.isCurrent`}
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                              <FormLabel className="text-sm font-normal">
-                                Current Project
-                              </FormLabel>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.projectLink`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                Project Link
+                                City
                               </FormLabel>
                               <FormControl>
                                 <Input
-                                  type="url"
-                                  placeholder="https://example.com"
+                                  placeholder="City"
                                   {...field}
+                                  className="bg-background"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -482,16 +376,17 @@ export default function ProjectsForm() {
 
                         <FormField
                           control={form.control}
-                          name={`items.${index}.description`}
+                          name={`items.${index}.country`}
                           render={({ field }) => (
                             <FormItem className="space-y-0">
                               <FormLabel className="text-muted-foreground">
-                                Description
+                                Country
                               </FormLabel>
                               <FormControl>
-                                <Textarea
-                                  placeholder="Describe your project"
+                                <Input
+                                  placeholder="Country"
                                   {...field}
+                                  className="bg-background"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -499,23 +394,138 @@ export default function ProjectsForm() {
                           )}
                         />
                       </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.startDate`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                Start Date
+                              </FormLabel>
+                              <FormControl>
+                                <CalendarInput
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  calendarProps={{
+                                    fromDate: new Date(0),
+                                    toDate: new Date(2100, 0, 1),
+                                    fromYear: 1960,
+                                    toYear: 2030,
+                                  }}
+                                  disabled={form.watch(
+                                    `items.${index}.isCurrent`,
+                                  )}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.endDate`}
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <FormLabel className="text-muted-foreground">
+                                End Date
+                              </FormLabel>
+                              <FormControl>
+                                <CalendarInput
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  calendarProps={{
+                                    fromDate: new Date(0),
+                                    toDate: new Date(2100, 0, 1),
+                                    fromYear: 1960,
+                                    toYear: 2030,
+                                  }}
+                                  disabled={form.watch(
+                                    `items.${index}.isCurrent`,
+                                  )}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.isCurrent`}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-normal">
+                              Current Project
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.projectLink`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Project Link
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="url"
+                                placeholder="https://example.com"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel className="text-muted-foreground">
+                              Description
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Describe your project"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </AccordionContent>
                   </SortableAccordionItem>
                 ))}
               </SortableContext>
+
+              <Button
+                type="button"
+                variant="dashed"
+                className="mt-2"
+                onClick={handleCreateAccordion}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Project
+              </Button>
             </Accordion>
           </DndContext>
         </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="mt-2"
-          onClick={handleCreateAccordion}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Project
-        </Button>
       </form>
     </Form>
   );

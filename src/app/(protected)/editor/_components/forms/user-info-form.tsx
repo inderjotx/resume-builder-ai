@@ -75,9 +75,9 @@ export default function PersonalInfoForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 rounded-md border bg-background"
+        className="flex flex-col gap-4 rounded-md px-4"
       >
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-md border bg-background px-5 py-5">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-6">
               <FormField
