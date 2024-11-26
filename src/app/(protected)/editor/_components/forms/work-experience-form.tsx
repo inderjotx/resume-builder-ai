@@ -1,21 +1,10 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { format } from "date-fns";
-import { useEffect, useState } from "react";
-import { CalendarIcon } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { z } from "zod";
-import { Calendar } from "@/components/ui/calendar";
+import { Accordion, AccordionContent } from "@/components/ui/accordion";
+import { SortableAccordionItem } from "./common/accordion-item";
+import { CalendarInput } from "./common/calendar-input";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -30,9 +19,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import { cn } from "@/lib/utils";
 import {
   DndContext,
   MeasuringStrategy,
@@ -47,10 +35,8 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { GripVertical } from "lucide-react";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const workExperienceSchema = z.object({
@@ -69,89 +55,18 @@ const formSchema = z.object({
   experiences: z.array(workExperienceSchema),
 });
 
-function SortableAccordionItem({
-  id,
-  value,
-  children,
-  className,
-  onRemove,
-  index,
-  isActive,
-}: {
-  id: string;
-  children: React.ReactNode;
-  className?: string;
-  value: string;
-  onRemove: (index: number) => void;
-  index: number;
-  isActive: boolean;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id,
-  });
-
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    transition,
-    height: isActive ? "auto" : undefined,
-    position: isDragging ? "relative" : undefined,
-    zIndex: isDragging ? 9999 : "auto",
-    boxShadow: isDragging ? "0 0 20px rgba(0,0,0,0.15)" : undefined,
-  };
-
-  return (
-    <AccordionItem
-      ref={setNodeRef}
-      style={style as unknown as React.CSSProperties}
-      value={value}
-      className={className}
-    >
-      <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-8 cursor-grab touch-none"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="h-4 w-4" />
-          </Button>
-          <span>Work Experience #{index + 1}</span>
-        </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="ml-auto mr-2 size-8"
-          onClick={() => onRemove(index)}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </AccordionTrigger>
-      {children}
-    </AccordionItem>
-  );
-}
-
 export default function WorkExperienceForm() {
-  const { workExperience, updateWorkExperience } = useResumeStore();
+  const workExperience = useResumeStore((store) => store.workExperience);
+  const updateWorkExperience = useResumeStore(
+    (store) => store.updateWorkExperience,
+  );
+
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: workExperience?.title,
+      title: workExperience?.title ?? "",
       experiences: workExperience?.items ?? [],
     },
     mode: "onChange",
@@ -176,6 +91,7 @@ export default function WorkExperienceForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
+      console.log("subscription value", value.experiences);
       const data = {
         items: value.experiences,
         title: value.title ?? "",
@@ -250,6 +166,7 @@ export default function WorkExperienceForm() {
                   <SortableAccordionItem
                     key={field.id}
                     id={field.id}
+                    formLabel="Work Experience"
                     value={`item-${index}-work-experience`}
                     className="rounded-lg border bg-background"
                     onRemove={remove}
@@ -282,7 +199,7 @@ export default function WorkExperienceForm() {
                         <FormField
                           control={form.control}
                           name={`experiences.${index}.position`}
-                          render={(field) => (
+                          render={({ field }) => (
                             <FormItem className="space-y-0">
                               <FormLabel className="text-muted-foreground">
                                 Position
@@ -348,13 +265,13 @@ export default function WorkExperienceForm() {
                                         new Date(
                                           form.getValues(
                                             `experiences.${index}.startDate`,
-                                          ) ?? "",
+                                          )!,
                                         ).getFullYear() || 1960,
                                       toYear: new Date().getFullYear(),
                                       fromDate: new Date(
                                         form.getValues(
                                           `experiences.${index}.startDate`,
-                                        ) ?? "",
+                                        )!,
                                       ),
                                       toDate: new Date(),
                                     }}
@@ -395,7 +312,7 @@ export default function WorkExperienceForm() {
                         <FormField
                           control={form.control}
                           name={`experiences.${index}.city`}
-                          render={(field) => (
+                          render={({ field }) => (
                             <FormItem className="space-y-0">
                               <FormLabel className="text-muted-foreground">
                                 City
@@ -403,8 +320,8 @@ export default function WorkExperienceForm() {
                               <FormControl>
                                 <Input
                                   placeholder=""
-                                  {...field}
                                   className="bg-background"
+                                  {...field}
                                 />
                               </FormControl>
                               <FormDescription />
@@ -415,7 +332,7 @@ export default function WorkExperienceForm() {
                         <FormField
                           control={form.control}
                           name={`experiences.${index}.country`}
-                          render={(field) => (
+                          render={({ field }) => (
                             <FormItem className="space-y-0">
                               <FormLabel className="text-muted-foreground">
                                 Country
@@ -423,8 +340,8 @@ export default function WorkExperienceForm() {
                               <FormControl>
                                 <Input
                                   placeholder=""
-                                  {...field}
                                   className="bg-background"
+                                  {...field}
                                 />
                               </FormControl>
                               <FormDescription />
@@ -472,63 +389,3 @@ export default function WorkExperienceForm() {
     </Form>
   );
 }
-
-const CalendarInput = ({
-  value,
-  onChange,
-  calendarProps,
-  disabled,
-}: {
-  value: string | undefined;
-  calendarProps?: React.ComponentProps<typeof Calendar>;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}) => {
-  // Create disabled dates array
-  const disabledDates = [
-    {
-      from: calendarProps?.fromDate ? new Date(0) : undefined, // Start of time
-      to: calendarProps?.fromDate
-        ? new Date(calendarProps.fromDate)
-        : undefined,
-    },
-    {
-      from: calendarProps?.toDate ? new Date(calendarProps.toDate) : undefined,
-      to: new Date(2100, 0, 1), // Far future date
-    },
-  ].filter((range) => range.from && range.to) as { from: Date; to: Date }[];
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "w-full justify-start bg-background text-left font-normal",
-            !value && "text-muted-foreground",
-            disabled && "cursor-not-allowed opacity-50",
-          )}
-          disabled={disabled}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(new Date(value), "PPP") : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      {!disabled && (
-        <PopoverContent align="start" className="w-auto p-0">
-          <Calendar
-            mode="single"
-            captionLayout="dropdown-buttons"
-            selected={value ? new Date(value) : undefined}
-            onSelect={(date) =>
-              date ? onChange(date?.toISOString()) : undefined
-            }
-            disabled={disabledDates}
-            fromYear={calendarProps?.fromYear}
-            toYear={calendarProps?.toYear}
-          />
-        </PopoverContent>
-      )}
-    </Popover>
-  );
-};

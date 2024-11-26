@@ -1,13 +1,7 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
 import {
   Form,
   FormField,
@@ -20,10 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, CalendarIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
 import {
   DndContext,
   MeasuringStrategy,
@@ -38,16 +30,9 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { GripVertical } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent } from "@/components/ui/accordion";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const awardSchema = z.object({
@@ -62,80 +47,8 @@ const formSchema = z.object({
   title: z.string().optional(),
   items: z.array(awardSchema),
 });
-
-function SortableAccordionItem({
-  id,
-  value,
-  children,
-  className,
-  onRemove,
-  index,
-  isActive,
-}: {
-  id: string;
-  children: React.ReactNode;
-  className?: string;
-  value: string;
-  onRemove: (index: number) => void;
-  index: number;
-  isActive: boolean;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    transition,
-    height: isActive ? "auto" : undefined,
-    position: isDragging ? "relative" : undefined,
-    zIndex: isDragging ? 9999 : "auto",
-    boxShadow: isDragging ? "0 0 20px rgba(0,0,0,0.15)" : undefined,
-  };
-
-  return (
-    <AccordionItem
-      ref={setNodeRef}
-      style={style as unknown as React.CSSProperties}
-      value={value}
-      className={className}
-    >
-      <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-8 cursor-grab touch-none"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="h-4 w-4" />
-          </Button>
-          <span>Award #{index + 1}</span>
-        </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="ml-auto mr-2 size-8"
-          onClick={() => onRemove(index)}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </AccordionTrigger>
-      {children}
-    </AccordionItem>
-  );
-}
-
+import { SortableAccordionItem } from "./common/accordion-item";
+import { CalendarInput } from "./common/calendar-input";
 export default function AwardsForm() {
   const awards = useResumeStore((store) => store.awards);
   const updateAwards = useResumeStore((store) => store.updateAwards);
@@ -265,6 +178,7 @@ export default function AwardsForm() {
                   <SortableAccordionItem
                     key={field.id}
                     id={field.id}
+                    formLabel="Award"
                     value={`item-${index}-award`}
                     className="rounded-lg border bg-background"
                     onRemove={remove}
@@ -297,43 +211,16 @@ export default function AwardsForm() {
                               Date Received
                             </FormLabel>
                             <FormControl>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full justify-start text-left font-normal",
-                                      !field.value && "text-muted-foreground",
-                                    )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {field.value ? (
-                                      format(new Date(field.value), "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  align="start"
-                                  className="w-auto p-0"
-                                >
-                                  <Calendar
-                                    mode="single"
-                                    captionLayout="dropdown-buttons"
-                                    selected={
-                                      field.value
-                                        ? new Date(field.value)
-                                        : undefined
-                                    }
-                                    onSelect={(date) =>
-                                      field.onChange(date?.toISOString())
-                                    }
-                                    fromYear={1900}
-                                    toYear={new Date().getFullYear()}
-                                  />
-                                </PopoverContent>
-                              </Popover>
+                              <CalendarInput
+                                value={field.value}
+                                onChange={field.onChange}
+                                calendarProps={{
+                                  mode: "single",
+                                  captionLayout: "dropdown-buttons",
+                                  fromYear: 1900,
+                                  toYear: new Date().getFullYear(),
+                                }}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

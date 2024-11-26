@@ -4,7 +4,6 @@ import { DEFAULT_DATA } from '@/server/db/schema'
 import type { StateCreator } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { DEFAULT_SECTIONS, type ResumeSettings, type SectionKeys } from "@/server/db/schema"
-import { useEffect } from 'react'
 
 
 type PersonalInfoSlice = {
@@ -283,57 +282,7 @@ const createSettingsSlice: StateCreator<ResumeStore, [], [], SettingsSlice> = (s
     })),
 })
 
-const createHistorySlice: StateCreator<ResumeStore, [], [], HistorySlice> = (set, get) => {
-    let ignoreNextUpdate = false;
-
-    return {
-        past: [],
-        future: [],
-        ignoreNext: () => {
-            ignoreNextUpdate = true;
-        },
-        saveState: () => {
-            if (ignoreNextUpdate) {
-                ignoreNextUpdate = false;
-                return;
-            }
-            set((state) => ({
-                past: [...state.past, get().getData()],
-                future: [],
-            }))
-        },
-        undo: () => set((state) => {
-            console.log("undo",);
-            if (state.past.length === 0) return state;
-            const previous = state.past[state.past.length - 1];
-            const newPast = state.past.slice(0, -1);
-
-            state.ignoreNext(); // Prevent recording this change
-            return {
-                past: newPast,
-                future: [get().getData(), ...state.future],
-                ...previous
-            }
-        }),
-        redo: () => set((state) => {
-            console.log("redo");
-            if (state.future.length === 0) return state;
-            const next = state.future[0];
-            const newFuture = state.future.slice(1);
-
-            state.ignoreNext(); // Prevent recording this change
-            return {
-                past: [...state.past, get().getData()],
-                future: newFuture,
-                ...next
-            }
-        }),
-        canUndo: () => get().past.length > 0,
-        canRedo: () => get().future.length > 0,
-    }
-}
-
-interface ResumeDataStore {
+export interface ResumeDataStore {
     data: Partial<ResumeData>
     settings: Partial<ResumeSettings>
     order: SectionKeys[]
@@ -358,8 +307,7 @@ interface ResumeStore extends
     GraphsSlice,
     CustomSectionsSlice,
     OrderSlice,
-    SettingsSlice,
-    HistorySlice {
+    SettingsSlice {
     getData: () => ResumeDataStore
     updateData: (data: Partial<ResumeData>) => void
     // setFullData: (data: Partial<ResumeData>) => void,
@@ -386,7 +334,6 @@ export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>
     ...createCustomSectionsSlice(set, get, ...rest),
     ...createOrderSlice(set, get, ...rest),
     ...createSettingsSlice(set, get, ...rest),
-    ...createHistorySlice(set, get, ...rest),
 
     getData: () => ({
         data: {
@@ -461,31 +408,3 @@ export const useUpdateTitle = (id: keyof ResumeData) => {
 
     return { setTitle, title: store[id]?.title ?? "" }
 }
-
-// Setup subscription in a custom hook
-export const useResumeHistory = () => {
-    const saveState = useResumeStore((state) => state.saveState);
-    const undo = useResumeStore((state) => state.undo);
-    const redo = useResumeStore((state) => state.redo);
-    const canUndo = useResumeStore((state) => state.canUndo);
-    const canRedo = useResumeStore((state) => state.canRedo);
-
-
-    useEffect(() => {
-        // Setup subscription to store changes
-        const unsubscribe = useResumeStore.subscribe(
-            () => {
-                saveState();
-            }
-        );
-
-        return () => unsubscribe();
-    }, []);
-
-    return {
-        undo,
-        redo,
-        canUndo,
-        canRedo,
-    };
-};

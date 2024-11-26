@@ -15,14 +15,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, GripVertical, CalendarIcon } from "lucide-react";
+import { Plus, CalendarIcon } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent } from "@/components/ui/accordion";
 import {
   DndContext,
   MeasuringStrategy,
@@ -61,84 +56,12 @@ const educationSchema = z.object({
   city: z.string().optional(),
   description: z.string().optional(),
 });
+import { SortableAccordionItem } from "./common/accordion-item";
 
 const formSchema = z.object({
   title: z.string().optional(),
   items: z.array(educationSchema),
 });
-
-function SortableAccordionItem({
-  id,
-  value,
-  children,
-  className,
-  onRemove,
-  index,
-  isActive,
-}: {
-  id: string;
-  children: React.ReactNode;
-  className?: string;
-  value: string;
-  onRemove: (index: number) => void;
-  index: number;
-  isActive: boolean;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    transition,
-    height: isActive ? "auto" : undefined,
-    position: isDragging ? "relative" : undefined,
-    zIndex: isDragging ? 9999 : "auto",
-    boxShadow: isDragging ? "0 0 20px rgba(0,0,0,0.15)" : undefined,
-  };
-
-  return (
-    <AccordionItem
-      ref={setNodeRef}
-      style={style as unknown as React.CSSProperties}
-      value={value}
-      className={className}
-    >
-      <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-8 cursor-grab touch-none"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="h-4 w-4" />
-          </Button>
-          <span>Education #{index + 1}</span>
-        </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="ml-auto mr-2 size-8"
-          onClick={() => onRemove(index)}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </AccordionTrigger>
-      {children}
-    </AccordionItem>
-  );
-}
 
 const CalendarInput = ({
   value,
@@ -214,8 +137,8 @@ export default function EducationForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: education?.title,
-      items: education?.items ?? [{}],
+      title: education?.title ?? "",
+      items: education?.items ?? [],
     },
     mode: "onChange",
   });
@@ -319,6 +242,7 @@ export default function EducationForm() {
                   <SortableAccordionItem
                     key={field.id}
                     id={field.id}
+                    formLabel="Education"
                     value={`item-${index}-education`}
                     className="rounded-lg border bg-background"
                     onRemove={remove}

@@ -1,13 +1,9 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { SortableAccordionItem } from "./common/accordion-item";
+import { CalendarInput } from "./common/calendar-input";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
 import {
   Form,
   FormField,
@@ -20,10 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, CalendarIcon, GripVertical } from "lucide-react";
+import { Plus } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DndContext,
@@ -39,15 +33,9 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent } from "@/components/ui/accordion";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 const projectSchema = z.object({
@@ -65,138 +53,6 @@ const formSchema = z.object({
   title: z.string().optional(),
   items: z.array(projectSchema),
 });
-
-function SortableAccordionItem({
-  id,
-  value,
-  children,
-  className,
-  onRemove,
-  index,
-  isActive,
-}: {
-  id: string;
-  children: React.ReactNode;
-  className?: string;
-  value: string;
-  onRemove: (index: number) => void;
-  index: number;
-  isActive: boolean;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    transition,
-    height: isActive ? "auto" : undefined,
-    position: isDragging ? "relative" : undefined,
-    zIndex: isDragging ? 9999 : "auto",
-    boxShadow: isDragging ? "0 0 20px rgba(0,0,0,0.15)" : undefined,
-  };
-
-  return (
-    <AccordionItem
-      ref={setNodeRef}
-      style={style as unknown as React.CSSProperties}
-      value={value}
-      className={className}
-    >
-      <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-8 cursor-grab touch-none"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="h-4 w-4" />
-          </Button>
-          <span>Project #{index + 1}</span>
-        </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="ml-auto mr-2 size-8"
-          onClick={() => onRemove(index)}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </AccordionTrigger>
-      {children}
-    </AccordionItem>
-  );
-}
-
-const CalendarInput = ({
-  value,
-  onChange,
-  calendarProps,
-  disabled,
-}: {
-  value: string | undefined;
-  calendarProps?: React.ComponentProps<typeof Calendar>;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}) => {
-  const disabledDates = [
-    {
-      from: calendarProps?.fromDate ? new Date(0) : undefined,
-      to: calendarProps?.fromDate
-        ? new Date(calendarProps.fromDate)
-        : undefined,
-    },
-    {
-      from: calendarProps?.toDate ? new Date(calendarProps.toDate) : undefined,
-      to: new Date(2100, 0, 1),
-    },
-  ].filter((range) => range.from && range.to) as { from: Date; to: Date }[];
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "w-full justify-start bg-background text-left font-normal",
-            !value && "text-muted-foreground",
-            disabled && "cursor-not-allowed opacity-50",
-          )}
-          disabled={disabled}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(new Date(value), "PPP") : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      {!disabled && (
-        <PopoverContent align="start" className="w-auto p-0">
-          <Calendar
-            mode="single"
-            captionLayout="dropdown-buttons"
-            selected={value ? new Date(value) : undefined}
-            onSelect={(date) =>
-              date ? onChange(date?.toISOString()) : undefined
-            }
-            disabled={disabledDates}
-            fromYear={calendarProps?.fromYear}
-            toYear={calendarProps?.toYear}
-          />
-        </PopoverContent>
-      )}
-    </Popover>
-  );
-};
 
 export default function ProjectsForm() {
   const projects = useResumeStore((store) => store.projects);
@@ -325,6 +181,7 @@ export default function ProjectsForm() {
                   <SortableAccordionItem
                     key={field.id}
                     id={field.id}
+                    formLabel="Project"
                     value={`item-${index}-project`}
                     className="rounded-lg border bg-background"
                     onRemove={remove}
@@ -394,12 +251,12 @@ export default function ProjectsForm() {
                         />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-5 gap-4">
                         <FormField
                           control={form.control}
                           name={`items.${index}.startDate`}
                           render={({ field }) => (
-                            <FormItem className="space-y-0">
+                            <FormItem className="col-span-2 space-y-0">
                               <FormLabel className="text-muted-foreground">
                                 Start Date
                               </FormLabel>
@@ -427,7 +284,7 @@ export default function ProjectsForm() {
                           control={form.control}
                           name={`items.${index}.endDate`}
                           render={({ field }) => (
-                            <FormItem className="space-y-0">
+                            <FormItem className="col-span-2 space-y-0">
                               <FormLabel className="text-muted-foreground">
                                 End Date
                               </FormLabel>
@@ -450,25 +307,27 @@ export default function ProjectsForm() {
                             </FormItem>
                           )}
                         />
-                      </div>
 
-                      <FormField
-                        control={form.control}
-                        name={`items.${index}.isCurrent`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal">
-                              Current Project
-                            </FormLabel>
-                          </FormItem>
-                        )}
-                      />
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.isCurrent`}
+                          render={({ field }) => (
+                            <FormItem className="col-span-1 flex flex-col justify-end space-y-0 pb-2">
+                              <FormControl>
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                  <FormLabel className="text-sm font-normal">
+                                    Current
+                                  </FormLabel>
+                                </div>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
                       <FormField
                         control={form.control}

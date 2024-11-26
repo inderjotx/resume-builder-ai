@@ -1,10 +1,9 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarInput } from "./common/calendar-input";
 import { useEffect } from "react";
 import * as z from "zod";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,19 +14,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { useResumeStore } from "@/store/resume/data-store";
 import { type ResumeData } from "@/server/db/schema";
-// import { DynamicInput } from "@/components/ui/dynamic-input";
-// import { User } from "lucide-react";
+import { HISTORY_CHANGE_EVENT } from "@/store/resume/history-store";
 
 const formSchema = z.object({
   titleBefore: z.string().optional(),
@@ -51,11 +41,12 @@ export default function PersonalInfoForm() {
   const updatePersonalInfo = useResumeStore(
     (state) => state.updatePersonalInfo,
   );
+  const personalInfo = useResumeStore((state) => state.personalInfo);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...updatePersonalInfo,
+      ...personalInfo,
     },
     mode: "onChange",
   });
@@ -67,16 +58,21 @@ export default function PersonalInfoForm() {
     return () => subscription.unsubscribe();
   }, [form.watch, updatePersonalInfo, form]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    updatePersonalInfo(values as Partial<ResumeData["personalInfo"]>);
-  }
+  useEffect(() => {
+    const handleHistoryChange = () => {
+      form.reset(personalInfo);
+    };
+
+    window.addEventListener(HISTORY_CHANGE_EVENT, handleHistoryChange);
+
+    return () => {
+      window.removeEventListener(HISTORY_CHANGE_EVENT, handleHistoryChange);
+    };
+  }, [form, personalInfo]);
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 rounded-md px-4"
-      >
+      <form className="flex flex-col gap-4 rounded-md px-4">
         <div className="flex flex-col gap-4 rounded-md border bg-background px-5 py-5">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-6">
@@ -225,38 +221,10 @@ export default function PersonalInfoForm() {
                     <FormLabel className="text-muted-foreground">
                       Date of birth
                     </FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full bg-background pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={
-                            field.value ? new Date(field.value) : undefined
-                          }
-                          onSelect={(date) =>
-                            field.onChange(date?.toISOString())
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <CalendarInput
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                     <FormMessage />
                   </FormItem>
                 )}

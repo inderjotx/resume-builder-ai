@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { Undo, Redo } from "lucide-react";
+import { useResumeStore } from "@/store/resume/data-store";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { type ResumeData } from "@/server/db/schema";
 import PersonalInfoForm from "./forms/user-info-form";
@@ -61,8 +62,9 @@ import {
   BriefcaseBusiness,
   User,
 } from "lucide-react";
-import { useResumeStore, useUpdateTitle } from "@/store/resume/data-store";
+import { useUpdateTitle } from "@/store/resume/data-store";
 import { DynamicInput } from "@/components/ui/dynamic-input";
+import { useHistoryStore } from "@/store/resume/history-store";
 
 function SortableAccordionItem({
   id,
@@ -129,10 +131,28 @@ function SortableAccordionItem({
 
 export default function EditorDashboard() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
-  const undo = useResumeStore((store) => store.undo);
-  const redo = useResumeStore((store) => store.redo);
-  const canUndo = useResumeStore((store) => store.canUndo);
-  const canRedo = useResumeStore((store) => store.canRedo);
+  const historyStore = useHistoryStore();
+
+  const updateAll = useResumeStore((state) => state.updateAll);
+
+  useEffect(() => {
+    const unsubscribe = useResumeStore.subscribe((state) => {
+      historyStore.saveState(state.getData());
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleUndo = () => {
+    historyStore.undo((previousState) => {
+      updateAll(previousState);
+    });
+  };
+
+  const handleRedo = () => {
+    historyStore.redo((nextState) => {
+      updateAll(nextState);
+    });
+  };
 
   const [formOrder, setFormOrder] = useState<
     {
@@ -304,16 +324,16 @@ export default function EditorDashboard() {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={undo}
-                disabled={!canUndo}
+                onClick={handleUndo}
+                disabled={!historyStore.canUndo}
               >
                 <Undo className="size-4" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                onClick={redo}
-                disabled={!canRedo}
+                onClick={handleRedo}
+                disabled={!historyStore.canRedo}
               >
                 <Redo className="size-4" />
               </Button>

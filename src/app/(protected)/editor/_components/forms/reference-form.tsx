@@ -1,6 +1,7 @@
 "use client";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { SortableAccordionItem } from "./common/accordion-item";
 import { z } from "zod";
 import {
   Form,
@@ -30,15 +31,9 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent } from "@/components/ui/accordion";
 import { PhoneInput } from "@/components/ui/phone-input";
 
 const referenceSchema = z.object({
@@ -54,79 +49,6 @@ const formSchema = z.object({
   title: z.string().optional(),
   items: z.array(referenceSchema),
 });
-
-function SortableAccordionItem({
-  id,
-  value,
-  children,
-  className,
-  onRemove,
-  index,
-  isActive,
-}: {
-  id: string;
-  children: React.ReactNode;
-  className?: string;
-  value: string;
-  onRemove: (index: number) => void;
-  index: number;
-  isActive: boolean;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    transition,
-    height: isActive ? "auto" : undefined,
-    position: isDragging ? "relative" : undefined,
-    zIndex: isDragging ? 9999 : "auto",
-    boxShadow: isDragging ? "0 0 20px rgba(0,0,0,0.15)" : undefined,
-  };
-
-  return (
-    <AccordionItem
-      ref={setNodeRef}
-      style={style as unknown as React.CSSProperties}
-      value={value}
-      className={className}
-    >
-      <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-8 cursor-grab touch-none"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="h-4 w-4" />
-          </Button>
-          <span>Reference #{index + 1}</span>
-        </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="ml-auto mr-2 size-8"
-          onClick={() => onRemove(index)}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </AccordionTrigger>
-      {children}
-    </AccordionItem>
-  );
-}
 
 export default function ReferenceForm() {
   const references = useResumeStore((store) => store.references);
@@ -258,6 +180,7 @@ export default function ReferenceForm() {
                   <SortableAccordionItem
                     key={field.id}
                     id={field.id}
+                    formLabel="Reference"
                     value={`item-${index}-ref`}
                     className="rounded-lg border bg-background"
                     onRemove={remove}
