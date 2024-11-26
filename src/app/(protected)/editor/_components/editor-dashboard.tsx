@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Undo, Redo } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
@@ -65,6 +65,7 @@ import {
 import { useUpdateTitle } from "@/store/resume/data-store";
 import { DynamicInput } from "@/components/ui/dynamic-input";
 import { useHistoryStore } from "@/store/resume/history-store";
+import debounce from "lodash.debounce";
 
 function SortableAccordionItem({
   id,
@@ -135,11 +136,20 @@ export default function EditorDashboard() {
 
   const updateAll = useResumeStore((state) => state.updateAll);
 
+  // Create debounced save function
+  // const debouncedSave = debounce((state) => {
+  //   historyStore.saveState((state as any)?.getData());
+  // }, 2000);
+
   useEffect(() => {
     const unsubscribe = useResumeStore.subscribe((state) => {
       historyStore.saveState(state.getData());
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribe();
+      // debouncedSave.cancel(); // Cancel any pending debounced calls
+    };
   }, []);
 
   const handleUndo = () => {
