@@ -58,17 +58,17 @@ export default function PersonalInfoForm() {
     return () => subscription.unsubscribe();
   }, [form.watch, updatePersonalInfo, form]);
 
-  useEffect(() => {
-    const handleHistoryChange = () => {
-      form.reset(personalInfo);
-    };
+  // useEffect(() => {
+  //   const handleHistoryChange = () => {
+  //     form.reset(personalInfo);
+  //   };
 
-    window.addEventListener(HISTORY_CHANGE_EVENT, handleHistoryChange);
+  //   window.addEventListener(HISTORY_CHANGE_EVENT, handleHistoryChange);
 
-    return () => {
-      window.removeEventListener(HISTORY_CHANGE_EVENT, handleHistoryChange);
-    };
-  }, [form, personalInfo]);
+  //   return () => {
+  //     window.removeEventListener(HISTORY_CHANGE_EVENT, handleHistoryChange);
+  //   };
+  // }, []);
 
   return (
     <Form {...form}>

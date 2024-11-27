@@ -19,6 +19,7 @@ import {
   Undo,
   Redo,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 
 const MenuBar = () => {
   const { editor } = useCurrentEditor();
@@ -159,13 +160,14 @@ const extensions = [
   }),
 ];
 
-export function RichTextEditor({
+// Move the MenuBar and extensions to a new component
+const RichTextEditorContent = ({
   content,
   onValueChange,
 }: {
   content: string;
   onValueChange: (value: string) => void;
-}) {
+}) => {
   return (
     <EditorProvider
       slotBefore={<MenuBar />}
@@ -182,4 +184,13 @@ export function RichTextEditor({
       }}
     ></EditorProvider>
   );
-}
+};
+
+// Create the lazy-loaded component
+export const RichTextEditor = dynamic(
+  () => Promise.resolve(RichTextEditorContent),
+  {
+    ssr: false, // Disable server-side rendering
+    loading: () => <div className="h-[140px] border">Loading editor...</div>,
+  },
+);
