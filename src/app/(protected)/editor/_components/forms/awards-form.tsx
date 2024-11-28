@@ -52,12 +52,6 @@ import { CalendarInput } from "./common/calendar-input";
 export default function AwardsForm() {
   const awards = useResumeStore((store) => store.awards);
   const updateAwards = useResumeStore((store) => store.updateAwards);
-  const awardsVisible = useResumeStore((store) => store.awardsVisible);
-  const updateAwardsVisibility = useResumeStore(
-    (store) => store.updateAwardsVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -77,22 +71,6 @@ export default function AwardsForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     updateAwards({ title: data.title, items: data.items });
   };
-
-  useEffect(() => {
-    if (awardsVisible && !order.includes("awards")) {
-      setOrder([...order, "awards"]);
-    } else if (!awardsVisible && order.includes("awards")) {
-      setOrder(order.filter((section) => section !== "awards"));
-    }
-  }, [awardsVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && awardsVisible) {
-      updateAwardsVisibility(false);
-    } else if (fields.length > 0 && !awardsVisible) {
-      updateAwardsVisibility(true);
-    }
-  }, [fields.length, awardsVisible, updateAwardsVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {

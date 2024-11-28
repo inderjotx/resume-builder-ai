@@ -32,7 +32,6 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { type DragEndEvent } from "@dnd-kit/core";
@@ -125,13 +124,6 @@ const CalendarInput = ({
 export default function EducationForm() {
   const education = useResumeStore((store) => store.education);
   const updateEducation = useResumeStore((store) => store.updateEducation);
-  const visiblity = useResumeStore((store) => store.educationVisible);
-  const setVisibility = useResumeStore(
-    (store) => store.updateEducationVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
-
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -147,22 +139,6 @@ export default function EducationForm() {
     control: form.control,
     name: "items",
   });
-
-  useEffect(() => {
-    if (visiblity && !order.includes("education")) {
-      setOrder([...order, "education"]);
-    } else if (!visiblity && order.includes("education")) {
-      setOrder(order.filter((section) => section !== "education"));
-    }
-  }, [visiblity, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && visiblity) {
-      setVisibility(false);
-    } else if (fields.length > 0 && !visiblity) {
-      setVisibility(true);
-    }
-  }, [fields.length, visiblity, setVisibility]);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     updateEducation({ items: data.items });

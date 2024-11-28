@@ -59,15 +59,7 @@ export default function AchievementForm() {
   const updateAchievements = useResumeStore(
     (store) => store.updateAchievements,
   );
-  const achievementsVisible = useResumeStore(
-    (store) => store.achievementsVisible,
-  );
-  const updateAchievementsVisibility = useResumeStore(
-    (store) => store.updateAchievementsVisibility,
-  );
 
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -87,22 +79,6 @@ export default function AchievementForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     updateAchievements({ title: data.title, items: data.items });
   };
-
-  useEffect(() => {
-    if (achievementsVisible && !order.includes("achievements")) {
-      setOrder([...order, "achievements"]);
-    } else if (!achievementsVisible && order.includes("achievements")) {
-      setOrder(order.filter((section) => section !== "achievements"));
-    }
-  }, [achievementsVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && achievementsVisible) {
-      updateAchievementsVisibility(false);
-    } else if (fields.length > 0 && !achievementsVisible) {
-      updateAchievementsVisibility(true);
-    }
-  }, [fields.length, achievementsVisible, updateAchievementsVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {

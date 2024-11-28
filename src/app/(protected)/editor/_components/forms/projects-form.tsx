@@ -57,12 +57,6 @@ const formSchema = z.object({
 export default function ProjectsForm() {
   const projects = useResumeStore((store) => store.projects);
   const updateProjects = useResumeStore((store) => store.updateProjects);
-  const projectsVisible = useResumeStore((store) => store.projectsVisible);
-  const updateProjectsVisibility = useResumeStore(
-    (store) => store.updateProjectsVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -89,22 +83,6 @@ export default function ProjectsForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     updateProjects({ title: data.title, items: data.items });
   };
-
-  useEffect(() => {
-    if (projectsVisible && !order.includes("projects")) {
-      setOrder([...order, "projects"]);
-    } else if (!projectsVisible && order.includes("projects")) {
-      setOrder(order.filter((section) => section !== "projects"));
-    }
-  }, [projectsVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && projectsVisible) {
-      updateProjectsVisibility(false);
-    } else if (fields.length > 0 && !projectsVisible) {
-      updateProjectsVisibility(true);
-    }
-  }, [fields.length, projectsVisible, updateProjectsVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {

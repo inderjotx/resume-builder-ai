@@ -20,9 +20,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, CalendarIcon, GripVertical, Award } from "lucide-react";
+import { Plus, CalendarIcon } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import { Calendar } from "@/components/ui/calendar";
 import { CalendarInput } from "./common/calendar-input";
 import { SortableAccordionItem } from "./common/accordion-item";
 import { format } from "date-fns";
@@ -63,14 +62,6 @@ export default function CertificateForm() {
   const updateCertifications = useResumeStore(
     (store) => store.updateCertifications,
   );
-  const certificationsVisible = useResumeStore(
-    (store) => store.certificationsVisible,
-  );
-  const updateCertificationsVisibility = useResumeStore(
-    (store) => store.updateCertificationsVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -92,27 +83,10 @@ export default function CertificateForm() {
   };
 
   useEffect(() => {
-    if (certificationsVisible && !order.includes("certifications")) {
-      setOrder([...order, "certifications"]);
-    } else if (!certificationsVisible && order.includes("certifications")) {
-      setOrder(order.filter((section) => section !== "certifications"));
-    }
-  }, [certificationsVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && certificationsVisible) {
-      updateCertificationsVisibility(false);
-    } else if (fields.length > 0 && !certificationsVisible) {
-      updateCertificationsVisibility(true);
-    }
-  }, [fields.length, certificationsVisible, updateCertificationsVisibility]);
-
-  useEffect(() => {
     const subscription = form.watch((value) => {
       const data = {
         items: value.items,
       } as ResumeData["certifications"];
-
       updateCertifications(data);
     });
     return () => subscription.unsubscribe();

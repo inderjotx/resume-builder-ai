@@ -53,12 +53,6 @@ const formSchema = z.object({
 export default function ReferenceForm() {
   const references = useResumeStore((store) => store.references);
   const updateReferences = useResumeStore((store) => store.updateReferences);
-  const referencesVisible = useResumeStore((store) => store.referencesVisible);
-  const updateReferencesVisibility = useResumeStore(
-    (store) => store.updateReferencesVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -78,22 +72,6 @@ export default function ReferenceForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     updateReferences({ title: data.title, items: data.items });
   };
-
-  useEffect(() => {
-    if (referencesVisible && !order.includes("references")) {
-      setOrder([...order, "references"]);
-    } else if (!referencesVisible && order.includes("references")) {
-      setOrder(order.filter((section) => section !== "references"));
-    }
-  }, [referencesVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && referencesVisible) {
-      updateReferencesVisibility(false);
-    } else if (fields.length > 0 && !referencesVisible) {
-      updateReferencesVisibility(true);
-    }
-  }, [fields.length, referencesVisible, updateReferencesVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {

@@ -133,14 +133,6 @@ function SortableAccordionItem({
 export default function SocialMediaForm() {
   const socialMedia = useResumeStore((store) => store.socialMedia);
   const updateSocialMedia = useResumeStore((store) => store.updateSocialMedia);
-  const socialMediaVisible = useResumeStore(
-    (store) => store.socialMediaVisible,
-  );
-  const updateSocialMediaVisibility = useResumeStore(
-    (store) => store.updateSocialMediaVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -160,22 +152,6 @@ export default function SocialMediaForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     updateSocialMedia({ title: data.title, items: data.items });
   };
-
-  useEffect(() => {
-    if (socialMediaVisible && !order.includes("socialMedia")) {
-      setOrder([...order, "socialMedia"]);
-    } else if (!socialMediaVisible && order.includes("socialMedia")) {
-      setOrder(order.filter((section) => section !== "socialMedia"));
-    }
-  }, [socialMediaVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && socialMediaVisible) {
-      updateSocialMediaVisibility(false);
-    } else if (fields.length > 0 && !socialMediaVisible) {
-      updateSocialMediaVisibility(true);
-    }
-  }, [fields.length, socialMediaVisible, updateSocialMediaVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {

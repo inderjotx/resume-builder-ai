@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, GripVertical } from "lucide-react";
+import { Plus } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
 import {
   DndContext,
@@ -30,15 +30,9 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent } from "@/components/ui/accordion";
 import { SortableAccordionItem } from "./common/accordion-item";
 
 const goalSchema = z.object({
@@ -52,8 +46,6 @@ const formSchema = z.object({
 
 export default function GoalsForm() {
   const { goals, updateGoals } = useResumeStore();
-  const { goalsVisible, updateGoalsVisibility } = useResumeStore();
-  const { order, setOrder } = useResumeStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,22 +73,6 @@ export default function GoalsForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     updateGoals({ title: data.title, items: data.items });
   };
-
-  useEffect(() => {
-    if (goalsVisible && !order.includes("goals")) {
-      setOrder([...order, "goals"]);
-    } else if (!goalsVisible && order.includes("goals")) {
-      setOrder(order.filter((section) => section !== "goals"));
-    }
-  }, [goalsVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && goalsVisible) {
-      updateGoalsVisibility(false);
-    } else if (fields.length > 0 && !goalsVisible) {
-      updateGoalsVisibility(true);
-    }
-  }, [fields.length, goalsVisible, updateGoalsVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {

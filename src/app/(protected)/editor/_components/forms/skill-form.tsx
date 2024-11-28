@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -48,8 +48,7 @@ const formSchema = z.object({
 import { SortableAccordionItem } from "./common/accordion-item";
 
 export default function SkillForm() {
-  const { skills, updateSkills, skillsVisible, updateSkillsVisibility } =
-    useResumeStore();
+  const { skills, updateSkills } = useResumeStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -119,14 +118,6 @@ export default function SkillForm() {
       currentTags.filter((_, index) => index !== tagIndex),
     );
   };
-
-  useEffect(() => {
-    if (fields.length === 0 && skillsVisible) {
-      updateSkillsVisibility(false);
-    } else if (fields.length > 0 && !skillsVisible) {
-      updateSkillsVisibility(true);
-    }
-  }, [fields.length, skillsVisible, updateSkillsVisibility]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;

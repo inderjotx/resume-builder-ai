@@ -58,12 +58,6 @@ export default function VoluntaryForm() {
   const updateVoluntaryWork = useResumeStore(
     (store) => store.updateVoluntaryWork,
   );
-  const visibility = useResumeStore((store) => store.voluntaryWorkVisible);
-  const setVisibility = useResumeStore(
-    (store) => store.updateVoluntaryWorkVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,22 +72,6 @@ export default function VoluntaryForm() {
     control: form.control,
     name: "items",
   });
-
-  useEffect(() => {
-    if (visibility && !order.includes("voluntaryWork")) {
-      setOrder([...order, "voluntaryWork"]);
-    } else if (!visibility && order.includes("voluntaryWork")) {
-      setOrder(order.filter((section) => section !== "voluntaryWork"));
-    }
-  }, [visibility, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && visibility) {
-      setVisibility(false);
-    } else if (fields.length > 0 && !visibility) {
-      setVisibility(true);
-    }
-  }, [fields.length, visibility, setVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {
@@ -238,7 +216,6 @@ export default function VoluntaryForm() {
                                         ),
                                       initialFocus: true,
                                     }}
-                                    disabled={!visibility}
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -269,7 +246,6 @@ export default function VoluntaryForm() {
                                         ),
                                       initialFocus: true,
                                     }}
-                                    disabled={!visibility}
                                   />
                                 </FormControl>
                                 <FormMessage />

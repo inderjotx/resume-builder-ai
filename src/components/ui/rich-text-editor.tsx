@@ -179,7 +179,7 @@ const RichTextEditorContent = ({
       editorProps={{
         attributes: {
           class:
-            "prose prose-sm sm:prose-base max-w-none prose-slate p-4 border h-[140px] overflow-y-scroll [&::-webkit-scrollbar]:pr-0.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar]:border-l [&::-webkit-scrollbar]:border-l-transparent [&::-webkit-scrollbar]:p-[1px]",
+            "prose prose-sm  max-w-none prose-slate p-4 border h-[140px] overflow-y-scroll [&::-webkit-scrollbar]:pr-0.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar]:border-l [&::-webkit-scrollbar]:border-l-transparent [&::-webkit-scrollbar]:p-[1px]",
         },
       }}
     ></EditorProvider>

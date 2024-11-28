@@ -279,8 +279,7 @@ export type ResumeData = {
   personalInfo?: {
     iconId?: string;
     title?: string;
-    titleBefore?: string;
-    titleAfter?: string;
+    imageUrl?: string;
     firstName?: string;
     lastName?: string;
     phoneNumber?: string;
@@ -294,7 +293,6 @@ export type ResumeData = {
     country?: string;
     website?: string;
     bio?: string;
-    customFields?: Record<string, string>;
   };
   workExperience?: {
     iconId?: string;
@@ -516,7 +514,7 @@ export type ResumeSettings = {
     opacity: number;
   };
   addressFormat: {
-    order: string[][];
+    order: { id: SectionKeys, title: string }[]
     delimiter: string;
   };
 };
@@ -529,7 +527,7 @@ export const resumeStatus = pgEnum("resume_status", [
 ]);
 
 
-export const DEFAULT_SECTIONS: SectionKeys[] = ['personalInfo', 'workExperience', 'education', 'skills', 'projects',];
+export const DEFAULT_SECTIONS: { id: SectionKeys, title: string }[] = [{ id: 'personalInfo', title: "Personal Info" }, { id: 'workExperience', title: "Work Experience" }, { id: 'education', title: "Education" }, { id: 'skills', title: "Skills" }, { id: 'projects', title: "Projects" }];
 export const DEFAULT_DATA: Partial<ResumeData> = {
   personalInfo: {
     title: "Personal Info",
@@ -607,7 +605,7 @@ export const resume = createTable("resume", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  order: jsonb("order").$type<SectionKeys[]>().default(DEFAULT_SECTIONS),
+  order: jsonb("order").$type<{ id: SectionKeys, title: string }[]>().default(DEFAULT_SECTIONS),
   settings: jsonb("settings").$type<Partial<ResumeSettings>>().default({}),
 });
 

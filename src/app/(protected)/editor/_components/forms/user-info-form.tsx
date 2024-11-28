@@ -20,9 +20,7 @@ import { type ResumeData } from "@/server/db/schema";
 import { HISTORY_CHANGE_EVENT } from "@/store/resume/history-store";
 
 const formSchema = z.object({
-  titleBefore: z.string().optional(),
   title: z.string().optional(),
-  titleAfter: z.string().optional(),
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email(),
@@ -78,48 +76,6 @@ export default function PersonalInfoForm() {
             <div className="col-span-6">
               <FormField
                 control={form.control}
-                name="titleBefore"
-                render={({ field }) => (
-                  <FormItem className="space-y-0">
-                    <FormControl>
-                      <Input
-                        placeholder="Title Before"
-                        type="text"
-                        className="bg-background"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="col-span-6">
-              <FormField
-                control={form.control}
-                name="titleAfter"
-                render={({ field }) => (
-                  <FormItem className="space-y-0">
-                    <FormControl>
-                      <Input
-                        placeholder="Title After"
-                        type="text"
-                        className="bg-background"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-6">
-              <FormField
-                control={form.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem className="space-y-0">
@@ -139,6 +95,7 @@ export default function PersonalInfoForm() {
                 )}
               />
             </div>
+
             <div className="col-span-6">
               <FormField
                 control={form.control}
@@ -162,7 +119,6 @@ export default function PersonalInfoForm() {
               />
             </div>
           </div>
-
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-6">
               <FormField
@@ -209,6 +165,27 @@ export default function PersonalInfoForm() {
                 )}
               />
             </div>
+          </div>
+
+          <div>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="space-y-0">
+                  <FormLabel className="text-muted-foreground">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      type="email"
+                      className="bg-background"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           <div className="grid grid-cols-12 gap-4">

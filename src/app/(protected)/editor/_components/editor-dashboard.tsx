@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, createElement } from "react";
 import { Undo, Redo } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
@@ -36,8 +36,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { ScrollArea } from "@/components/ui/scroll-area";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import DraggableCard from "./dragable-cards";
 import DisplayContent from "./display-content";
 import {
   Accordion,
@@ -125,16 +123,88 @@ function SortableAccordionItem({
           />
         </div>
       </AccordionTrigger>
-      <AccordionContent className="p-4">{children}</AccordionContent>
+      <AccordionContent id={`form-accordion-content-${id}`} className="p-4">
+        {children}
+      </AccordionContent>
     </AccordionItem>
   );
 }
 
+// Add this configuration map before the EditorDashboard component
+const FormMap = {
+  personalInfo: {
+    component: PersonalInfoForm,
+    icon: User,
+  },
+  workExperience: {
+    component: WorkExperienceForm,
+    icon: BriefcaseBusiness,
+  },
+  education: {
+    component: EducationForm,
+    icon: GraduationCap,
+  },
+  skills: {
+    component: SkillForm,
+    icon: Lightbulb,
+  },
+  achievements: {
+    component: AchievementForm,
+    icon: Trophy,
+  },
+  awards: {
+    component: AwardsForm,
+    icon: Award,
+  },
+  certifications: {
+    component: CertificateForm,
+    icon: Award,
+  },
+  goals: {
+    component: GoalsForm,
+    icon: Lightbulb,
+  },
+  references: {
+    component: ReferenceForm,
+    icon: Users,
+  },
+  socialMedia: {
+    component: SocialMediaForm,
+    icon: Share2,
+  },
+  voluntaryWork: {
+    component: VoluntaryForm,
+    icon: Heart,
+  },
+  languages: {
+    component: LanguagesForm,
+    icon: Globe,
+  },
+  projects: {
+    component: ProjectsForm,
+    icon: FolderGit2,
+  },
+  publications: {
+    component: PublicationsForm,
+    icon: BookOpen,
+  },
+} as const;
+
 export default function EditorDashboard() {
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const activeSection = useResumeStore((state) => state.activeSection);
+  const setActiveSection = useResumeStore((state) => state.setActiveSection);
   const historyStore = useHistoryStore();
 
   const updateAll = useResumeStore((state) => state.updateAll);
+
+  useEffect(() => {
+    const content = document.getElementById(
+      `form-accordion-content-${activeSection}`,
+    );
+    if (content) {
+      content.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [activeSection]);
 
   // Create debounced save function
   // const debouncedSave = debounce((state) => {
@@ -164,99 +234,8 @@ export default function EditorDashboard() {
     });
   };
 
-  const [formOrder, setFormOrder] = useState<
-    {
-      id: keyof ResumeData;
-      title: string;
-      component: () => JSX.Element;
-      icon: LucideIcon;
-    }[]
-  >([
-    {
-      id: "personalInfo",
-      title: "Personal Information",
-      component: PersonalInfoForm,
-      icon: User,
-    },
-    {
-      id: "workExperience",
-      title: "Work Experience",
-      component: WorkExperienceForm,
-      icon: BriefcaseBusiness,
-    },
-    {
-      id: "education",
-      title: "Education",
-      component: EducationForm,
-      icon: GraduationCap,
-    },
-    {
-      id: "skills",
-      title: "Skills",
-      component: SkillForm,
-      icon: Lightbulb,
-    },
-    {
-      id: "achievements",
-      title: "Achievements",
-      component: AchievementForm,
-      icon: Trophy,
-    },
-    {
-      id: "awards",
-      title: "Awards",
-      component: AwardsForm,
-      icon: Award,
-    },
-    {
-      id: "certifications",
-      title: "Certificates",
-      component: CertificateForm,
-      icon: Award,
-    },
-    {
-      id: "goals",
-      title: "Goals",
-      component: GoalsForm,
-      icon: Lightbulb,
-    },
-    {
-      id: "references",
-      title: "References",
-      component: ReferenceForm,
-      icon: Users,
-    },
-    {
-      id: "socialMedia",
-      title: "Social Media",
-      component: SocialMediaForm,
-      icon: Share2,
-    },
-    {
-      id: "voluntaryWork",
-      title: "Voluntary Work",
-      component: VoluntaryForm,
-      icon: Heart,
-    },
-    {
-      id: "languages",
-      title: "Languages",
-      component: LanguagesForm,
-      icon: Globe,
-    },
-    {
-      id: "projects",
-      title: "Projects",
-      component: ProjectsForm,
-      icon: FolderGit2,
-    },
-    {
-      id: "publications",
-      title: "Publications",
-      component: PublicationsForm,
-      icon: BookOpen,
-    },
-  ]);
+  const formOrder = useResumeStore((state) => state.order);
+  const setFormOrder = useResumeStore((state) => state.setOrder);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -269,12 +248,14 @@ export default function EditorDashboard() {
     const { active, over } = event;
 
     if (active?.id !== over?.id) {
-      setFormOrder((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over?.id);
+      const oldIndex = formOrder.findIndex((item) => item.id === active.id);
+      const newIndex = formOrder.findIndex((item) => item.id === over?.id);
 
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      // Use arrayMove from dnd-kit to handle the reordering
+      const newOrder = arrayMove(formOrder, oldIndex, newIndex);
+      setFormOrder(newOrder);
     }
   }
 
@@ -305,20 +286,21 @@ export default function EditorDashboard() {
                 >
                   <Accordion
                     type="single"
-                    value={activeSection ?? undefined}
+                    value={activeSection}
                     onValueChange={setActiveSection}
                     collapsible
-                    className="flex w-full flex-col gap-4 pb-20"
+                    className="flex w-full flex-col gap-4 pb-36"
                   >
                     {formOrder.map((form) => (
                       <SortableAccordionItem
                         key={form.id}
-                        id={form.id}
+                        id={form.id as keyof ResumeData}
                         value={form.id}
-                        // title={form.title}
-                        icon={form.icon}
+                        icon={FormMap[form.id as keyof typeof FormMap].icon}
                       >
-                        <form.component />
+                        {createElement(
+                          FormMap[form.id as keyof typeof FormMap].component,
+                        )}
                       </SortableAccordionItem>
                     ))}
                   </Accordion>
@@ -349,7 +331,7 @@ export default function EditorDashboard() {
               </Button>
             </div>
           </header>
-          <ScrollArea className="h-[calc(100vh-2.5rem)]">
+          <ScrollArea className="h-[calc(100vh-2.5rem)] bg-muted">
             <DisplayContent />
           </ScrollArea>
         </div>

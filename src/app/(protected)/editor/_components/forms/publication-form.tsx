@@ -62,14 +62,6 @@ export default function PublicationForm() {
   const updatePublications = useResumeStore(
     (store) => store.updatePublications,
   );
-  const publicationsVisible = useResumeStore(
-    (store) => store.publicationsVisible,
-  );
-  const updatePublicationsVisibility = useResumeStore(
-    (store) => store.updatePublicationsVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -101,22 +93,6 @@ export default function PublicationForm() {
       items: data.items,
     });
   };
-
-  useEffect(() => {
-    if (publicationsVisible && !order.includes("publications")) {
-      setOrder([...order, "publications"]);
-    } else if (!publicationsVisible && order.includes("publications")) {
-      setOrder(order.filter((section) => section !== "publications"));
-    }
-  }, [publicationsVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && publicationsVisible) {
-      updatePublicationsVisibility(false);
-    } else if (fields.length > 0 && !publicationsVisible) {
-      updatePublicationsVisibility(true);
-    }
-  }, [fields.length, publicationsVisible, updatePublicationsVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {

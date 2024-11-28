@@ -55,12 +55,6 @@ const formSchema = z.object({
 export default function LanguagesForm() {
   const languages = useResumeStore((store) => store.languages);
   const updateLanguages = useResumeStore((store) => store.updateLanguages);
-  const languagesVisible = useResumeStore((store) => store.languagesVisible);
-  const updateLanguagesVisibility = useResumeStore(
-    (store) => store.updateLanguagesVisibility,
-  );
-  const order = useResumeStore((store) => store.order);
-  const setOrder = useResumeStore((store) => store.setOrder);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -87,22 +81,6 @@ export default function LanguagesForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     updateLanguages({ items: data.items });
   };
-
-  useEffect(() => {
-    if (languagesVisible && !order.includes("languages")) {
-      setOrder([...order, "languages"]);
-    } else if (!languagesVisible && order.includes("languages")) {
-      setOrder(order.filter((section) => section !== "languages"));
-    }
-  }, [languagesVisible, setOrder, order]);
-
-  useEffect(() => {
-    if (fields.length === 0 && languagesVisible) {
-      updateLanguagesVisibility(false);
-    } else if (fields.length > 0 && !languagesVisible) {
-      updateLanguagesVisibility(true);
-    }
-  }, [fields.length, languagesVisible, updateLanguagesVisibility]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {
