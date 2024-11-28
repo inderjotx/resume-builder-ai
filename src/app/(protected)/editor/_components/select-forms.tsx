@@ -46,7 +46,10 @@ export function SelectForms() {
               return (
                 <div
                   key={sectionId}
-                  className="flex cursor-pointer items-center justify-between rounded-md p-2 hover:bg-muted/60"
+                  className={cn(
+                    "flex cursor-pointer items-center justify-between rounded-md p-2 hover:bg-muted/60",
+                    isSelected && "opacity-50",
+                  )}
                 >
                   <div
                     key={sectionId}
@@ -54,7 +57,6 @@ export function SelectForms() {
                     className={cn(
                       "relative flex items-center gap-2",
                       isSelected && "opacity-50",
-                      selectedSectionId === sectionId && "bg-muted/60",
                     )}
                   >
                     <Icon className="size-4" />
