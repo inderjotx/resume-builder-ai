@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect, createElement } from "react";
+import { SelectForms } from "./select-forms";
+import GraphForm from "./forms/graphs-form";
+import { useEffect, createElement } from "react";
 import { Undo, Redo } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
@@ -49,6 +51,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import {
   Trophy,
   Award,
+  ChartArea as Graph,
   GraduationCap,
   Lightbulb,
   Globe,
@@ -63,13 +66,11 @@ import {
 import { useUpdateTitle } from "@/store/resume/data-store";
 import { DynamicInput } from "@/components/ui/dynamic-input";
 import { useHistoryStore } from "@/store/resume/history-store";
-import debounce from "lodash.debounce";
 
 function SortableAccordionItem({
   id,
   value,
   children,
-  // title,
   icon: Icon,
 }: {
   id: keyof ResumeData;
@@ -130,61 +131,102 @@ function SortableAccordionItem({
   );
 }
 
-// Add this configuration map before the EditorDashboard component
-const FormMap = {
+export const FormMap: Record<
+  keyof ResumeData,
+  {
+    id: keyof ResumeData;
+    title: string;
+    component: React.ComponentType;
+    icon: LucideIcon;
+  }
+> = {
   personalInfo: {
+    id: "personalInfo",
+    title: "Personal Information",
     component: PersonalInfoForm,
     icon: User,
   },
+  graphs: {
+    id: "graphs",
+    title: "Graphs",
+    component: GraphForm,
+    icon: Graph,
+  },
   workExperience: {
+    id: "workExperience",
+    title: "Work Experience",
     component: WorkExperienceForm,
     icon: BriefcaseBusiness,
   },
   education: {
+    id: "education",
+    title: "Education",
     component: EducationForm,
     icon: GraduationCap,
   },
   skills: {
+    id: "skills",
+    title: "Skills",
     component: SkillForm,
     icon: Lightbulb,
   },
   achievements: {
+    id: "achievements",
+    title: "Achievements",
     component: AchievementForm,
     icon: Trophy,
   },
   awards: {
+    id: "awards",
+    title: "Awards",
     component: AwardsForm,
     icon: Award,
   },
   certifications: {
+    id: "certifications",
+    title: "Certifications",
     component: CertificateForm,
     icon: Award,
   },
   goals: {
+    id: "goals",
+    title: "Goals",
     component: GoalsForm,
     icon: Lightbulb,
   },
   references: {
+    id: "references",
+    title: "References",
     component: ReferenceForm,
     icon: Users,
   },
   socialMedia: {
+    id: "socialMedia",
+    title: "Social Media",
     component: SocialMediaForm,
     icon: Share2,
   },
   voluntaryWork: {
+    id: "voluntaryWork",
+    title: "Voluntary Work",
     component: VoluntaryForm,
     icon: Heart,
   },
   languages: {
+    id: "languages",
+    title: "Languages",
     component: LanguagesForm,
     icon: Globe,
   },
   projects: {
+    id: "projects",
+    title: "Projects",
     component: ProjectsForm,
     icon: FolderGit2,
   },
   publications: {
+    id: "publications",
+    title: "Publications",
     component: PublicationsForm,
     icon: BookOpen,
   },
@@ -205,11 +247,6 @@ export default function EditorDashboard() {
       content.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeSection]);
-
-  // Create debounced save function
-  // const debouncedSave = debounce((state) => {
-  //   historyStore.saveState((state as any)?.getData());
-  // }, 2000);
 
   useEffect(() => {
     const unsubscribe = useResumeStore.subscribe((state) => {
@@ -289,7 +326,7 @@ export default function EditorDashboard() {
                     value={activeSection}
                     onValueChange={setActiveSection}
                     collapsible
-                    className="flex w-full flex-col gap-4 pb-36"
+                    className="flex w-full flex-col gap-4 pb-6"
                   >
                     {formOrder.map((form) => (
                       <SortableAccordionItem
@@ -304,6 +341,7 @@ export default function EditorDashboard() {
                       </SortableAccordionItem>
                     ))}
                   </Accordion>
+                  <SelectForms />
                 </SortableContext>
               </DndContext>
             </div>

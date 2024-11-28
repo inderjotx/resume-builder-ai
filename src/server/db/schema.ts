@@ -410,14 +410,6 @@ export type ResumeData = {
       url?: string;
     }>;
   };
-  customSections?: {
-    iconId?: string;
-    title?: string;
-    items?: Array<{
-      title?: string;
-      content?: unknown;
-    }>;
-  };
   goals?: {
     iconId?: string;
     title?: string;

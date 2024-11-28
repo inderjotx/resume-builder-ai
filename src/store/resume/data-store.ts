@@ -62,10 +62,6 @@ type GraphsSlice = {
     graphs: Partial<ResumeData['graphs']>
     updateGraphs: (data: Partial<ResumeData['graphs']>) => void
 }
-type CustomSectionsSlice = {
-    customSections: Partial<ResumeData['customSections']>
-    updateCustomSections: (data: Partial<ResumeData['customSections']>) => void
-}
 
 type AchievementsSlice = {
     achievements: Partial<ResumeData['achievements']>
@@ -187,13 +183,6 @@ const createGraphsSlice: StateCreator<ResumeStore, [], [], GraphsSlice> = (set) 
     })),
 })
 
-const createCustomSectionsSlice: StateCreator<ResumeStore, [], [], CustomSectionsSlice> = (set) => ({
-    customSections: undefined,
-    updateCustomSections: (data) => set((state) => ({
-        customSections: { ...state.customSections, ...data }
-    })),
-})
-
 const createOrderSlice: StateCreator<ResumeStore, [], [], OrderSlice> = (set) => ({
     order: DEFAULT_SECTIONS,
     setOrder: (order) => set(() => ({ order })),
@@ -229,7 +218,6 @@ interface ResumeStore extends
     VoluntaryWorkSlice,
     GoalsSlice,
     GraphsSlice,
-    CustomSectionsSlice,
     OrderSlice,
     SettingsSlice {
     getData: () => ResumeDataStore
@@ -257,7 +245,6 @@ export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>
     ...createVoluntaryWorkSlice(set, get, ...rest),
     ...createGoalsSlice(set, get, ...rest),
     ...createGraphsSlice(set, get, ...rest),
-    ...createCustomSectionsSlice(set, get, ...rest),
     ...createOrderSlice(set, get, ...rest),
     ...createSettingsSlice(set, get, ...rest),
 
@@ -280,7 +267,6 @@ export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>
             voluntaryWork: get()?.voluntaryWork,
             goals: get()?.goals,
             graphs: get()?.graphs,
-            customSections: get()?.customSections,
         },
         settings: get().settings,
         order: get().order

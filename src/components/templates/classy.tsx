@@ -22,7 +22,6 @@ import {
   Users,
   BookOpen,
   Share2,
-  FileText,
   Dot,
   Globe,
   Calendar,
@@ -107,7 +106,6 @@ export function ClassyTemplate() {
     references: ReferencesSection,
     publications: PublicationsSection,
     socialMedia: SocialMediaSection,
-    customSections: CustomSectionsSection,
   };
 
   return (
@@ -736,40 +734,6 @@ function SocialMediaSection() {
               />
               <span className="truncate">{item.platform}</span>
             </a>
-          ))}
-        </div>
-      </section>
-    </SectionWrapper>
-  );
-}
-
-function CustomSectionsSection() {
-  const customSections = useResumeStore((state) => state.customSections);
-  const settings = useResumeStore((state) => state.settings);
-
-  return (
-    <SectionWrapper sectionKey="customSections">
-      <section>
-        <SectionHeading
-          Icon={FileText}
-          heading={customSections?.title ?? "Custom Sections"}
-          color={settings?.color}
-        />
-        <div className="mt-4 flex flex-col gap-4">
-          {customSections?.items?.map((section, index) => (
-            <Card key={index} className="p-4">
-              <h3 className="font-semibold">{section?.title}</h3>
-              <div className="mt-2">
-                {/* Render content based on its type */}
-                {typeof section?.content === "string" ? (
-                  <p className="text-sm">{section?.content}</p>
-                ) : (
-                  <pre className="text-sm">
-                    {JSON.stringify(section?.content, null, 2)}
-                  </pre>
-                )}
-              </div>
-            </Card>
           ))}
         </div>
       </section>
