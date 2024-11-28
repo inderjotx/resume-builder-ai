@@ -22,6 +22,9 @@ export const env = createEnv({
     AUTH_RESEND_FROM: z.string(),
     STRIPE_API_KEY: z.string(),
     STRIPE_API_SECRET: z.string(),
+    LINKEDIN_USERNAME: z.string(),
+    LINKEDIN_JSESSIONID: z.string(),
+    LINKEDIN_LI_AT: z.string(),
   },
 
   /**
@@ -48,6 +51,9 @@ export const env = createEnv({
     AUTH_RESEND_FROM: process.env.AUTH_RESEND_FROM,
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     STRIPE_API_SECRET: process.env.STRIPE_API_SECRET,
+    LINKEDIN_USERNAME: process.env.LINKEDIN_USERNAME,
+    LINKEDIN_JSESSIONID: process.env.LINKEDIN_JSESSIONID,
+    LINKEDIN_LI_AT: process.env.LINKEDIN_LI_AT,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
