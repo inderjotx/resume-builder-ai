@@ -25,6 +25,8 @@ export const env = createEnv({
     LINKEDIN_USERNAME: z.string(),
     LINKEDIN_JSESSIONID: z.string(),
     LINKEDIN_LI_AT: z.string(),
+    UPLOADTHING_TOKEN: z.string(),
+    UPLOADTHING_SECRET: z.string(),
   },
 
   /**
@@ -54,6 +56,8 @@ export const env = createEnv({
     LINKEDIN_USERNAME: process.env.LINKEDIN_USERNAME,
     LINKEDIN_JSESSIONID: process.env.LINKEDIN_JSESSIONID,
     LINKEDIN_LI_AT: process.env.LINKEDIN_LI_AT,
+    UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
+    UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

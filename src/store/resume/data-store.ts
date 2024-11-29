@@ -278,8 +278,6 @@ export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>
         const resumeSettings = data.settings;
         const resumeOrder = data.order;
 
-        // console.log("updateAll", resumeData, resumeSettings, resumeOrder);
-        console.log("updateAll", resumeData.personalInfo?.lastName);
 
         return {
             ...resumeData,

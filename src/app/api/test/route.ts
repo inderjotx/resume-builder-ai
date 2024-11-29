@@ -14,10 +14,14 @@ export const GET = async () => {
         }
     })
 
+    console.log("client logged in")
+    const myProfile = await client.profile.getOwnProfile()
+    console.log(myProfile)
     const profileId = "williamhgates"
     const response = await client.profile.getProfile({
         publicIdentifier: profileId,
     });
+    console.log(response)
 
     return NextResponse.json(response);
 };

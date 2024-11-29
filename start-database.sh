@@ -36,8 +36,10 @@ fi
 set -a
 source .env
 
-DB_PASSWORD=$(echo "$DATABASE_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
+# DB_PASSWORD=$(echo "$DATABASE_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
 DB_PORT=$(echo "$DATABASE_URL" | awk -F':' '{print $4}' | awk -F'\/' '{print $1}')
+# DB_PASSWORD=d615a2c0117cbc1d4f67027b42010e0ca1cd1199281969b2d5d964334202a154
+
 
 if [ "$DB_PASSWORD" = "password" ]; then
   echo "You are using the default database password"
