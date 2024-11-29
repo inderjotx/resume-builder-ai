@@ -18,6 +18,11 @@ const config = {
         hostname: "*.googleusercontent.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+        port: "",
+      },
     ],
   },
 };

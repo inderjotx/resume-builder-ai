@@ -6,6 +6,7 @@ import { env } from '@/env';
 
 export const GET = async () => {
     const client = new Client();
+    console.log(env.LINKEDIN_USERNAME, env.LINKEDIN_JSESSIONID, env.LINKEDIN_LI_AT)
     await client.login.userCookie({
         username: env.LINKEDIN_USERNAME,
         cookies: {
@@ -13,6 +14,7 @@ export const GET = async () => {
             li_at: env.LINKEDIN_LI_AT,
         }
     })
+
 
     console.log("client logged in")
     const myProfile = await client.profile.getOwnProfile()
