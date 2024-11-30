@@ -23,7 +23,7 @@ import { type ResumeData } from "@/server/db/schema";
 import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from "sonner";
 import { ResponsiveModalDrawer } from "@/components/ui/responsive-modal";
-import { ImageEditor } from "@/app/(protected)/editor/_components/image-editor";
+import { ImageEditor } from "@/app/(protected)/[resumeId]/editor/_components/image-editor";
 // import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
@@ -109,7 +109,11 @@ export default function PersonalInfoForm() {
                 className="group relative size-32 cursor-pointer overflow-hidden rounded-full border p-2 ring-2 ring-gray-100 ring-offset-4"
               >
                 <Image
-                  src={form.watch("imageUrl") ?? "/default-avatar.png"}
+                  src={
+                    form.watch("imageUrl") && form.watch("imageUrl") !== ""
+                      ? form.watch("imageUrl")!
+                      : "/default-avatar.png"
+                  }
                   alt="user-image"
                   fill
                   className="rounded-full object-cover"

@@ -6,7 +6,10 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
- images: {
+  experimental: {
+    // ppr : true 
+  },
+  images: {
     remotePatterns: [
       {
         protocol: 'https',

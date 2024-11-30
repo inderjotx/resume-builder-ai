@@ -5,27 +5,33 @@ import { env } from '@/env';
 
 
 export const GET = async () => {
-    const client = new Client();
-    console.log(env.LINKEDIN_USERNAME, env.LINKEDIN_JSESSIONID, env.LINKEDIN_LI_AT)
-    await client.login.userCookie({
-        username: env.LINKEDIN_USERNAME,
-        cookies: {
-            JSESSIONID: env.LINKEDIN_JSESSIONID,
-            li_at: env.LINKEDIN_LI_AT,
-        }
-    })
+    try {
+        const client = new Client();
 
+        // 1. First verify your cookies are valid and not expired
+        await client.login.userCookie({
+            username: env.LINKEDIN_USERNAME,
+            cookies: {
+                JSESSIONID: env.LINKEDIN_JSESSIONID,
+                li_at: env.LINKEDIN_LI_AT,
+            }
+        })
 
-    console.log("client logged in")
-    const myProfile = await client.profile.getOwnProfile()
-    console.log(myProfile)
-    const profileId = "williamhgates"
-    const response = await client.profile.getProfile({
-        publicIdentifier: profileId,
-    });
-    console.log(response)
+        // 2. Add error handling
+        const myProfile = await client.profile.getOwnProfile()
+        const profileId = "williamhgates"
+        const response = await client.profile.getProfile({
+            publicIdentifier: profileId,
+        });
 
-    return NextResponse.json(response);
+        return NextResponse.json(response);
+    } catch (error) {
+        console.error('LinkedIn API Error:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch LinkedIn profile' },
+            { status: 500 }
+        );
+    }
 };
 
 

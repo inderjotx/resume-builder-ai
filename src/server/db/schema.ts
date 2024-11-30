@@ -21,6 +21,12 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = pgTableCreator((name) => `resume-builder_${name}`);
 
+export const planType = pgEnum("plan_type", [
+  "free",
+  "growth",
+  "professional",
+]);
+
 export const posts = createTable(
   "post",
   {
@@ -62,6 +68,7 @@ export const users = createTable("user", {
 
   // Additional general information that's common across all resumes
   firstName: varchar("first_name", { length: 255 }).default(""),
+  userPlan: planType("user_plan").default("free"),
   lastName: varchar("last_name", { length: 255 }).default(""),
   phoneNumber: varchar("phone_number", { length: 20 }).default(""),
   location: varchar("location", { length: 255 }).default(""),
@@ -172,11 +179,6 @@ export const subscriptionStatus = pgEnum("subscription_status", [
   "past_due",
 ]);
 
-export const planType = pgEnum("plan_type", [
-  "free",
-  "growth",
-  "professional",
-]);
 
 export const billingInterval = pgEnum("billing_interval", [
   "monthly",
@@ -634,3 +636,4 @@ export const resumeRelations = relations(resume, ({ one }) => ({
 
 export type Template = typeof template.$inferSelect;
 export type Resume = typeof resume.$inferSelect;
+export type User = typeof users.$inferSelect;

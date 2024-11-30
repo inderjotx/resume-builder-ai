@@ -16,10 +16,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <SessionProvider>
-        <Toaster richColors />
-        <body suppressHydrationWarning>{children}</body>
-      </SessionProvider>
+      <body suppressHydrationWarning>
+        <SessionProvider>
+          <Toaster richColors />
+          {children}
+        </SessionProvider>
+      </body>
     </html>
   );
 }

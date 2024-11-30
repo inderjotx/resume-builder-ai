@@ -2,6 +2,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import ResendProvider from "next-auth/providers/resend";
+import type { User } from "@/server/db/schema";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
@@ -24,7 +25,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
-    } & DefaultSession["user"];
+    } & DefaultSession["user"] & User;
   }
 
   // interface User {
