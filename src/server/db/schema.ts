@@ -593,6 +593,8 @@ export const resume = createTable("resume", {
   isPublic: boolean("is_public").default(false),
   data: jsonb("data").$type<Partial<ResumeData>>().default(DEFAULT_DATA), // we can have some fields in the default values that we want to be default avaible   
   status: resumeStatus("status").default("draft"),
+
+  thumbnail: varchar("thumbnail", { length: 255 }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

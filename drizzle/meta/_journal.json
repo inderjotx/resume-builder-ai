@@ -15,6 +15,20 @@
       "when": 1732948384248,
       "tag": "0001_acoustic_sway",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1732962656086,
+      "tag": "0002_rich_blue_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1732962844254,
+      "tag": "0003_odd_sentry",
+      "breakpoints": true
     }
   ]
 }

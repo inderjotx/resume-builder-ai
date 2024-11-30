@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import type { ResumeData, } from '@/server/db/schema'
 import { DEFAULT_DATA } from '@/server/db/schema'
 import type { StateCreator } from 'zustand'
-import { devtools } from 'zustand/middleware'
 import { DEFAULT_SECTIONS, type ResumeSettings, type SectionKeys } from "@/server/db/schema"
 
 
@@ -229,7 +228,7 @@ interface ResumeStore extends
     // data: Partial<ResumeData>
 }
 
-export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>(devtools((set, get, ...rest) => ({
+export const useResumeStore = create<ResumeStore>((set, get, ...rest) => ({
     ...createPersonalInfoSlice(set, get, ...rest),
     ...createWorkExperienceSlice(set, get, ...rest),
     ...createEducationSlice(set, get, ...rest),
@@ -300,9 +299,6 @@ export const useResumeStore = create<ResumeStore, [["zustand/devtools", never]]>
 
         return updates;
     }),
-}), {
-    name: "resume-store",
-    store: "resume-store"
 }))
 
 

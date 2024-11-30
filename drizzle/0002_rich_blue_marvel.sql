@@ -1,0 +1,1 @@
+ALTER TABLE "resume-builder_user" ADD COLUMN "thumbnail" varchar(255);
