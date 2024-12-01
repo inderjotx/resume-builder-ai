@@ -639,3 +639,5 @@ export const resumeRelations = relations(resume, ({ one }) => ({
 export type Template = typeof template.$inferSelect;
 export type Resume = typeof resume.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type Subscription = typeof subscriptions.$inferSelect;
+export type PlanType = typeof planType;

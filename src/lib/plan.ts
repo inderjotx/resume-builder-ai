@@ -1,5 +1,10 @@
+import { planType, type PlanType } from "@/server/db/schema";
+import { z } from "zod";
+
+const plan = z.enum(planType.enumValues);
+
 export interface SubscriptionPlan {
-    id: string;
+    id: z.infer<typeof plan>;
     name: string;
     description: string;
     monthlyPrice: number;
@@ -16,7 +21,7 @@ export interface SubscriptionPlan {
 export const subscriptionPlans: SubscriptionPlan[] = [
 
     {
-        id: 'free',
+        id: "free",
         name: 'Free',
         description: '1 AI Resume Generation Based on Job Description',
         monthlyPrice: 0,
@@ -35,7 +40,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     }
     ,
     {
-        id: 'growth',
+        id: "growth",
         name: 'Growth',
         description: '5 AI Resume Generation Based on Job Description',
         monthlyPrice: 19,
@@ -57,7 +62,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     ,
 
     {
-        id: 'professional',
+        id: "professional",
         name: 'Professional',
         description: '15 AI Resume Generation Based on Job Description',
         monthlyPrice: 29,
