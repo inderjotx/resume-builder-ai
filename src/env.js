@@ -20,14 +20,23 @@ export const env = createEnv({
     CHROME_EXECUTABLE_PATH: z.string().optional(),
     AUTH_RESEND_KEY: z.string(),
     AUTH_RESEND_FROM: z.string(),
-    STRIPE_API_KEY: z.string(),
-    STRIPE_API_SECRET: z.string(),
     LINKEDIN_USERNAME: z.string(),
     LINKEDIN_JSESSIONID: z.string(),
     LINKEDIN_LI_AT: z.string(),
     UPLOADTHING_TOKEN: z.string(),
     UPLOADTHING_SECRET: z.string(),
+
+    STRIPE_API_KEY: z.string(),
+    STRIPE_API_SECRET: z.string(),
+
+    STRIPE_WEBHOOK_SECRET: z.string(),
+
+    STRIPE_PROFESSIONAL_MONTHLY: z.string(),
+    STRIPE_PROFESSIONAL_YEARLY: z.string(),
+    STRIPE_GROWTH_MONTHLY: z.string(),
+    STRIPE_GROWTH_YEARLY: z.string(),
   },
+
 
   /**
    * Specify your client-side environment variables schema here. This way you can ensure the app
@@ -51,13 +60,19 @@ export const env = createEnv({
     CHROME_EXECUTABLE_PATH: process.env.CHROME_EXECUTABLE_PATH,
     AUTH_RESEND_KEY: process.env.AUTH_RESEND_KEY,
     AUTH_RESEND_FROM: process.env.AUTH_RESEND_FROM,
-    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
-    STRIPE_API_SECRET: process.env.STRIPE_API_SECRET,
     LINKEDIN_USERNAME: process.env.LINKEDIN_USERNAME,
     LINKEDIN_JSESSIONID: process.env.LINKEDIN_JSESSIONID,
     LINKEDIN_LI_AT: process.env.LINKEDIN_LI_AT,
     UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
+
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
+    STRIPE_API_SECRET: process.env.STRIPE_API_SECRET,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    STRIPE_PROFESSIONAL_MONTHLY: process.env.STRIPE_PROFESSIONAL_MONTHLY,
+    STRIPE_PROFESSIONAL_YEARLY: process.env.STRIPE_PROFESSIONAL_YEARLY,
+    STRIPE_GROWTH_MONTHLY: process.env.STRIPE_GROWTH_MONTHLY,
+    STRIPE_GROWTH_YEARLY: process.env.STRIPE_GROWTH_YEARLY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
