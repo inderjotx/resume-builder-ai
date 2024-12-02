@@ -1,6 +1,8 @@
 "use client";
 
 import { LogOut, Trash2 } from "lucide-react";
+import { deleteAccount } from "../action";
+import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,16 +16,21 @@ import { ResponsiveModalDrawer } from "@/components/ui/responsive-modal";
 
 export function DangerZone() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleLogout = () => {
-    // Implement logout logic here
-    console.log("Logging out...");
+  const handleLogout = async () => {
+    await signOut();
   };
 
-  const handleDeleteAccount = () => {
-    // Implement account deletion logic here
-    console.log("Deleting account...");
-    setIsDeleteDialogOpen(false);
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    await deleteAccount();
+    setIsDeleting(false);
+  };
+
+  const handleDialog = (value: boolean) => {
+    if (isDeleting) return;
+    setIsDeleteDialogOpen(value);
   };
 
   return (
@@ -35,10 +42,14 @@ export function DangerZone() {
       <CardContent className="flex gap-2">
         <ResponsiveModalDrawer
           open={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
+          onOpenChange={handleDialog}
           title="Are you absolutely sure?"
           trigger={
-            <Button variant="destructive" className="w-full sm:w-auto">
+            <Button
+              variant="destructive"
+              className="w-full sm:w-auto"
+              disabled={isDeleting}
+            >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete Account
             </Button>
@@ -53,7 +64,7 @@ export function DangerZone() {
               <Button
                 variant="outline"
                 className="mr-2"
-                onClick={() => setIsDeleteDialogOpen(false)}
+                onClick={() => handleDialog(false)}
               >
                 Cancel
               </Button>

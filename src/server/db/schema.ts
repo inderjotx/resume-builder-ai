@@ -85,10 +85,11 @@ export const users = createTable("user", {
 
 
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
   accounts: many(accounts),
   subscriptions: many(subscriptions),
   resume: many(resume),
+  linkedInProfile: one(linkedInProfile, { fields: [users.id], references: [linkedInProfile.userId] })
 }));
 
 export const accounts = createTable(
@@ -322,6 +323,7 @@ export type ResumeData = {
       city?: string;
       isCurrentlyStudying?: boolean;
       description?: string;
+      grade?: string;
     }>;
   };
   graphs?: {
@@ -583,6 +585,23 @@ export const DEFAULT_DATA: Partial<ResumeData> = {
     items: [],
   },
 };
+
+
+export const linkedInProfile = createTable("linkedin_profile", {
+  id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id)
+    .unique(),
+  data: jsonb("data").$type<Partial<ResumeData>>().default(DEFAULT_DATA),
+  linkedInId: varchar("linkedin_id", { length: 255 }).notNull().unique(),
+})
+
+
+export const linkedInProfileRelations = relations(linkedInProfile, ({ one }) => ({
+  user: one(users, { fields: [linkedInProfile.userId], references: [users.id] }),
+}));
 
 export const resume = createTable("resume", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),

@@ -30,11 +30,7 @@ export const env = createEnv({
     STRIPE_API_SECRET: z.string(),
 
     STRIPE_WEBHOOK_SECRET: z.string(),
-
-    STRIPE_PROFESSIONAL_MONTHLY: z.string(),
-    STRIPE_PROFESSIONAL_YEARLY: z.string(),
-    STRIPE_GROWTH_MONTHLY: z.string(),
-    STRIPE_GROWTH_YEARLY: z.string(),
+    BACKEND_URL: z.string(),
   },
 
 
@@ -44,7 +40,13 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
+    // NEXT_PUBLIC_APP_URL: z.string(),
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+
+    NEXT_PUBLIC_STRIPE_PROFESSIONAL_MONTHLY: z.string(),
+    NEXT_PUBLIC_STRIPE_PROFESSIONAL_YEARLY: z.string(),
+    NEXT_PUBLIC_STRIPE_GROWTH_MONTHLY: z.string(),
+    NEXT_PUBLIC_STRIPE_GROWTH_YEARLY: z.string(),
   },
 
   /**
@@ -69,10 +71,13 @@ export const env = createEnv({
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     STRIPE_API_SECRET: process.env.STRIPE_API_SECRET,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-    STRIPE_PROFESSIONAL_MONTHLY: process.env.STRIPE_PROFESSIONAL_MONTHLY,
-    STRIPE_PROFESSIONAL_YEARLY: process.env.STRIPE_PROFESSIONAL_YEARLY,
-    STRIPE_GROWTH_MONTHLY: process.env.STRIPE_GROWTH_MONTHLY,
-    STRIPE_GROWTH_YEARLY: process.env.STRIPE_GROWTH_YEARLY,
+    BACKEND_URL: process.env.BACKEND_URL,
+
+    // NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_STRIPE_PROFESSIONAL_MONTHLY: process.env.NEXT_PUBLIC_STRIPE_PROFESSIONAL_MONTHLY,
+    NEXT_PUBLIC_STRIPE_PROFESSIONAL_YEARLY: process.env.NEXT_PUBLIC_STRIPE_PROFESSIONAL_YEARLY,
+    NEXT_PUBLIC_STRIPE_GROWTH_MONTHLY: process.env.NEXT_PUBLIC_STRIPE_GROWTH_MONTHLY,
+    NEXT_PUBLIC_STRIPE_GROWTH_YEARLY: process.env.NEXT_PUBLIC_STRIPE_GROWTH_YEARLY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

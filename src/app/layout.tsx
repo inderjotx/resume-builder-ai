@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { Toaster } from "sonner";
 import { type Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
+import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -18,8 +19,10 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable}`}>
       <body suppressHydrationWarning>
         <SessionProvider>
-          <Toaster richColors />
-          {children}
+          <ReactQueryProvider>
+            <Toaster richColors />
+            {children}
+          </ReactQueryProvider>
         </SessionProvider>
       </body>
     </html>

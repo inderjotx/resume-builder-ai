@@ -202,7 +202,21 @@ export class SubscriptionService {
         });
     }
 
-    async getUserCredits(userId: string) {
+    async getUserCredits(userId: string | null = null) {
+
+        if (!userId) {
+            return {
+                credits: 0,
+                subscription: {
+                    interval: null,
+                    lastCreditRefresh: null,
+                    nextCreditRefresh: null,
+                    plan: "free"
+                }
+            }
+        }
+
+
         return this.retryOperation(async () => {
 
             const userSubscription = await db.query.subscriptions.findFirst({
@@ -222,7 +236,15 @@ export class SubscriptionService {
             });
 
 
-            if (!userSubscription) throw new Error("User not found");
+            if (!userSubscription) return {
+                credits: 0,
+                subscription: {
+                    interval: null,
+                    lastCreditRefresh: null,
+                    nextCreditRefresh: null,
+                    plan: "free"
+                }
+            };
 
             const activeSubscription = userSubscription;
 

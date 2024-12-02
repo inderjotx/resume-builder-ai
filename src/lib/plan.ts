@@ -1,5 +1,6 @@
-import { planType, type PlanType } from "@/server/db/schema";
+import { planType, } from "@/server/db/schema";
 import { z } from "zod";
+import { env } from "@/env";
 
 const plan = z.enum(planType.enumValues);
 
@@ -27,7 +28,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
         monthlyPrice: 0,
         yearlyPrice: 0,
         credits: 10,
-        popular: true,
+        popular: false,
         features: [
             '1 AI Resume Generation Based on Job Description',
             'Limited Templates',
@@ -55,8 +56,8 @@ export const subscriptionPlans: SubscriptionPlan[] = [
             'No watermark',
         ],
         stripePriceIds: {
-            monthly: process.env.STRIPE_GROWTH_MONTHLY!,
-            yearly: process.env.STRIPE_GROWTH_YEARLY!
+            monthly: env.NEXT_PUBLIC_STRIPE_GROWTH_MONTHLY,
+            yearly: env.NEXT_PUBLIC_STRIPE_GROWTH_YEARLY
         }
     }
     ,
@@ -68,7 +69,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
         monthlyPrice: 29,
         yearlyPrice: 290,
         credits: 150,
-        popular: true,
+        popular: false,
         features: [
             '15 AI Resume Generation Based on Job Description',
             'Resume from LinkedIn Profile',
@@ -77,8 +78,8 @@ export const subscriptionPlans: SubscriptionPlan[] = [
             'No watermark',
         ],
         stripePriceIds: {
-            monthly: process.env.STRIPE_PROFESSIONAL_MONTHLY!,
-            yearly: process.env.STRIPE_PROFESSIONAL_YEARLY!
+            monthly: env.NEXT_PUBLIC_STRIPE_PROFESSIONAL_MONTHLY,
+            yearly: env.NEXT_PUBLIC_STRIPE_PROFESSIONAL_YEARLY
         }
     }
 ] as const;
