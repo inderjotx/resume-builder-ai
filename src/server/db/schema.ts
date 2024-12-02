@@ -595,7 +595,7 @@ export const linkedInProfile = createTable("linkedin_profile", {
     .references(() => users.id)
     .unique(),
   data: jsonb("data").$type<Partial<ResumeData>>().default(DEFAULT_DATA),
-  linkedInId: varchar("linkedin_id", { length: 255 }).notNull().unique(),
+  linkedInId: varchar("linkedin_id", { length: 255 }).notNull(),
 })
 
 
