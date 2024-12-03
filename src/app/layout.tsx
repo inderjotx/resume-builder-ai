@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { type Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider";
+import { SubscribeToPremiumDialogProvider } from "@/components/providers/SubscribeToPremiumDialog";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -21,7 +22,9 @@ export default function RootLayout({
         <SessionProvider>
           <ReactQueryProvider>
             <Toaster richColors />
-            {children}
+            <SubscribeToPremiumDialogProvider>
+              {children}
+            </SubscribeToPremiumDialogProvider>
           </ReactQueryProvider>
         </SessionProvider>
       </body>

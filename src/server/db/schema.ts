@@ -27,26 +27,6 @@ export const planType = pgEnum("plan_type", [
   "professional",
 ]);
 
-export const posts = createTable(
-  "post",
-  {
-    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("created_by", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
-  },
-  (example) => ({
-    createdByIdIdx: index("created_by_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  })
-);
 
 export const users = createTable("user", {
   // nextauth setup required
@@ -604,7 +584,7 @@ export const linkedInProfileRelations = relations(linkedInProfile, ({ one }) => 
 }));
 
 export const resume = createTable("resume", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
+  id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
@@ -637,7 +617,7 @@ interface FontOptions {
 
 
 export const template = createTable("template", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
+  id: varchar("id", { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }).notNull(),
   colorOptions: jsonb("color_options").$type<ColorOptions[]>().default([]),
   headlineCapitalization: boolean("headline_capitalization").default(false),

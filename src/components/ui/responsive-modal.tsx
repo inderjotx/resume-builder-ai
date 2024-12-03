@@ -22,6 +22,7 @@ interface ResponsiveModalDrawerProps {
   title: string;
   children: React.ReactNode;
   trigger?: React.ReactNode;
+  className?: string;
   breakpoint?: BreakPoint;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -40,6 +41,7 @@ export function ResponsiveModalDrawer({
   breakpoint = "md",
   open,
   onOpenChange,
+  className,
 }: ResponsiveModalDrawerProps) {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -58,7 +60,7 @@ export function ResponsiveModalDrawer({
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
         {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
-        <DrawerContent>
+        <DrawerContent className={className}>
           <DrawerHeader>
             <DrawerTitle>{title}</DrawerTitle>
           </DrawerHeader>
@@ -71,7 +73,7 @@ export function ResponsiveModalDrawer({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent>
+      <DialogContent className={className}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

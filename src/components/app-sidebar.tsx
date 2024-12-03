@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { FileText, LayoutGrid, Bolt, Framer } from "lucide-react";
+import { LayoutGrid, Bolt, Framer } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { type LucideIcon } from "lucide-react";
@@ -12,6 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import { usePathname } from "next/navigation";
@@ -25,6 +26,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useCredits } from "@/hooks/use-credits";
 
 const data = {
   navItems: [
@@ -66,6 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navItems} />
       </SidebarContent>
       <SidebarFooter>
+        <UserPlan />
         <NavUser />
       </SidebarFooter>
       <SidebarRail />
@@ -108,3 +111,21 @@ export function NavMain({
     </SidebarGroup>
   );
 }
+
+export const UserPlan = () => {
+  const credits = useCredits();
+  const { open } = useSidebar();
+
+  if (!open) return null;
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-col items-center justify-between rounded-3xl bg-indigo-100 p-1 text-xs shadow-sm shadow-indigo-300">
+        <p className="uppercase">{credits.data?.subscription.plan} Plan</p>
+      </div>
+      <div className="flex flex-col items-center justify-between rounded-3xl bg-muted p-1 text-xs shadow-sm">
+        <p className="uppercase">{credits.data?.credits} Credits Left </p>
+      </div>
+    </div>
+  );
+};

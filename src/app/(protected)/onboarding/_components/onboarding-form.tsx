@@ -23,7 +23,7 @@ const formSchema = z.object({
     }, "Please enter a valid LinkedIn profile URL or username"),
   jobDescription: z
     .string()
-    .min(50, "Job description must be at least 50 characters")
+    .min(200, "Job description must be at least 200 characters")
     .max(5000, "Job description must not exceed 5000 characters"),
 });
 

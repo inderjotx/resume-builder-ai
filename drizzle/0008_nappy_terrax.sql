@@ -1,0 +1,1 @@
+DROP TABLE "resume-builder_post";

@@ -23,7 +23,7 @@ import { type ResumeData } from "@/server/db/schema";
 import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from "sonner";
 import { ResponsiveModalDrawer } from "@/components/ui/responsive-modal";
-import { ImageEditor } from "@/app/(protected)/[resumeId]/editor/_components/image-editor";
+import { ImageEditor } from "@/app/(protected)/(sidebar)/_components/image-editor";
 // import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
