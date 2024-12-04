@@ -6,7 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export function timeAgo(date: Date): string {
+export function timeAgo(date?: Date | string): string {
+  console.log(date);
+  if (typeof date === "string") date = new Date(date);
+  if (!date) return "just now";
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
   const intervals = [
     { label: 'year', seconds: 31536000 },

@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 
+import { DialogProvider } from "@/components/providers/DialogProvider";
 import { GeistSans } from "geist/font/sans";
 import { Toaster } from "sonner";
 import { type Metadata } from "next";
@@ -23,7 +24,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <Toaster richColors />
             <SubscribeToPremiumDialogProvider>
-              {children}
+              <DialogProvider>{children}</DialogProvider>
             </SubscribeToPremiumDialogProvider>
           </ReactQueryProvider>
         </SessionProvider>

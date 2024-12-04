@@ -10,7 +10,7 @@ export const getUserResumes = async () => {
     if (!session?.user) return [];
 
 
-    await db.query.resume.findMany({
+    const userResume = await db.query.resume.findMany({
         where: eq(resume.userId, session.user.id),
         columns: {
             id: true,
@@ -21,27 +21,6 @@ export const getUserResumes = async () => {
         limit: 10,
     });
 
-    return fakeResumes;
+    return userResume;
 
 };
-
-const fakeResumes = [
-    {
-        id: "1",
-        name: "Resume 1",
-        createdAt: new Date(new Date().setDate(new Date().getDate() - 30)),
-        thumbnail: "/resume/resume1.png",
-    },
-    {
-        id: "2",
-        name: "Resume 2",
-        createdAt: new Date(new Date().setDate(new Date().getDate() - 60)),
-        thumbnail: "/resume/resume2.png",
-    },
-    {
-        id: "3",
-        name: "Resume 3",
-        createdAt: new Date(new Date().setDate(new Date().getDate() - 90)),
-        thumbnail: "/resume/resume3.png",
-    },
-];
