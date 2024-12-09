@@ -2,29 +2,22 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { SortableAccordionItem } from "./common/accordion-item";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { CalendarInput } from "./common/calendar-input";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
 import {
-  Form,
-  FormField,
   FormItem,
-  FormLabel,
   FormControl,
   FormMessage,
+  FormField,
+  FormLabel,
+  Form,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
 import { Accordion, AccordionContent } from "@/components/ui/accordion";
 import {
   DndContext,
@@ -144,7 +137,7 @@ export default function PublicationForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 rounded-md"
       >
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-lg py-5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -204,47 +197,34 @@ export default function PublicationForm() {
                         name={`items.${index}.date`}
                         render={({ field }) => (
                           <FormItem className="space-y-0">
-                            <FormLabel className="text-muted-foreground">
-                              Publication Date
-                            </FormLabel>
                             <FormControl>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full justify-start text-left font-normal",
-                                      !field.value && "text-muted-foreground",
+                              <div className="grid gap-2">
+                                <div className="">
+                                  <FormField
+                                    control={form.control}
+                                    name={`items.${index}.date`}
+                                    render={({ field }) => (
+                                      <FormItem className="space-y-0">
+                                        <FormLabel className="text-muted-foreground">
+                                          Publication Date
+                                        </FormLabel>
+                                        <FormControl>
+                                          <CalendarInput
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            calendarProps={{
+                                              fromYear: 1960,
+                                              toYear: new Date().getFullYear(),
+                                              toDate: new Date(),
+                                            }}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
                                     )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {field.value ? (
-                                      format(new Date(field.value), "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  align="start"
-                                  className="w-auto p-0"
-                                >
-                                  <Calendar
-                                    mode="single"
-                                    captionLayout="dropdown-buttons"
-                                    selected={
-                                      field.value
-                                        ? new Date(field.value)
-                                        : undefined
-                                    }
-                                    onSelect={(date) =>
-                                      field.onChange(date?.toISOString())
-                                    }
-                                    fromYear={1960}
-                                    toYear={2030}
                                   />
-                                </PopoverContent>
-                              </Popover>
+                                </div>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>

@@ -139,7 +139,7 @@ export default function WorkExperienceForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 rounded-md"
       >
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-lg py-5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -218,8 +218,8 @@ export default function WorkExperienceForm() {
                         />
                       </div>
 
-                      <div className="grid grid-cols-5 gap-2">
-                        <div className="col-span-4 grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-8 gap-2">
+                        <div className="col-span-6 grid grid-cols-4 gap-2">
                           <FormField
                             control={form.control}
                             name={`experiences.${index}.startDate`}
@@ -284,7 +284,7 @@ export default function WorkExperienceForm() {
                           />
                         </div>
 
-                        <div className="col-span-1 flex items-center justify-center">
+                        <div className="col-span-2 flex items-center justify-center">
                           <FormField
                             control={form.control}
                             name={`experiences.${index}.isCurrent`}

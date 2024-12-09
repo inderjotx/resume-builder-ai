@@ -132,7 +132,7 @@ export default function ProjectsForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 rounded-md"
       >
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-lg py-5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -248,9 +248,6 @@ export default function ProjectsForm() {
                                     fromYear: 1960,
                                     toYear: 2030,
                                   }}
-                                  disabled={form.watch(
-                                    `items.${index}.isCurrent`,
-                                  )}
                                 />
                               </FormControl>
                               <FormMessage />

@@ -20,11 +20,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
 import { CalendarInput } from "./common/calendar-input";
 import { SortableAccordionItem } from "./common/accordion-item";
-import { format } from "date-fns";
 import {
   DndContext,
   MeasuringStrategy,
@@ -138,7 +137,7 @@ export default function CertificateForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 rounded-md"
       >
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-lg py-5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -201,39 +200,19 @@ export default function CertificateForm() {
                               Date Received
                             </FormLabel>
                             <FormControl>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full justify-start text-left font-normal",
-                                      !field.value && "text-muted-foreground",
-                                    )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {field.value ? (
-                                      format(new Date(field.value), "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  align="start"
-                                  className="w-auto p-0"
-                                >
+                              <div className="">
+                                <div className="">
                                   <CalendarInput
                                     value={field.value}
-                                    onChange={(value) => field.onChange(value)}
+                                    onChange={field.onChange}
                                     calendarProps={{
-                                      mode: "single",
-                                      captionLayout: "dropdown-buttons",
-                                      fromYear: 1900,
+                                      fromYear: 1960,
                                       toYear: new Date().getFullYear(),
+                                      toDate: new Date(),
                                     }}
                                   />
-                                </PopoverContent>
-                              </Popover>
+                                </div>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>

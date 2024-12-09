@@ -124,7 +124,7 @@ export default function GoalsForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 rounded-md"
       >
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-lg py-5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -158,7 +158,7 @@ export default function GoalsForm() {
                     index={index}
                     isActive={activeAccordion === `item-${index}-goal`}
                   >
-                    <AccordionContent className="relative flex flex-col gap-4 rounded-lg p-4">
+                    <AccordionContent className="relative flex flex-col gap-4 rounded-lg py-4">
                       <FormField
                         control={form.control}
                         name={`items.${index}.goal`}

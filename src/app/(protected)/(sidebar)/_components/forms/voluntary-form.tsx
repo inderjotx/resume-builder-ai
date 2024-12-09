@@ -124,7 +124,7 @@ export default function VoluntaryForm() {
   return (
     <Form {...form}>
       <form className="flex flex-col gap-4 rounded-md">
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-lg py-5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -191,8 +191,8 @@ export default function VoluntaryForm() {
                         )}
                       />
 
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="col-span-2 grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-7 gap-2">
+                        <div className="col-span-5 grid grid-cols-2 gap-2">
                           <FormField
                             control={form.control}
                             name={`items.${index}.startDate`}
@@ -206,15 +206,9 @@ export default function VoluntaryForm() {
                                     value={field.value}
                                     onChange={field.onChange}
                                     calendarProps={{
-                                      mode: "single",
-                                      selected: field.value
-                                        ? new Date(field.value)
-                                        : undefined,
-                                      onSelect: (date) =>
-                                        field.onChange(
-                                          date ? date.toISOString() : undefined,
-                                        ),
-                                      initialFocus: true,
+                                      fromYear: 1960,
+                                      toYear: new Date().getFullYear(),
+                                      toDate: new Date(),
                                     }}
                                   />
                                 </FormControl>
@@ -235,16 +229,13 @@ export default function VoluntaryForm() {
                                   <CalendarInput
                                     value={field.value}
                                     onChange={field.onChange}
+                                    disabled={form.watch(
+                                      `items.${index}.isCurrent`,
+                                    )}
                                     calendarProps={{
-                                      mode: "single",
-                                      selected: field.value
-                                        ? new Date(field.value)
-                                        : undefined,
-                                      onSelect: (date) =>
-                                        field.onChange(
-                                          date ? date.toISOString() : undefined,
-                                        ),
-                                      initialFocus: true,
+                                      fromYear: 1960,
+                                      toYear: new Date().getFullYear(),
+                                      toDate: new Date(),
                                     }}
                                   />
                                 </FormControl>
@@ -254,7 +245,11 @@ export default function VoluntaryForm() {
                           />
                         </div>
 
-                        <div className="col-span-1 flex items-center justify-center">
+                        <div
+                          className="col-span-2 flex"
+                          items-center
+                          justify-center
+                        >
                           <FormField
                             control={form.control}
                             name={`items.${index}.isCurrent`}

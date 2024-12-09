@@ -1,4 +1,5 @@
 import type { SectionKeys } from "@/server/db/schema";
+import { prettyDate } from "@/lib/utils";
 import { SocialMediaPlatform } from "@/server/db/schema";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -227,7 +228,7 @@ function WorkExperienceSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {workExperience?.items?.map((job, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
                 <div className="space-y-1">
                   <h3 className="font-semibold">{job?.position}</h3>
@@ -241,10 +242,16 @@ function WorkExperienceSection() {
                   </div>
                 </div>
                 <div className="whitespace-nowrap text-sm text-muted-foreground">
-                  {job?.startDate} - {job?.isCurrent ? "Present" : job?.endDate}
+                  {prettyDate(job?.startDate)} -{" "}
+                  {job?.isCurrent ? "Present" : prettyDate(job?.endDate)}
                 </div>
               </div>
-              <p className="mt-2 text-pretty text-sm">{job?.description}</p>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: job?.description ?? "",
+                }}
+                className="prose-sm mt-2 text-pretty text-sm text-muted-foreground"
+              ></div>
             </Card>
           ))}
         </div>
@@ -267,7 +274,7 @@ function EducationSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {education?.items?.map((edu, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
                 <div className="space-y-1">
                   <h3 className="font-semibold">{edu?.degree}</h3>
@@ -278,11 +285,18 @@ function EducationSection() {
                   <div className="text-sm">{edu?.fieldOfStudy}</div>
                 </div>
                 <div className="whitespace-nowrap text-sm text-muted-foreground">
-                  {edu?.startDate} -{" "}
-                  {edu?.isCurrentlyStudying ? "Present" : edu?.endDate}
+                  {prettyDate(edu?.startDate)} -{" "}
+                  {edu?.isCurrentlyStudying
+                    ? "Present"
+                    : prettyDate(edu?.endDate)}
                 </div>
               </div>
-              <p className="mt-2 text-pretty text-sm">{edu?.description}</p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: edu?.description ?? "",
+                }}
+                className="mt-2 text-pretty text-sm text-muted-foreground"
+              />
             </Card>
           ))}
         </div>
@@ -312,7 +326,7 @@ function SkillsSection() {
                   <Badge
                     key={skillIndex}
                     variant="secondary"
-                    className="text-sm"
+                    className="text-xs"
                   >
                     {skill}
                   </Badge>
@@ -367,7 +381,7 @@ function ProjectsSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {projects?.items?.map((project, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
                 <div className="space-y-1">
                   <h3 className="flex items-center gap-2 font-semibold">
@@ -392,11 +406,18 @@ function ProjectsSection() {
                   )}
                 </div>
                 <div className="whitespace-nowrap text-sm text-muted-foreground">
-                  {project?.startDate} -{" "}
-                  {project?.isCurrent ? "Present" : project?.endDate}
+                  {prettyDate(project?.startDate)} -{" "}
+                  {project?.isCurrent
+                    ? "Present"
+                    : prettyDate(project?.endDate)}
                 </div>
               </div>
-              <p className="mt-2 text-pretty text-sm">{project?.description}</p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: project?.description ?? "",
+                }}
+                className="mt-2 text-pretty text-sm text-muted-foreground"
+              />
             </Card>
           ))}
         </div>
@@ -419,7 +440,7 @@ function CertificationsSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {certifications?.items?.map((cert, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <div className="space-y-2">
                 <div className="flex flex-col gap-1">
                   <h3 className="font-semibold">{cert?.certificationName}</h3>
@@ -427,7 +448,7 @@ function CertificationsSection() {
                     {cert?.certificationAuthority}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {cert?.certificationDate}
+                    {prettyDate(cert?.certificationDate)}
                   </div>
                 </div>
                 {cert?.description && (
@@ -466,13 +487,13 @@ function AchievementsSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {achievements?.items?.map((achievement, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold">
                   {achievement?.achievementTitle}
                 </h3>
                 <div className="text-sm text-muted-foreground">
-                  {achievement?.achievementDate}
+                  {prettyDate(achievement?.achievementDate)}
                 </div>
               </div>
               <p className="mt-2 text-sm">
@@ -525,7 +546,7 @@ function VoluntaryWorkSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {voluntaryWork?.items?.map((work, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-semibold">{work?.role}</h3>
@@ -534,8 +555,8 @@ function VoluntaryWorkSection() {
                   </div>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {work?.startDate} -{" "}
-                  {work?.isCurrent ? "Present" : work?.endDate}
+                  {prettyDate(work?.startDate)} -{" "}
+                  {work?.isCurrent ? "Present" : prettyDate(work?.endDate)}
                 </div>
               </div>
               {work?.description && (
@@ -590,11 +611,11 @@ function AwardsSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {awards?.items?.map((award, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold">{award?.title}</h3>
                 <div className="text-sm text-muted-foreground">
-                  {award?.date}
+                  {prettyDate(award?.date)}
                 </div>
               </div>
               <div className="text-sm text-muted-foreground">
@@ -636,7 +657,7 @@ function ReferencesSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {references?.items?.map((ref, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <h3 className="font-semibold">{ref?.name}</h3>
               <div className="text-sm text-muted-foreground">
                 {ref?.position} {ref?.company && `at ${ref.company}`}
@@ -680,10 +701,12 @@ function PublicationsSection() {
         />
         <div className="mt-4 flex flex-col gap-4">
           {publications?.items?.map((pub, index) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 shadow-none">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold">{pub?.title}</h3>
-                <div className="text-sm text-muted-foreground">{pub?.date}</div>
+                <div className="text-sm text-muted-foreground">
+                  {prettyDate(pub?.date)}
+                </div>
               </div>
               {pub?.description && (
                 <p className="mt-2 text-sm">{pub.description}</p>

@@ -30,3 +30,12 @@ export function timeAgo(date?: Date | string): string {
   return 'just now';
 }
 
+export function prettyDate(date: string | Date | undefined | null) {
+  if (!date) return "";
+  if (typeof date === "string") date = new Date(date);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+    day: "numeric"
+  });
+}

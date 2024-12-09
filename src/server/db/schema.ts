@@ -306,14 +306,6 @@ export type ResumeData = {
       grade?: string;
     }>;
   };
-  graphs?: {
-    title?: string;
-    iconId?: string;
-    items?: Array<{
-      graphType?: string;
-      graphData?: string;
-    }>;
-  };
   skills?: {
     iconId?: string;
     title?: string;
@@ -530,10 +522,6 @@ export const DEFAULT_DATA: Partial<ResumeData> = {
   },
   awards: {
     title: "Awards",
-    items: [],
-  },
-  graphs: {
-    title: "Graphs",
     items: [],
   },
   goals: {

@@ -57,10 +57,6 @@ type GoalsSlice = {
     goals: Partial<ResumeData['goals']>
     updateGoals: (data: Partial<ResumeData['goals']>) => void
 }
-type GraphsSlice = {
-    graphs: Partial<ResumeData['graphs']>
-    updateGraphs: (data: Partial<ResumeData['graphs']>) => void
-}
 
 type AchievementsSlice = {
     achievements: Partial<ResumeData['achievements']>
@@ -175,12 +171,6 @@ const createGoalsSlice: StateCreator<ResumeStore, [], [], GoalsSlice> = (set) =>
     })),
 })
 
-const createGraphsSlice: StateCreator<ResumeStore, [], [], GraphsSlice> = (set) => ({
-    graphs: DEFAULT_DATA.graphs,
-    updateGraphs: (data) => set((state) => ({
-        graphs: { ...state.graphs, ...data }
-    })),
-})
 
 const createOrderSlice: StateCreator<ResumeStore, [], [], OrderSlice> = (set) => ({
     order: DEFAULT_SECTIONS,
@@ -216,7 +206,6 @@ interface ResumeStore extends
     SocialMediaSlice,
     VoluntaryWorkSlice,
     GoalsSlice,
-    GraphsSlice,
     OrderSlice,
     SettingsSlice {
     getData: () => ResumeDataStore
@@ -243,7 +232,6 @@ export const useResumeStore = create<ResumeStore>((set, get, ...rest) => ({
     ...createSocialMediaSlice(set, get, ...rest),
     ...createVoluntaryWorkSlice(set, get, ...rest),
     ...createGoalsSlice(set, get, ...rest),
-    ...createGraphsSlice(set, get, ...rest),
     ...createOrderSlice(set, get, ...rest),
     ...createSettingsSlice(set, get, ...rest),
 
@@ -265,7 +253,6 @@ export const useResumeStore = create<ResumeStore>((set, get, ...rest) => ({
             socialMedia: get()?.socialMedia,
             voluntaryWork: get()?.voluntaryWork,
             goals: get()?.goals,
-            graphs: get()?.graphs,
         },
         settings: get().settings,
         order: get().order

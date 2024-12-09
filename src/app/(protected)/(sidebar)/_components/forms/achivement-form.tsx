@@ -138,7 +138,7 @@ export default function AchievementForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 rounded-md"
       >
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-lg py-5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -193,30 +193,32 @@ export default function AchievementForm() {
                         )}
                       />
 
-                      <div className="grid grid-cols-2 gap-2">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.achievementDate`}
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormLabel className="text-muted-foreground">
-                                Date
-                              </FormLabel>
-                              <FormControl>
-                                <CalendarInput
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  calendarProps={{
-                                    fromYear: 1960,
-                                    toYear: new Date().getFullYear(),
-                                    toDate: new Date(),
-                                  }}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                      <div className="gap-2">
+                        <div className="">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.achievementDate`}
+                            render={({ field }) => (
+                              <FormItem className="space-y-0">
+                                <FormLabel className="text-muted-foreground">
+                                  Date
+                                </FormLabel>
+                                <FormControl>
+                                  <CalendarInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    calendarProps={{
+                                      fromYear: 1960,
+                                      toYear: new Date().getFullYear(),
+                                      toDate: new Date(),
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
 
                       <FormField

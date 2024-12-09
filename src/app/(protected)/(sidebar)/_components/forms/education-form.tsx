@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useResumeStore } from "@/store/resume/data-store";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import { type ResumeData } from "@/server/db/schema";
 import { Accordion, AccordionContent } from "@/components/ui/accordion";
 import {
@@ -35,15 +35,8 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { type DragEndEvent } from "@dnd-kit/core";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { CalendarInput } from "./common/calendar-input";
 
 const educationSchema = z.object({
   institutionName: z.string().optional(),
@@ -61,65 +54,6 @@ const formSchema = z.object({
   title: z.string().optional(),
   items: z.array(educationSchema),
 });
-
-const CalendarInput = ({
-  value,
-  onChange,
-  calendarProps,
-  disabled,
-}: {
-  value: string | undefined;
-  calendarProps?: React.ComponentProps<typeof Calendar>;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}) => {
-  const disabledDates = [
-    {
-      from: calendarProps?.fromDate ? new Date(0) : undefined,
-      to: calendarProps?.fromDate
-        ? new Date(calendarProps.fromDate)
-        : undefined,
-    },
-    {
-      from: calendarProps?.toDate ? new Date(calendarProps.toDate) : undefined,
-      to: new Date(2100, 0, 1),
-    },
-  ].filter((range) => range.from && range.to) as { from: Date; to: Date }[];
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "w-full justify-start bg-background text-left font-normal",
-            !value && "text-muted-foreground",
-            disabled && "cursor-not-allowed opacity-50",
-          )}
-          disabled={disabled}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(new Date(value), "PPP") : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      {!disabled && (
-        <PopoverContent align="start" className="w-auto p-0">
-          <Calendar
-            mode="single"
-            captionLayout="dropdown-buttons"
-            selected={value ? new Date(value) : undefined}
-            onSelect={(date) =>
-              date ? onChange(date?.toISOString()) : undefined
-            }
-            disabled={disabledDates}
-            fromYear={calendarProps?.fromYear}
-            toYear={calendarProps?.toYear}
-          />
-        </PopoverContent>
-      )}
-    </Popover>
-  );
-};
 
 export default function EducationForm() {
   const education = useResumeStore((store) => store.education);
@@ -191,7 +125,7 @@ export default function EducationForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 rounded-md"
       >
-        <div className="flex flex-col gap-4 rounded-lg px-4 py-5">
+        <div className="flex flex-col gap-4 rounded-lg py-5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -278,8 +212,8 @@ export default function EducationForm() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-5 gap-2">
-                        <div className="col-span-4 grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-7 gap-2">
+                        <div className="col-span-5 grid grid-cols-4 gap-2">
                           <FormField
                             control={form.control}
                             name={`items.${index}.startDate`}
@@ -329,7 +263,7 @@ export default function EducationForm() {
                           />
                         </div>
 
-                        <div className="col-span-1 flex items-center justify-center">
+                        <div className="col-span-2 flex items-center justify-center">
                           <FormField
                             control={form.control}
                             name={`items.${index}.isCurrentlyStudying`}

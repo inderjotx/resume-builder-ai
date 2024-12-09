@@ -1,7 +1,6 @@
 "use client";
 
 import { SelectForms } from "./select-forms";
-import GraphForm from "./forms/graphs-form";
 import { useEffect, createElement } from "react";
 import { Undo, Redo } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
@@ -51,7 +50,6 @@ import { useSortable } from "@dnd-kit/sortable";
 import {
   Trophy,
   Award,
-  ChartArea as Graph,
   GraduationCap,
   Lightbulb,
   Globe,
@@ -145,12 +143,6 @@ export const FormMap: Record<
     title: "Personal Information",
     component: PersonalInfoForm,
     icon: User,
-  },
-  graphs: {
-    id: "graphs",
-    title: "Graphs",
-    component: GraphForm,
-    icon: Graph,
   },
   workExperience: {
     id: "workExperience",
@@ -303,7 +295,10 @@ export default function EditorDashboard() {
           <header className="flex h-10 w-full items-center justify-center border-b">
             Top
           </header>
-          <ScrollArea className="h-[calc(100vh-2.5rem)]">
+          <ScrollArea
+            id="editor-scroll-area"
+            className="h-[calc(100vh-2.5rem)]"
+          >
             <div className="space-y-4 p-4">
               <h2 className="text-2xl font-bold">Editor</h2>
               <DndContext
