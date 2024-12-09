@@ -47,6 +47,7 @@ export default function PersonalInfoForm() {
   const { startUpload } = useUploadThing("imageUploader");
   const session = useSession();
   const [imageEditorOpen, setImageEditorOpen] = useState(false);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const updatePersonalInfo = useResumeStore(
     (state) => state.updatePersonalInfo,
@@ -70,10 +71,20 @@ export default function PersonalInfoForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      updatePersonalInfo(value as Partial<ResumeData["personalInfo"]>);
+      if (!isUpdatingFromStore) {
+        updatePersonalInfo(value as Partial<ResumeData["personalInfo"]>);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updatePersonalInfo, form]);
+  }, [form.watch, updatePersonalInfo, isUpdatingFromStore]);
+
+  useEffect(() => {
+    if (personalInfo) {
+      setIsUpdatingFromStore(true);
+      form.reset(personalInfo);
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [personalInfo]);
 
   const handleImageSave = async (croppedImage: Blob) => {
     try {

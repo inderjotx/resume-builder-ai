@@ -1,7 +1,9 @@
 import { type LinkedInProfileData } from "@/types/linkedin-profile.type";
-import { linkedInProfile, type Proficiency, type ResumeData } from "@/server/db/schema";
+import { linkedInProfile, type Proficiency, type ResumeData, resume } from "@/server/db/schema";
+import { auth } from "@/server/auth";
 import { db } from "@/server/db";
 import { env } from "@/env";
+import { and, eq } from "drizzle-orm";
 
 export class ResumeService {
 
@@ -155,7 +157,40 @@ export class ResumeService {
     private static formatDate(data: { month?: number, year: number, date?: number }) {
         return new Date(data.year, data?.month ?? 1, data?.date ?? 1).toISOString();
     }
+
+
+    public async getResume(resumeId: string) {
+
+        const session = await auth()
+
+        if (!session?.user?.id) {
+            return {
+                success: false,
+                data: null,
+                error: "Unauthorized"
+            }
+        }
+
+        const resumeData = await db.query.resume.findFirst({
+            where: and(eq(resume.id, resumeId), eq(resume.userId, session.user.id))
+        });
+
+        if (!resumeData) {
+            return {
+                success: false,
+                data: null,
+                error: "Resume not found"
+            }
+        }
+        return {
+            success: true,
+            data: resumeData,
+            error: null
+        };
+    }
 }
+
+
 
 const resumeService = new ResumeService();
 export default resumeService;

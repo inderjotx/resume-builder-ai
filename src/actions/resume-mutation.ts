@@ -62,7 +62,7 @@ export async function renameResume({ resumeId, name }: { resumeId: string, name:
 
 
 
-export async function updateResume({ resumeId, name, data, order, settings }: { resumeId: string, name: string, data: Partial<ResumeData>, order?: { id: SectionKeys, title: string }[], settings?: Partial<ResumeSettings> }) {
+export async function updateResume({ resumeId, data, order, settings }: { resumeId: string, data: Partial<ResumeData>, order?: { id: SectionKeys, title: string }[], settings?: Partial<ResumeSettings> }) {
 
     try {
         const session = await auth()
@@ -73,7 +73,7 @@ export async function updateResume({ resumeId, name, data, order, settings }: { 
             }
         }
 
-        await db.update(resume).set({ name, data, order, settings }).where(and(eq(resume.id, resumeId), eq(resume.userId, session.user.id)))
+        await db.update(resume).set({ data, order, settings }).where(and(eq(resume.id, resumeId), eq(resume.userId, session.user.id)))
         return {
             success: true
         }

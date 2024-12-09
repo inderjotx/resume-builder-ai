@@ -30,7 +30,6 @@ import {
 export function NavUser() {
   const { isMobile } = useSidebar();
   const session = useSession();
-  console.log(session.data?.user);
   const isPremium = !(session.data?.user?.userPlan === "free");
 
   return (

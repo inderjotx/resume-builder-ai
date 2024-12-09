@@ -1,7 +1,8 @@
 "use client";
-
+import { type Resume } from "@/server/db/schema";
 import { SelectForms } from "./select-forms";
 import { useEffect, createElement } from "react";
+import { useSaveResume } from "@/hooks/use-save-resume";
 import { Undo, Redo } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
@@ -64,6 +65,7 @@ import {
 import { useUpdateTitle } from "@/store/resume/data-store";
 import { DynamicInput } from "@/components/ui/dynamic-input";
 import { useHistoryStore } from "@/store/resume/history-store";
+import { usePathname } from "next/navigation";
 
 function SortableAccordionItem({
   id,
@@ -87,6 +89,7 @@ function SortableAccordionItem({
   } = useSortable({ id });
 
   const { title, setTitle } = useUpdateTitle(id);
+  const pathname = usePathname();
 
   const style = {
     transform: transform
@@ -224,12 +227,21 @@ export const FormMap: Record<
   },
 } as const;
 
-export default function EditorDashboard() {
+export default function EditorDashboard({ resume }: { resume: Resume }) {
   const activeSection = useResumeStore((state) => state.activeSection);
   const setActiveSection = useResumeStore((state) => state.setActiveSection);
   const historyStore = useHistoryStore();
-
+  const { isPending } = useSaveResume(resume.id);
   const updateAll = useResumeStore((state) => state.updateAll);
+
+  useEffect(() => {
+    console.log("setting up initial data");
+    updateAll({
+      data: resume.data!,
+      settings: resume.settings!,
+      order: resume.order!,
+    });
+  }, [resume, updateAll]);
 
   useEffect(() => {
     const content = document.getElementById(
@@ -293,7 +305,11 @@ export default function EditorDashboard() {
       <div className="grid flex-1 grid-cols-5">
         <div className="col-span-5 lg:col-span-2">
           <header className="flex h-10 w-full items-center justify-center border-b">
-            Top
+            {isPending ? (
+              <span className="text-sm text-muted-foreground">Saving...</span>
+            ) : (
+              <span className="text-sm text-muted-foreground">Ready</span>
+            )}
           </header>
           <ScrollArea
             id="editor-scroll-area"
