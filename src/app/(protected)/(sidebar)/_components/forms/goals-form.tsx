@@ -46,6 +46,8 @@ const formSchema = z.object({
 
 export default function GoalsForm() {
   const { goals, updateGoals } = useResumeStore();
+  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,8 +63,6 @@ export default function GoalsForm() {
     name: "items",
   });
 
-  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
-
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -76,15 +76,27 @@ export default function GoalsForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        title: value.title,
-        items: value.items,
-      } as ResumeData["goals"];
-
-      updateGoals(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["goals"];
+        updateGoals(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateGoals, form]);
+  }, [form.watch, updateGoals, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (goals) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: goals.title ?? "",
+        items: goals.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [goals, form]);
 
   const handleAddGoal = () => {
     append({ goal: "" });

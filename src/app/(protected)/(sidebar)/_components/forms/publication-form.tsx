@@ -55,6 +55,7 @@ export default function PublicationForm() {
   const updatePublications = useResumeStore(
     (store) => store.updatePublications,
   );
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,15 +90,27 @@ export default function PublicationForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        title: value.title,
-        items: value.items,
-      } as ResumeData["publications"];
-
-      updatePublications(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["publications"];
+        updatePublications(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updatePublications, form]);
+  }, [form.watch, updatePublications, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (publications) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: publications.title ?? "Publications",
+        items: publications.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [publications, form]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),

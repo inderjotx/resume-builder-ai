@@ -134,6 +134,7 @@ export default function SocialMediaForm() {
   const socialMedia = useResumeStore((store) => store.socialMedia);
   const updateSocialMedia = useResumeStore((store) => store.updateSocialMedia);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -155,15 +156,27 @@ export default function SocialMediaForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        title: value.title,
-        items: value.items,
-      } as ResumeData["socialMedia"];
-
-      updateSocialMedia(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["socialMedia"];
+        updateSocialMedia(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateSocialMedia, form]);
+  }, [form.watch, updateSocialMedia, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (socialMedia) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: socialMedia.title ?? "",
+        items: socialMedia.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [socialMedia, form]);
 
   const handleCreateAccordion = () => {
     append({});

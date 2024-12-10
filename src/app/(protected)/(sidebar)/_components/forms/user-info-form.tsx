@@ -76,7 +76,7 @@ export default function PersonalInfoForm() {
       }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updatePersonalInfo, isUpdatingFromStore]);
+  }, [form.watch, updatePersonalInfo, isUpdatingFromStore , form]);
 
   useEffect(() => {
     if (personalInfo) {
@@ -84,7 +84,7 @@ export default function PersonalInfoForm() {
       form.reset(personalInfo);
       setTimeout(() => setIsUpdatingFromStore(false), 0);
     }
-  }, [personalInfo]);
+  }, [personalInfo , form]);
 
   const handleImageSave = async (croppedImage: Blob) => {
     try {

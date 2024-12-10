@@ -58,6 +58,7 @@ export default function VoluntaryForm() {
   const updateVoluntaryWork = useResumeStore(
     (store) => store.updateVoluntaryWork,
   );
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,14 +76,27 @@ export default function VoluntaryForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        items: value.items,
-      } as ResumeData["voluntaryWork"];
+      if (!isUpdatingFromStore) {
+        const data = {
+          items: value.items,
+        } as ResumeData["voluntaryWork"];
 
-      updateVoluntaryWork(data);
+        updateVoluntaryWork(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateVoluntaryWork, form]);
+  }, [form.watch, updateVoluntaryWork, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (voluntaryWork) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: voluntaryWork.title ?? "",
+        items: voluntaryWork.items ?? [{}],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [voluntaryWork, form]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),

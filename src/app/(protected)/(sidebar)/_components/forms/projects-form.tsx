@@ -58,6 +58,7 @@ export default function ProjectsForm() {
   const projects = useResumeStore((store) => store.projects);
   const updateProjects = useResumeStore((store) => store.updateProjects);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -86,15 +87,27 @@ export default function ProjectsForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        title: value.title,
-        items: value.items,
-      } as ResumeData["projects"];
-
-      updateProjects(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["projects"];
+        updateProjects(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateProjects, form]);
+  }, [form.watch, updateProjects, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (projects) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: projects.title ?? "Projects",
+        items: projects.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [projects, form]);
 
   const handleCreateAccordion = () => {
     append({});

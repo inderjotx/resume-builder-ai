@@ -59,8 +59,8 @@ export default function AchievementForm() {
   const updateAchievements = useResumeStore(
     (store) => store.updateAchievements,
   );
-
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,15 +82,27 @@ export default function AchievementForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        title: value.title,
-        items: value.items,
-      } as ResumeData["achievements"];
-
-      updateAchievements(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["achievements"];
+        updateAchievements(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateAchievements, form]);
+  }, [form.watch, updateAchievements, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (achievements) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: achievements.title ?? "",
+        items: achievements.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [achievements, form]);
 
   const handleCreateAccordion = () => {
     append({});

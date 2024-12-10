@@ -59,6 +59,7 @@ export default function EducationForm() {
   const education = useResumeStore((store) => store.education);
   const updateEducation = useResumeStore((store) => store.updateEducation);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,14 +81,26 @@ export default function EducationForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        items: value.items,
-      } as ResumeData["education"];
-
-      updateEducation(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          items: value.items,
+        } as ResumeData["education"];
+        updateEducation(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateEducation, form]);
+  }, [form.watch, updateEducation, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (education) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: education.title ?? "",
+        items: education.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [education, form]);
 
   const handleCreateAccordion = () => {
     append({});

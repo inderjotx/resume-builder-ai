@@ -53,6 +53,7 @@ export default function AwardsForm() {
   const awards = useResumeStore((store) => store.awards);
   const updateAwards = useResumeStore((store) => store.updateAwards);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,14 +75,27 @@ export default function AwardsForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        items: value.items,
-      } as ResumeData["awards"];
-
-      updateAwards(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["awards"];
+        updateAwards(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateAwards, form]);
+  }, [form.watch, updateAwards, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (awards) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: awards.title ?? "",
+        items: awards.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [awards, form]);
 
   const handleCreateAccordion = () => {
     append({});

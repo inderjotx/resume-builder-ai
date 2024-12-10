@@ -7,7 +7,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
 import {
   Form,
   FormField,
@@ -62,6 +61,7 @@ export default function CertificateForm() {
     (store) => store.updateCertifications,
   );
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -83,13 +83,26 @@ export default function CertificateForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        items: value.items,
-      } as ResumeData["certifications"];
-      updateCertifications(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          items: value.items,
+        } as ResumeData["certifications"];
+        updateCertifications(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateCertifications, form]);
+  }, [form.watch, updateCertifications, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (certifications) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: certifications.title ?? "",
+        items: certifications.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [certifications, form]);
 
   const handleCreateAccordion = () => {
     append({});

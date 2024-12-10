@@ -49,6 +49,8 @@ import { SortableAccordionItem } from "./common/accordion-item";
 
 export default function SkillForm() {
   const { skills, updateSkills } = useResumeStore();
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
+  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,8 +65,6 @@ export default function SkillForm() {
     control: form.control,
     name: "items",
   });
-
-  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -86,15 +86,27 @@ export default function SkillForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        title: value.title,
-        items: value.items,
-      } as ResumeData["skills"];
-
-      updateSkills(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["skills"];
+        updateSkills(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateSkills, form]);
+  }, [form.watch, updateSkills, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (skills) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: skills.title ?? "",
+        items: skills.items ?? [{ skillCategory: "", skillTags: [] }],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [skills, form]);
 
   const addSkillTag = (index: number) => {
     const input = document.getElementById(

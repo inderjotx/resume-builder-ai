@@ -56,6 +56,7 @@ export default function LanguagesForm() {
   const languages = useResumeStore((store) => store.languages);
   const updateLanguages = useResumeStore((store) => store.updateLanguages);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -84,14 +85,26 @@ export default function LanguagesForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const data = {
-        items: value.items,
-      } as ResumeData["languages"];
-
-      updateLanguages(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          items: value.items,
+        } as ResumeData["languages"];
+        updateLanguages(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateLanguages, form]);
+  }, [form.watch, updateLanguages, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (languages) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: languages.title ?? "",
+        items: languages.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [languages, form]);
 
   const handleCreateAccordion = () => {
     append({

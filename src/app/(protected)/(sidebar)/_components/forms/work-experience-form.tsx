@@ -60,6 +60,7 @@ export default function WorkExperienceForm() {
   const updateWorkExperience = useResumeStore(
     (store) => store.updateWorkExperience,
   );
+  const [isUpdatingFromStore, setIsUpdatingFromStore] = useState(false);
 
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
@@ -91,15 +92,27 @@ export default function WorkExperienceForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      console.log("subscription value", value.experiences);
-      const data = {
-        items: value.experiences,
-        title: value.title ?? "",
-      } as ResumeData["workExperience"];
-      updateWorkExperience(data);
+      if (!isUpdatingFromStore) {
+        const data = {
+          items: value.experiences,
+          title: value.title ?? "",
+        } as ResumeData["workExperience"];
+        updateWorkExperience(data);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, updateWorkExperience, form]);
+  }, [form.watch, updateWorkExperience, isUpdatingFromStore, form]);
+
+  useEffect(() => {
+    if (workExperience) {
+      setIsUpdatingFromStore(true);
+      form.reset({
+        title: workExperience.title ?? "",
+        experiences: workExperience.items ?? [],
+      });
+      setTimeout(() => setIsUpdatingFromStore(false), 0);
+    }
+  }, [workExperience, form]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
