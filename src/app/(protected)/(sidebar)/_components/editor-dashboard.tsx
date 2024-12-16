@@ -1,7 +1,8 @@
 "use client";
 import { type Resume } from "@/server/db/schema";
+import { useReactToPrint } from "react-to-print";
 import { SelectForms } from "./select-forms";
-import { useEffect, createElement } from "react";
+import { useEffect, createElement, useRef } from "react";
 import { useSaveResume } from "@/hooks/use-save-resume";
 import { Undo, Redo } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
@@ -61,6 +62,7 @@ import {
   Heart,
   BriefcaseBusiness,
   User,
+  Printer,
 } from "lucide-react";
 import { useUpdateTitle } from "@/store/resume/data-store";
 import { DynamicInput } from "@/components/ui/dynamic-input";
@@ -233,6 +235,17 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
   const historyStore = useHistoryStore();
   const { isPending } = useSaveResume(resume.id);
   const updateAll = useResumeStore((state) => state.updateAll);
+  const resumeRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef: resumeRef as React.RefObject<HTMLDivElement>,
+    fonts: [
+      {
+        family: "Roboto",
+        source:
+          "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap",
+      },
+    ],
+  });
 
   useEffect(() => {
     console.log("setting up initial data");
@@ -298,6 +311,10 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
       const newOrder = arrayMove(formOrder, oldIndex, newIndex);
       setFormOrder(newOrder);
     }
+  }
+
+  function handlePrintResume() {
+    handlePrint();
   }
 
   return (
@@ -378,10 +395,15 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
               >
                 <Redo className="size-4" />
               </Button>
+              <Button variant="outline" size="icon" onClick={handlePrintResume}>
+                <Printer className="size-4" />
+              </Button>
             </div>
           </header>
           <ScrollArea className="h-[calc(100vh-2.5rem)] bg-muted">
-            <DisplayContent />
+            <DisplayContent
+              ref={resumeRef as React.RefObject<HTMLDivElement>}
+            />
           </ScrollArea>
         </div>
       </div>

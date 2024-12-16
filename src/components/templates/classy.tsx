@@ -18,7 +18,6 @@ import {
   Languages,
   Target,
   Heart,
-  BarChart,
   Trophy,
   Users,
   BookOpen,
@@ -77,7 +76,7 @@ function SectionWrapper({
 
   return (
     <div
-      className="group relative cursor-pointer rounded-sm transition-all hover:ring-2 hover:ring-indigo-400 hover:ring-offset-8"
+      className="group relative cursor-pointer break-inside-avoid rounded-sm transition-all hover:ring-2 hover:ring-indigo-400 hover:ring-offset-8"
       onClick={() => setActiveSection(sectionKey)}
     >
       {children}
@@ -88,7 +87,11 @@ function SectionWrapper({
   );
 }
 
-export function ClassyTemplate() {
+export function ClassyTemplate({
+  ref,
+}: {
+  ref: React.RefObject<HTMLDivElement>;
+}) {
   const order = useResumeStore((state) => state.order);
 
   const sectionMap: Record<SectionKeys, React.ComponentType> = {
@@ -102,7 +105,6 @@ export function ClassyTemplate() {
     achievements: AchievementsSection,
     goals: GoalsSection,
     voluntaryWork: VoluntaryWorkSection,
-    graphs: GraphsSection,
     awards: AwardsSection,
     references: ReferencesSection,
     publications: PublicationsSection,
@@ -110,7 +112,10 @@ export function ClassyTemplate() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-4xl border bg-white p-4 shadow-lg sm:p-6 md:aspect-[1/1.4142] md:w-[180mm] print:shadow-none">
+    <div
+      ref={ref}
+      className="mx-auto w-full max-w-4xl border bg-white p-4 shadow-lg sm:p-6 md:aspect-[1/1.4142] md:w-[180mm] print:shadow-none"
+    >
       <div className="flex flex-col gap-8">
         {order?.map((section) => {
           const SectionComponent = sectionMap[section.id];
@@ -496,9 +501,12 @@ function AchievementsSection() {
                   {prettyDate(achievement?.achievementDate)}
                 </div>
               </div>
-              <p className="mt-2 text-sm">
-                {achievement?.achievementDescription}
-              </p>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: achievement?.achievementDescription ?? "",
+                }}
+                className="mt-2 text-pretty text-sm"
+              ></div>
             </Card>
           ))}
         </div>
@@ -570,33 +578,6 @@ function VoluntaryWorkSection() {
   );
 }
 
-function GraphsSection() {
-  const graphs = useResumeStore((state) => state.graphs);
-  const settings = useResumeStore((state) => state.settings);
-
-  return (
-    <SectionWrapper sectionKey="graphs">
-      <section>
-        <SectionHeading
-          Icon={BarChart}
-          heading={graphs?.title ?? "Graphs"}
-          color={settings?.color}
-        />
-        <div className="mt-4 flex flex-col gap-4">
-          {graphs?.items?.map((graph, index) => (
-            <div key={index}>
-              <div className="rounded-lg border p-4">
-                <div>{graph.graphType}</div>
-                <div>{graph.graphData}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    </SectionWrapper>
-  );
-}
-
 function AwardsSection() {
   const awards = useResumeStore((state) => state.awards);
   const settings = useResumeStore((state) => state.settings);
@@ -621,9 +602,12 @@ function AwardsSection() {
               <div className="text-sm text-muted-foreground">
                 {award?.issuer}
               </div>
-              {award?.description && (
-                <p className="mt-2 text-sm">{award.description}</p>
-              )}
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: award?.description ?? "",
+                }}
+                className="mt-2 text-pretty text-sm"
+              ></div>
               {award?.url && (
                 <a
                   href={award.url}
