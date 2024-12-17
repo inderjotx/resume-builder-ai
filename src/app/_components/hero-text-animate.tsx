@@ -55,8 +55,8 @@ export function HeroTextAnimate() {
   }, [currentText, isDeleting, currentArrayIndex, currentWordIndex]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="flex items-center gap-1 text-4xl font-bold">
+    <div className="font-tobe flex flex-col items-center justify-center">
+      <div className="flex items-center gap-1 text-7xl font-bold font-light">
         {currentText}
         <span className="-translate-y-1">|</span>
       </div>

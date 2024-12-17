@@ -2,7 +2,7 @@ import Image from "next/image";
 import { CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type ColorScheme = "blue" | "green" | "yellow" | "purple" | "pink";
+export type ColorScheme = "blue" | "green" | "yellow" | "purple" | "pink";
 
 interface FeatureCardProps {
   imageDirection?: "left" | "right";
@@ -11,18 +11,16 @@ interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  imageSrc: string;
-  targetKey: string;
+  ImageComponent: React.ReactNode;
 }
 
 export default function UseCaseCard({
   features,
-  targetKey,
   colorScheme,
   icon,
   title,
   description,
-  imageSrc,
+  ImageComponent,
   imageDirection = "left",
 }: FeatureCardProps) {
   const colorClasses = {
@@ -57,9 +55,8 @@ export default function UseCaseCard({
 
   return (
     <div
-      id={targetKey}
       className={cn(
-        "sticky top-20 mx-2 flex max-w-7xl flex-col items-center justify-center gap-12 overflow-hidden rounded-xl border bg-gradient-to-b p-6 lg:mx-auto lg:p-12",
+        "sticky top-20 mx-2 flex w-full flex-col items-center justify-center gap-12 overflow-hidden rounded-xl border bg-gradient-to-b p-6 lg:mx-auto lg:p-12",
         gradient,
       )}
     >
@@ -70,12 +67,12 @@ export default function UseCaseCard({
         )}
       >
         {icon}
-        <h1 className="text-center font-medium">{title}</h1>
+        <h1 className="font-psMedian text-center font-thin">{title}</h1>
       </div>
       <div className="grid w-full grid-cols-3 gap-x-10">
         <div className={cn("col-span-3 w-full lg:col-span-2", "lg:ml-24")}>
-          <div className="flex flex-col gap-6">
-            <h1 className="max-w-lg text-xl font-semibold sm:text-3xl">
+          <div className={cn("flex flex-col gap-6")}>
+            <h1 className="max-w-lg text-xl font-thin sm:text-3xl">
               {description}
             </h1>
             <div className="flex flex-col gap-3">
@@ -91,21 +88,11 @@ export default function UseCaseCard({
 
         <div
           className={cn(
-            "hidden max-h-[400px] w-full overflow-hidden lg:block",
+            "hidden w-full overflow-hidden lg:flex lg:items-center lg:justify-center",
             imageDirection === "left" && "order-first",
           )}
-          style={{
-            boxShadow: `1px -1px 24px 14px ${shadow}`,
-          }}
         >
-          <Image
-            src={imageSrc}
-            alt="feature image"
-            className="aspect-auto rounded-2xl border-[15px] border-gray-100 object-contain"
-            width={500}
-            height={900}
-            quality={100}
-          />
+          {ImageComponent}
         </div>
       </div>
     </div>

@@ -1,4 +1,21 @@
 import "@/styles/globals.css";
+import LocalFont from "next/font/local";
+import Footer from "@/components/footer";
+
+const PSMedian = LocalFont({
+  src: "../fonts/ps-median.woff2",
+  variable: "--font-ps-median",
+});
+
+const PSSlim = LocalFont({
+  src: "../fonts/ps-slim.woff2",
+  variable: "--font-ps-slim",
+});
+
+const Tobe = LocalFont({
+  src: "../fonts/tobe.otf",
+  variable: "--font-tobe",
+});
 
 import { DialogProvider } from "@/components/providers/DialogProvider";
 import { GeistSans } from "geist/font/sans";
@@ -18,7 +35,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html
+      lang="en"
+      className={`${PSMedian.variable} ${PSSlim.variable} ${Tobe.variable} ${GeistSans.variable}`}
+    >
       <body suppressHydrationWarning>
         <SessionProvider>
           <ReactQueryProvider>
@@ -28,6 +48,7 @@ export default function RootLayout({
             </SubscribeToPremiumDialogProvider>
           </ReactQueryProvider>
         </SessionProvider>
+        <Footer />
       </body>
     </html>
   );
