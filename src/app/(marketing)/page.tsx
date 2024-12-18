@@ -16,6 +16,7 @@ import {
   Star,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ResponsiveModalDrawer } from "@/components/ui/responsive-modal";
 
 const resumeExamples = [
   "https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=300",
@@ -280,22 +281,54 @@ const UseCasesSection = () => {
 };
 
 const ResumeExamplesSection = () => {
+  const resumePicture = [
+    "/resume/bookmark.png",
+    "/resume/classy.png",
+    "/resume/doodle.png",
+    "/resume/gradient.png",
+    "/resume/postcard.png",
+    "/resume/sharp.png",
+    "/resume/smart.png",
+    "/resume/soft.png",
+  ];
+
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
   return (
-    <section className="bg-muted/50 py-20">
-      <h2 className="mb-12 text-center text-3xl font-bold">Resume Examples</h2>
-      <Marquee className="py-4" speed={50}>
-        {resumeExamples.map((url, index) => (
-          <div key={index} className="mx-4">
-            <Image
-              src={url}
-              width={300}
-              height={400}
-              alt={`Resume example ${index + 1}`}
-              className="h-[400px] w-[300px] rounded-lg object-cover shadow-lg"
-            />
-          </div>
-        ))}
-      </Marquee>
+    <section className="py-20">
+      <h2 className="mb-12 text-center font-tobe text-5xl font-thin">
+        Resume Examples
+      </h2>
+      <div className="relative mx-auto max-w-5xl">
+        <Marquee pauseOnHover className="py-4" speed={50}>
+          {resumePicture.map((url, index) => (
+            <div
+              key={index}
+              className="relative mx-4 cursor-pointer rounded-md ring-black ring-offset-2 transition-transform hover:scale-105 hover:ring-2"
+              onMouseEnter={() => setActiveIndex(index)}
+              onMouseLeave={() => setActiveIndex(null)}
+            >
+              <Image
+                src={url}
+                width={300}
+                height={400}
+                quality={80}
+                alt={`Resume example ${index + 1}`}
+                className="h-[300px] w-[220px] rounded-lg object-cover shadow-lg"
+              />
+              <div
+                className={`absolute inset-0 flex items-end justify-center p-3 transition-opacity duration-200 ${activeIndex === index ? "opacity-100" : "opacity-0"}`}
+              >
+                <Button size="xs" variant="default" className="rounded-sm">
+                  Use Template
+                </Button>
+              </div>
+            </div>
+          ))}
+        </Marquee>
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
+      </div>
     </section>
   );
 };
@@ -340,13 +373,13 @@ const TestimonialsSection = () => {
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center overflow-hidden py-32">
+    <div className="relative flex flex-col items-end justify-center overflow-hidden pb-16 pt-36">
       <Image
         src="/gradient/feature.png"
         alt="Testimonial"
         width={500}
         height={500}
-        className="absolute inset-x-0 top-0 -z-10 h-[600px] w-[2000px] object-center"
+        className="absolute inset-x-0 top-0 -z-10 h-[600px] w-[2000px] bg-white object-center"
       />
 
       <div className="mx-auto grid max-w-5xl grid-cols-1 rounded-lg bg-black p-6 lg:h-[300px] lg:grid-cols-3">
@@ -359,7 +392,8 @@ const TestimonialsSection = () => {
         />
         <div className="col-span-1 flex flex-col justify-start gap-4 pt-6 lg:col-span-2">
           <h4 className="max-w-xl text-center font-psMedian text-3xl text-white lg:text-left">
-            Your resume is an extension of yourself make one that's truly you
+            Your resume is an extension of yourself make one that&apos;s truly
+            you
           </h4>
           <div className="flex justify-center lg:justify-start">
             <Button size="2xl" variant="secondary">

@@ -56,7 +56,7 @@ export default function UseCaseCard({
   return (
     <div
       className={cn(
-        "mx-2 flex w-full flex-col items-center justify-center gap-12 overflow-hidden rounded-xl border bg-gradient-to-b p-6 lg:sticky lg:top-20 lg:mx-auto lg:p-12",
+        "flex w-full flex-col items-center justify-center gap-12 overflow-hidden rounded-xl rounded-b-none border border-b-0 bg-gradient-to-b p-6 lg:sticky lg:top-20 lg:mx-auto lg:p-12",
         gradient,
       )}
     >
@@ -65,6 +65,7 @@ export default function UseCaseCard({
           "custom-shadow-color flex items-center justify-between gap-2 rounded-full bg-white p-3 px-5 text-xl font-semibold sm:text-2xl",
           `custom-shadow-${colorScheme}`,
         )}
+        style={{ boxShadow: `0px 0px 10px 0px ${shadow}` }}
       >
         {icon}
         <h1 className="text-center font-psMedian font-thin">{title}</h1>
