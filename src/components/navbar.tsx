@@ -7,7 +7,7 @@ import Link from "next/link";
 export function Navbar() {
   return (
     <div className="fixed inset-x-0 top-2 z-50">
-      <nav className="sticky top-2 z-50 mx-4 w-full rounded-xl border bg-background/95 px-4 py-2 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 md:mx-auto md:max-w-4xl">
+      <nav className="sticky top-2 z-50 mx-4 w-full rounded-xl border bg-background/95 px-4 py-1 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 md:mx-auto md:max-w-4xl">
         <div className="flex h-12 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <Framer className="h-6 w-6" />
@@ -27,8 +27,12 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button variant="outline">Sign In</Button>
-            <Button variant={"dark"}>Get Started</Button>
+            <Button variant="outline">
+              <Link href={"/sign-in"}>Sign In</Link>
+            </Button>
+            <Button variant="default">
+              <Link href={"/dashboard"}>Dashboard</Link>
+            </Button>
           </div>
         </div>
       </nav>

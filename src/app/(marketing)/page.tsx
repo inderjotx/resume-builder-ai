@@ -2,7 +2,6 @@
 
 import { type ColorScheme } from "@/components/ui/use-case-card";
 import Image from "next/image";
-import { Navbar } from "@/components/navbar";
 import UseCaseCard from "@/components/ui/use-case-card";
 
 import { HeroTextAnimate } from "@/app/_components/hero-text-animate";
@@ -17,7 +16,6 @@ import {
   Star,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useInterval } from "@dnd-kit/utilities";
 
 const resumeExamples = [
   "https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=300",
@@ -28,7 +26,6 @@ const resumeExamples = [
 export default function Home() {
   return (
     <div className="min-h-screen font-psSlim">
-      <Navbar />
       <HeroSection />
       <CompaniesSection />
       <UseCasesSection />
@@ -119,13 +116,24 @@ const UseCasesSection = () => {
   const userCase = [
     {
       ImageComponent: (
-        <div className="h-[400px] w-auto overflow-hidden">
+        <div className="relative h-[400px] w-auto">
           <Image
             src="/features/linkedin-down.png"
             alt="LinkedIn Profile to Resume"
             width={500}
             height={900}
+            unoptimized
             className="aspect-auto rounded-2xl"
+            quality={100}
+          />
+
+          <Image
+            src="/features/linkedin-up.png"
+            alt="LinkedIn Profile to Resume"
+            unoptimized
+            width={500}
+            height={900}
+            className="absolute -left-10 top-1/3 aspect-auto h-[350px] w-auto rounded-2xl"
             quality={100}
           />
         </div>
@@ -153,7 +161,7 @@ const UseCasesSection = () => {
           alt="Resume Transformation"
           width={500}
           height={900}
-          className="w-auto rounded-2xl object-contain"
+          className="h-[400px] w-auto rounded-2xl object-contain"
           quality={100}
         />
       ),
@@ -177,10 +185,10 @@ const UseCasesSection = () => {
       ImageComponent: (
         <Image
           src="/features/ai-content.png"
-          alt="AI Integration"
+          alt="Resume Transformation"
           width={500}
           height={900}
-          className="h-[300px] w-auto rounded-2xl object-contain"
+          className="h-[400px] w-auto rounded-2xl object-contain"
           quality={100}
         />
       ),
@@ -206,7 +214,7 @@ const UseCasesSection = () => {
           alt="ATS Friendly Resume"
           width={500}
           height={900}
-          className="h-[300px] w-auto rounded-2xl object-contain"
+          className="h-[400px] w-auto rounded-2xl object-contain"
           quality={100}
         />
       ),
@@ -233,7 +241,7 @@ const UseCasesSection = () => {
           alt="Step by Step Resume Builder"
           width={500}
           height={900}
-          className="h-[300px] w-auto rounded-2xl object-contain"
+          className="h-[400px] w-auto rounded-2xl object-contain"
           quality={100}
         />
       ),
@@ -254,7 +262,7 @@ const UseCasesSection = () => {
   ];
 
   return (
-    <div className="mx-auto mb-20 grid max-w-7xl grid-cols-1 gap-20">
+    <div className="mx-auto mb-20 grid max-w-7xl grid-cols-1 gap-10 lg:gap-20">
       {userCase.map((item, index) => (
         <UseCaseCard
           key={index}

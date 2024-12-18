@@ -56,40 +56,44 @@ export default function UseCaseCard({
   return (
     <div
       className={cn(
-        "sticky top-20 mx-2 flex w-full flex-col items-center justify-center gap-12 overflow-hidden rounded-xl border bg-gradient-to-b p-6 lg:mx-auto lg:p-12",
+        "mx-2 flex w-full flex-col items-center justify-center gap-12 overflow-hidden rounded-xl border bg-gradient-to-b p-6 lg:sticky lg:top-20 lg:mx-auto lg:p-12",
         gradient,
       )}
     >
       <div
         className={cn(
-          "custom-shadow-color mx-auto flex items-center justify-between gap-2 rounded-full bg-white p-3 px-5 text-xl font-semibold sm:text-2xl",
+          "custom-shadow-color flex items-center justify-between gap-2 rounded-full bg-white p-3 px-5 text-xl font-semibold sm:text-2xl",
           `custom-shadow-${colorScheme}`,
         )}
       >
         {icon}
-        <h1 className="font-psMedian text-center font-thin">{title}</h1>
+        <h1 className="text-center font-psMedian font-thin">{title}</h1>
       </div>
-      <div className="grid w-full grid-cols-3 gap-x-10">
-        <div className={cn("col-span-3 w-full lg:col-span-2", "lg:ml-24")}>
-          <div className={cn("flex flex-col gap-6")}>
-            <h1 className="max-w-lg text-xl font-thin sm:text-3xl">
-              {description}
-            </h1>
-            <div className="flex flex-col gap-3">
-              {features.map((feature, index) => (
-                <div key={index} className="flex gap-2">
-                  <CheckCircle className={cn("size-6", text)} />
-                  <h1 className="text-base sm:text-lg">{feature}</h1>
-                </div>
-              ))}
-            </div>
+
+      <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+        <div
+          className={cn(
+            "flex flex-col gap-6",
+            imageDirection === "left" ? "lg:order-2" : "lg:order-1",
+          )}
+        >
+          <h1 className="max-w-lg text-xl font-thin sm:text-3xl">
+            {description}
+          </h1>
+          <div className="flex flex-col gap-3">
+            {features.map((feature, index) => (
+              <div key={index} className="flex gap-2">
+                <CheckCircle className={cn("size-6", text)} />
+                <h1 className="text-base sm:text-lg">{feature}</h1>
+              </div>
+            ))}
           </div>
         </div>
 
         <div
           className={cn(
-            "hidden w-full overflow-hidden lg:flex lg:items-center lg:justify-center",
-            imageDirection === "left" && "order-first",
+            "flex w-full items-center justify-center",
+            imageDirection === "left" ? "lg:order-1" : "lg:order-2",
           )}
         >
           {ImageComponent}
