@@ -25,6 +25,7 @@ const resumeExamples = [
 ];
 
 export default function Home() {
+
   return (
     <div className="min-h-screen font-psSlim">
       <HeroSection />

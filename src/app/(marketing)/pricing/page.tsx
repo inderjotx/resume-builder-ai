@@ -1,4 +1,4 @@
-import { Pricing } from "@/app/pricing/_components/pricing-cards";
+import { Pricing } from "@/app/(marketing)/pricing/_components/pricing-cards";
 import { subscriptionPlans } from "@/lib/plan";
 
 export default function PricingPage() {
