@@ -1,8 +1,9 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
+import { auth } from "@/server/auth";
 import { Framer } from "lucide-react";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Suspense } from "react";
 
 export function Navbar() {
   return (
@@ -27,9 +28,9 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button variant="outline">
-              <Link href={"/sign-in"}>Sign In</Link>
-            </Button>
+            <Suspense fallback={<SignInButton />}>
+              <SignInButtonAsync />
+            </Suspense>
             <Button variant="default">
               <Link href={"/dashboard"}>Dashboard</Link>
             </Button>
@@ -39,3 +40,30 @@ export function Navbar() {
     </div>
   );
 }
+
+export const SignInButtonAsync = async () => {
+  const session = await auth();
+
+  if (session) {
+    return (
+      <Link href={"/dashboard"}>
+        <Avatar>
+          <AvatarImage src={session.user?.image ?? ""} />
+          <AvatarFallback className="border">
+            {session.user?.name?.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+      </Link>
+    );
+  } else {
+    return <SignInButton />;
+  }
+};
+
+const SignInButton = () => {
+  return (
+    <Button variant="outline">
+      <Link href={"/sign-in"}>Sign In</Link>
+    </Button>
+  );
+};
