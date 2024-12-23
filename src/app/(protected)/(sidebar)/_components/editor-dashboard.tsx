@@ -2,9 +2,9 @@
 import { type Resume } from "@/server/db/schema";
 import { useReactToPrint } from "react-to-print";
 import { SelectForms } from "./select-forms";
-import { useEffect, createElement, useRef } from "react";
+import { useEffect, createElement, useRef, useState } from "react";
 import { useSaveResume } from "@/hooks/use-save-resume";
-import { Undo, Redo } from "lucide-react";
+import { Undo, Redo, ChevronsLeft } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { type ResumeData } from "@/server/db/schema";
@@ -68,6 +68,9 @@ import { useUpdateTitle } from "@/store/resume/data-store";
 import { DynamicInput } from "@/components/ui/dynamic-input";
 import { useHistoryStore } from "@/store/resume/history-store";
 import { usePathname } from "next/navigation";
+import { useBreakpoint } from "@/hooks/use-breakpoint";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Eye } from "lucide-react";
 
 function SortableAccordionItem({
   id,
@@ -230,6 +233,7 @@ export const FormMap: Record<
 } as const;
 
 export default function EditorDashboard({ resume }: { resume: Resume }) {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const activeSection = useResumeStore((state) => state.activeSection);
   const setActiveSection = useResumeStore((state) => state.setActiveSection);
   const historyStore = useHistoryStore();
@@ -246,6 +250,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
       },
     ],
   });
+  const isXl = useBreakpoint("xl");
 
   useEffect(() => {
     console.log("setting up initial data");
@@ -317,10 +322,42 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
     handlePrint();
   }
 
+  const ResumePreview = () => (
+    <div className="flex-1">
+      <header className="flex h-10 w-full items-center justify-between border-b px-8 lg:px-4">
+        <div>Preview</div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleUndo}
+            disabled={!historyStore.canUndo}
+          >
+            <Undo className="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleRedo}
+            disabled={!historyStore.canRedo}
+          >
+            <Redo className="size-4" />
+          </Button>
+          <Button variant="outline" size="icon" onClick={handlePrintResume}>
+            <Printer className="size-4" />
+          </Button>
+        </div>
+      </header>
+      <ScrollArea className="mr-2 h-[calc(100vh-2.5rem)] bg-muted">
+        <DisplayContent ref={resumeRef as React.RefObject<HTMLDivElement>} />
+      </ScrollArea>
+    </div>
+  );
+
   return (
     <div className="h-screen w-full bg-background">
       <div className="grid flex-1 grid-cols-5">
-        <div className="col-span-5 lg:col-span-2">
+        <div className="col-span-5 xl:col-span-2">
           <header className="flex h-10 w-full items-center justify-center border-b">
             {isPending ? (
               <span className="text-sm text-muted-foreground">Saving...</span>
@@ -375,37 +412,34 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
             </div>
           </ScrollArea>
         </div>
-        <div className="col-span-3 hidden flex-1 lg:grid">
-          <header className="flex h-10 w-full items-center justify-center border-b">
-            Top
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleUndo}
-                disabled={!historyStore.canUndo}
+
+        {isXl ? (
+          // Desktop view - inline grid
+          <div className="col-span-3 hidden flex-1 xl:grid">
+            <ResumePreview />
+          </div>
+        ) : (
+          // Mobile view - floating button and sheet
+          <>
+            <Button
+              variant="outline"
+              className="fixed right-4 top-4 z-50 xl:hidden"
+              onClick={() => setIsSheetOpen(true)}
+            >
+              <ChevronsLeft className="size-4" />
+              View Resume
+            </Button>
+
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetContent
+                side="right"
+                className="w-full bg-muted p-0 px-4 sm:max-w-xl"
               >
-                <Undo className="size-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleRedo}
-                disabled={!historyStore.canRedo}
-              >
-                <Redo className="size-4" />
-              </Button>
-              <Button variant="outline" size="icon" onClick={handlePrintResume}>
-                <Printer className="size-4" />
-              </Button>
-            </div>
-          </header>
-          <ScrollArea className="h-[calc(100vh-2.5rem)] bg-muted">
-            <DisplayContent
-              ref={resumeRef as React.RefObject<HTMLDivElement>}
-            />
-          </ScrollArea>
-        </div>
+                <ResumePreview />
+              </SheetContent>
+            </Sheet>
+          </>
+        )}
       </div>
     </div>
   );

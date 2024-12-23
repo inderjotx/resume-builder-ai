@@ -16,3 +16,15 @@ const conn = globalForDb.conn ?? postgres(env.DATABASE_URL);
 if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 
 export const db = drizzle(conn, { schema });
+
+
+// import { drizzle } from 'drizzle-orm/neon-http';
+
+
+// export const db = drizzle(url);
+// import { neon } from '@neondatabase/serverless';
+// import { drizzle } from 'drizzle-orm/neon-serverless';
+// import { env } from '@/env';
+
+// const sql = neon(env.DATABASE_URL);
+// export const db = drizzle(sql, { schema });

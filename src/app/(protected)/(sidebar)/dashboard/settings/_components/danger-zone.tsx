@@ -19,7 +19,7 @@ export function DangerZone() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleLogout = async () => {
-    await signOut();
+    await signOut({ redirectTo: "/sign-in" });
   };
 
   const handleDeleteAccount = async () => {

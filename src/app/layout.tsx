@@ -48,7 +48,6 @@ export default function RootLayout({
             </SubscribeToPremiumDialogProvider>
           </ReactQueryProvider>
         </SessionProvider>
-        <Footer />
       </body>
     </html>
   );

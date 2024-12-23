@@ -6,6 +6,7 @@ export const useCredits = () => {
     queryKey: ["credits"],
     queryFn: async () => {
       const response = await fetch("/api/user/credits");
+      console.log("REFETCHING CREDITS >>>>>>>>>>>>>>>>>>>");
       return response.json() as Promise<{
         credits: number;
         subscription: Subscription;

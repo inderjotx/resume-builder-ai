@@ -9,6 +9,7 @@ export function SubscribePremiumDialog() {
   const { open, setValue } = useSubscribeToPremiumDialog();
   const handleSubscribeClick = () => {
     router.push("/pricing");
+    setValue(false);
   };
 
   return (

@@ -27,11 +27,6 @@ declare module "next-auth" {
       // role: UserRole;
     } & DefaultSession["user"] & User;
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 
@@ -42,15 +37,6 @@ export const authConfig = {
       from: env.AUTH_RESEND_FROM,
       apiKey: env.AUTH_RESEND_KEY,
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
   adapter: DrizzleAdapter(db, {
     usersTable: users,

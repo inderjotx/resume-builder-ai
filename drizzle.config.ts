@@ -1,6 +1,6 @@
 import { type Config } from "drizzle-kit";
-
 import { env } from "@/env";
+
 
 export default {
   schema: "./src/server/db/schema.ts",
@@ -8,5 +8,6 @@ export default {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
+  out: "./drizzle",
   tablesFilter: ["resume-builder_*"],
 } satisfies Config;

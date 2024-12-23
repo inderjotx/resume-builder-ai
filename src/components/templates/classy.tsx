@@ -114,7 +114,7 @@ export function ClassyTemplate({
   return (
     <div
       ref={ref}
-      className="mx-auto w-full max-w-4xl border bg-white p-4 shadow-lg sm:p-6 md:aspect-[1/1.4142] md:w-[180mm] print:shadow-none"
+      className="mx-auto w-full max-w-4xl border bg-white p-4 shadow-lg sm:p-6 md:aspect-[1/1.4142] print:shadow-none"
     >
       <div className="flex flex-col gap-8">
         {order?.map((section) => {

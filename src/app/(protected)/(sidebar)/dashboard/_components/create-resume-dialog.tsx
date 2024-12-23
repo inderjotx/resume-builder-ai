@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Briefcase, Linkedin, Upload } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createResume } from "@/actions/create-resume";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -64,6 +64,7 @@ export const CreateResumeDialog = ({
   onOpenChange,
   type,
 }: CreateResumeDialogProps) => {
+  const queryClient = useQueryClient();
   const manualForm = useForm<ManualFormValues>({
     resolver: zodResolver(manualFormSchema),
     defaultValues: { name: "", templateId: "" },
@@ -86,12 +87,23 @@ export const CreateResumeDialog = ({
 
   const { mutate: createResumeMutation, isPending } = useMutation({
     mutationFn: async (data: CreateResumeInput) => {
-      await createResume(data);
+      try {
+        await createResume(data);
+      } catch (error) {
+        await queryClient.invalidateQueries({ queryKey: ["credits"] });
+        throw error;
+      }
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create resume",
-      );
+      if (error instanceof Error) {
+        if (error.message == "NEXT_REDIRECT") {
+          // do nathing
+        } else {
+          toast.error(error.message);
+        }
+      } else {
+        toast.error("Failed to create resume");
+      }
     },
   });
 

@@ -89,9 +89,9 @@ export function Pricing({ plans }: PricingProps) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <h2 className="mb-8 text-center text-3xl font-bold">Choose Your Plan</h2>
-      <div className="mb-8 flex items-center justify-center">
+    <div className="container mx-auto px-4 py-28">
+      <h2 className="mb-4 text-center text-3xl font-bold">Choose Your Plan</h2>
+      <div className="mb-4 flex items-center justify-center">
         <span className="mr-3 text-sm font-medium">Monthly</span>
         <Switch
           checked={isYearly}

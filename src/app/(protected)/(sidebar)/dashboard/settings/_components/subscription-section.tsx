@@ -1,5 +1,6 @@
 "use client";
 
+import { Bolt } from "lucide-react";
 import { subscriptionPlans } from "@/lib/plan";
 import {
   Card,
@@ -11,9 +12,16 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useCredits } from "@/hooks/use-credits";
+import { Button } from "@/components/ui/button";
+import { manageSubscription } from "@/app/(marketing)/pricing/action";
 
 export function SubscriptionSection() {
   const { data, isLoading } = useCredits();
+
+  const handleManageSubscription = async () => {
+    const url = await manageSubscription();
+    window.open(url, "_blank");
+  };
 
   if (isLoading) {
     return (
@@ -69,6 +77,14 @@ export function SubscriptionSection() {
             <Progress value={creditsPercentage} className="h-2" />
           </div>
         </div>
+        <Button
+          variant="outline"
+          onClick={handleManageSubscription}
+          className="flex items-center gap-2"
+        >
+          <Bolt className="size-4" />
+          Manage Subscription
+        </Button>
       </CardContent>
     </Card>
   );

@@ -9,7 +9,7 @@ import { Google } from "@/components/icons";
 export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-tr from-indigo-300 via-white to-indigo-300 p-4">
-      <div className="w-ful mt-20 max-w-[440px] rounded-3xl bg-white p-8 shadow-lg">
+      <div className="w-ful mt-32 max-w-[440px] rounded-3xl bg-white p-8 shadow-lg">
         <h1 className="mb-6 text-center text-2xl font-semibold">
           Create your first ResumeX resume in seconds
         </h1>

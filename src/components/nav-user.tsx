@@ -1,9 +1,9 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { manageSubscription } from "@/app/(marketing)/pricing/action";
 
 import {
   BadgeCheck,
-  Bell,
   ChevronsUpDown,
   CreditCard,
   LogOut,
@@ -26,11 +26,26 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useRouter } from "next/navigation";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const session = useSession();
   const isPremium = !(session.data?.user?.userPlan === "free");
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut({ redirectTo: "/sign-in" });
+  };
+
+  const handleBillingPortal = async () => {
+    const subscriptionUrl = await manageSubscription();
+    window.open(subscriptionUrl, "_blank");
+  };
+
+  const handleAccount = () => {
+    router.push("/dashboard/settings");
+  };
 
   return (
     <SidebarMenu>
@@ -97,17 +112,23 @@ export function NavUser() {
             )}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleAccount}
+                className="cursor-pointer"
+              >
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleBillingPortal}
+                className="cursor-pointer"
+              >
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               <LogOut />
               Log out
             </DropdownMenuItem>
