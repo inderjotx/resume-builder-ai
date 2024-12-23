@@ -77,14 +77,16 @@ export function SubscriptionSection() {
             <Progress value={creditsPercentage} className="h-2" />
           </div>
         </div>
-        <Button
-          variant="outline"
-          onClick={handleManageSubscription}
-          className="flex items-center gap-2"
-        >
-          <Bolt className="size-4" />
-          Manage Subscription
-        </Button>
+        {data.subscription.plan !== "free" && (
+          <Button
+            variant="outline"
+            onClick={handleManageSubscription}
+            className="flex items-center gap-2"
+          >
+            <Bolt className="size-4" />
+            Manage Subscription
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

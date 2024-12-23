@@ -27,15 +27,15 @@ export const subscriptionPlans: SubscriptionPlan[] = [
         description: '1 AI Resume Generation Based on Job Description',
         monthlyPrice: 0,
         yearlyPrice: 0,
-        credits: 10,
+        credits: 20,
         popular: false,
         features: [
-            '1 AI Resume Generation Based on Job Description',
+            '2 AI Resume Generation Based on Job Description',
             'Limited Templates',
             'Watermark',
         ],
         stripePriceIds: {
-            monthly: undefined,
+            monthly: 'free_monthly',
             yearly: undefined
         }
     }
@@ -46,10 +46,10 @@ export const subscriptionPlans: SubscriptionPlan[] = [
         description: '5 AI Resume Generation Based on Job Description',
         monthlyPrice: 19,
         yearlyPrice: 190,
-        credits: 50,
+        credits: 100,
         popular: true,
         features: [
-            '5 AI Resume Generation Based on Job Description',
+            '10 AI Resume Generation Based on Job Description',
             'Resume from LinkedIn Profile',
             'ATS Compliant',
             'All Templates Available',
@@ -68,10 +68,10 @@ export const subscriptionPlans: SubscriptionPlan[] = [
         description: '15 AI Resume Generation Based on Job Description',
         monthlyPrice: 29,
         yearlyPrice: 290,
-        credits: 150,
+        credits: 250,
         popular: false,
         features: [
-            '15 AI Resume Generation Based on Job Description',
+            '25 AI Resume Generation Based on Job Description',
             'Resume from LinkedIn Profile',
             'ATS Compliant',
             'All Templates Available',

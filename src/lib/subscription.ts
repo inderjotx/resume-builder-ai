@@ -52,7 +52,7 @@ export class SubscriptionService {
         email: string;
         priceId: string;
         endDate: Date;
-        customerId: string;
+        customerId: string | null;
         subscriptionId: string;
     }) {
         return this.retryOperation(async () => {
@@ -431,6 +431,17 @@ export class SubscriptionService {
             });
 
             return session.url;
+        });
+    }
+
+
+    async createFreeSubscriptionMonthly(userId: string, email: string) {
+        await this.subscribeUserToPlan({
+            email,
+            priceId: 'free_monthly',
+            endDate: new Date(Date.now() + MONTHLY_SECONDS),
+            customerId: null,
+            subscriptionId: `free_${userId}`
         });
     }
 }

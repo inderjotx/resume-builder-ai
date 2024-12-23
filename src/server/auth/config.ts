@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import ResendProvider from "next-auth/providers/resend";
 import type { User } from "@/server/db/schema";
 
+import subscriptionService from "@/lib/subscription";
 import { env } from "@/env";
 import { db } from "@/server/db";
 import {
@@ -52,6 +53,16 @@ export const authConfig = {
         id: user.id,
       },
     }),
+  },
+  events: {
+    createUser: async ({ user }) => {
+
+      if (!user.id || !user.email) {
+        console.error("User ID or email is missing in the event >>>>>>>>>>>>>>>>>>>>");
+        return;
+      }
+      await subscriptionService.createFreeSubscriptionMonthly(user.id!, user.email!);
+    },
   },
   pages: {
     signIn: "/sign-in",

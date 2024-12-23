@@ -56,7 +56,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu className="mt-2">
           <SidebarMenuItem
-            className="flex items-center gap-2 overflow-hidden pl-1.5"
+            className="flex cursor-pointer items-center gap-2 overflow-hidden pl-1.5"
             onClick={() => router.push("/dashboard")}
           >
             <Framer className="size-5 shrink-0 text-blue-400 transition-colors hover:fill-blue-400" />
