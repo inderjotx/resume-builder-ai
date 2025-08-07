@@ -78,20 +78,21 @@ export default function CertificateForm() {
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    updateCertifications({ items: data.items });
+    updateCertifications({ title: data.title, items: data.items });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          items: value.items,
-        } as ResumeData["certifications"];
-        updateCertifications(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateCertifications, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         title: value.title,
+  //         items: value.items,
+  //       } as ResumeData["certifications"];
+  //       updateCertifications(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updateCertifications, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (certifications) {

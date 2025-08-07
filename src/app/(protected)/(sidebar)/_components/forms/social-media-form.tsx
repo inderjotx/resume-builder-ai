@@ -154,18 +154,18 @@ export default function SocialMediaForm() {
     updateSocialMedia({ title: data.title, items: data.items });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          title: value.title,
-          items: value.items,
-        } as ResumeData["socialMedia"];
-        updateSocialMedia(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateSocialMedia, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         title: value.title,
+  //         items: value.items,
+  //       } as ResumeData["socialMedia"];
+  //       updateSocialMedia(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updateSocialMedia, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (socialMedia) {

@@ -88,18 +88,18 @@ export default function PublicationForm() {
     });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          title: value.title,
-          items: value.items,
-        } as ResumeData["publications"];
-        updatePublications(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updatePublications, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         title: value.title,
+  //         items: value.items,
+  //       } as ResumeData["publications"];
+  //       updatePublications(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updatePublications, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (publications) {

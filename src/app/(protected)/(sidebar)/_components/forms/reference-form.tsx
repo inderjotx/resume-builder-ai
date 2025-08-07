@@ -74,18 +74,18 @@ export default function ReferenceForm() {
     updateReferences({ title: data.title, items: data.items });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          items: value.items,
-          title: value.title,
-        } as ResumeData["references"];
-        updateReferences(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateReferences, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         items: value.items,
+  //         title: value.title,
+  //       } as ResumeData["references"];
+  //       updateReferences(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [updateReferences, isUpdatingFromStore]);
 
   useEffect(() => {
     if (references) {
@@ -96,7 +96,7 @@ export default function ReferenceForm() {
       });
       setTimeout(() => setIsUpdatingFromStore(false), 0);
     }
-  }, [references, form]);
+  }, [references]);
 
   const handleCreateAccordion = () => {
     append({});

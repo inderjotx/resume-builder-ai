@@ -72,7 +72,7 @@ import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Eye } from "lucide-react";
 
-function SortableAccordionItem({
+function CustomAccordionItem({
   id,
   value,
   children,
@@ -84,44 +84,44 @@ function SortableAccordionItem({
   // title,
   icon: LucideIcon;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  // const {
+  //   attributes,
+  //   listeners,
+  //   setNodeRef,
+  //   transform,
+  //   transition,
+  //   isDragging,
+  // } = useSortable({ id });
 
   const { title, setTitle } = useUpdateTitle(id);
   const pathname = usePathname();
 
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    transition,
-    position: isDragging ? "relative" : undefined,
-    zIndex: isDragging ? 9999 : "auto",
-    boxShadow: isDragging ? "0 0 20px rgba(0,0,0,0.15)" : undefined,
-  };
+  // const style = {
+  //   transform: transform
+  //     ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+  //     : undefined,
+  //   transition,
+  //   position: isDragging ? "relative" : undefined,
+  //   zIndex: isDragging ? 9999 : "auto",
+  //   boxShadow: isDragging ? "0 0 20px rgba(0,0,0,0.15)" : undefined,
+  // };
 
   return (
     <AccordionItem
-      ref={setNodeRef}
-      style={style as unknown as React.CSSProperties}
+      // ref={setNodeRef}
+      // style={style as unknown as React.CSSProperties}
       value={value}
       className="rounded-lg border bg-muted/40 p-1"
     >
       <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
         <div className="flex items-center gap-2">
-          <div
+          {/* <div
             className="flex size-8 cursor-grab touch-none items-center justify-center rounded-md hover:bg-muted"
             {...attributes}
             {...listeners}
           >
             <GripVertical className="h-4 w-4" />
-          </div>
+          </div> */}
           <Icon className="size-5" />
           <DynamicInput
             as="h3"
@@ -270,53 +270,53 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
     }
   }, [activeSection]);
 
-  useEffect(() => {
-    const unsubscribe = useResumeStore.subscribe((state) => {
-      historyStore.saveState(state.getData());
-    });
+  // useEffect(() => {
+  //   const unsubscribe = useResumeStore.subscribe((state) => {
+  //     historyStore.saveState(state.getData());
+  //   });
 
-    return () => {
-      unsubscribe();
-      // debouncedSave.cancel(); // Cancel any pending debounced calls
-    };
-  }, []);
+  //   return () => {
+  //     unsubscribe();
+  //     // debouncedSave.cancel(); // Cancel any pending debounced calls
+  //   };
+  // }, []);
 
-  const handleUndo = () => {
-    historyStore.undo((previousState) => {
-      updateAll(previousState);
-    });
-  };
+  // const handleUndo = () => {
+  //   historyStore.undo((previousState) => {
+  //     updateAll(previousState);
+  //   });
+  // };
 
-  const handleRedo = () => {
-    historyStore.redo((nextState) => {
-      updateAll(nextState);
-    });
-  };
+  // const handleRedo = () => {
+  //   historyStore.redo((nextState) => {
+  //     updateAll(nextState);
+  //   });
+  // };
 
   const formOrder = useResumeStore((state) => state.order);
   const setFormOrder = useResumeStore((state) => state.setOrder);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor),
+  //   useSensor(KeyboardSensor, {
+  //     coordinateGetter: sortableKeyboardCoordinates,
+  //   }),
+  // );
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
+  // function handleDragEnd(event: DragEndEvent) {
+  //   const { active, over } = event;
 
-    if (active?.id !== over?.id) {
-      const oldIndex = formOrder.findIndex((item) => item.id === active.id);
-      const newIndex = formOrder.findIndex((item) => item.id === over?.id);
+  //   if (active?.id !== over?.id) {
+  //     const oldIndex = formOrder.findIndex((item) => item.id === active.id);
+  //     const newIndex = formOrder.findIndex((item) => item.id === over?.id);
 
-      if (oldIndex === -1 || newIndex === -1) return;
+  //     if (oldIndex === -1 || newIndex === -1) return;
 
-      // Use arrayMove from dnd-kit to handle the reordering
-      const newOrder = arrayMove(formOrder, oldIndex, newIndex);
-      setFormOrder(newOrder);
-    }
-  }
+  //     // Use arrayMove from dnd-kit to handle the reordering
+  //     const newOrder = arrayMove(formOrder, oldIndex, newIndex);
+  //     setFormOrder(newOrder);
+  //   }
+  // }
 
   function handlePrintResume() {
     handlePrint();
@@ -327,7 +327,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
       <header className="flex h-10 w-full items-center justify-between border-b px-8 lg:px-4">
         <div>Preview</div>
         <div className="flex items-center gap-2">
-          <Button
+          {/* <Button
             variant="outline"
             size="icon"
             onClick={handleUndo}
@@ -342,7 +342,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
             disabled={!historyStore.canRedo}
           >
             <Redo className="size-4" />
-          </Button>
+          </Button> */}
           <Button variant="outline" size="icon" onClick={handlePrintResume}>
             <Printer className="size-4" />
           </Button>
@@ -371,10 +371,10 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
           >
             <div className="space-y-4 p-4">
               <h2 className="text-2xl font-bold">Editor</h2>
-              <DndContext
-                sensors={sensors}
+              {/* <DndContext
+                // sensors={sensors}
                 collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
+                // onDragEnd={handleDragEnd}
                 modifiers={[restrictToVerticalAxis]}
                 measuring={{
                   droppable: {
@@ -385,30 +385,30 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
                 <SortableContext
                   items={formOrder.map((item) => item.id)}
                   strategy={verticalListSortingStrategy}
-                >
-                  <Accordion
-                    type="single"
-                    value={activeSection}
-                    onValueChange={setActiveSection}
-                    collapsible
-                    className="flex w-full flex-col gap-4 pb-6"
+                > */}
+              <Accordion
+                type="single"
+                value={activeSection}
+                onValueChange={setActiveSection}
+                collapsible
+                className="flex w-full flex-col gap-4 pb-6"
+              >
+                {formOrder.map((form) => (
+                  <CustomAccordionItem
+                    key={form.id}
+                    id={form.id as keyof ResumeData}
+                    value={form.id}
+                    icon={FormMap[form.id as keyof typeof FormMap].icon}
                   >
-                    {formOrder.map((form) => (
-                      <SortableAccordionItem
-                        key={form.id}
-                        id={form.id as keyof ResumeData}
-                        value={form.id}
-                        icon={FormMap[form.id as keyof typeof FormMap].icon}
-                      >
-                        {createElement(
-                          FormMap[form.id as keyof typeof FormMap].component,
-                        )}
-                      </SortableAccordionItem>
-                    ))}
-                  </Accordion>
-                  <SelectForms />
-                </SortableContext>
-              </DndContext>
+                    {createElement(
+                      FormMap[form.id as keyof typeof FormMap].component,
+                    )}
+                  </CustomAccordionItem>
+                ))}
+              </Accordion>
+              <SelectForms />
+              {/* </SortableContext>
+              </DndContext> */}
             </div>
           </ScrollArea>
         </div>

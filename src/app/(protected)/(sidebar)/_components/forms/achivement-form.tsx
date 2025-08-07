@@ -80,18 +80,18 @@ export default function AchievementForm() {
     updateAchievements({ title: data.title, items: data.items });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          title: value.title,
-          items: value.items,
-        } as ResumeData["achievements"];
-        updateAchievements(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateAchievements, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         title: value.title,
+  //         items: value.items,
+  //       } as ResumeData["achievements"];
+  //       updateAchievements(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updateAchievements, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (achievements) {

@@ -84,18 +84,18 @@ export default function SkillForm() {
     }, 100);
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          title: value.title,
-          items: value.items,
-        } as ResumeData["skills"];
-        updateSkills(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateSkills, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         title: value.title,
+  //         items: value.items,
+  //       } as ResumeData["skills"];
+  //       updateSkills(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updateSkills, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (skills) {

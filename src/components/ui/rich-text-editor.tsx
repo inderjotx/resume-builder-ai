@@ -171,6 +171,7 @@ const RichTextEditorContent = ({
   return (
     <EditorProvider
       slotBefore={<MenuBar />}
+      immediatelyRender={false}
       extensions={extensions}
       content={content}
       onUpdate={({ editor }) => {

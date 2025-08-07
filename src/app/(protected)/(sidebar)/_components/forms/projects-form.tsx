@@ -85,18 +85,18 @@ export default function ProjectsForm() {
     updateProjects({ title: data.title, items: data.items });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          title: value.title,
-          items: value.items,
-        } as ResumeData["projects"];
-        updateProjects(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateProjects, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         title: value.title,
+  //         items: value.items,
+  //       } as ResumeData["projects"];
+  //       updateProjects(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updateProjects, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (projects) {

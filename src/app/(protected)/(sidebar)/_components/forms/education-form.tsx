@@ -79,17 +79,17 @@ export default function EducationForm() {
     updateEducation({ items: data.items });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          items: value.items,
-        } as ResumeData["education"];
-        updateEducation(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateEducation, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         items: value.items,
+  //       } as ResumeData["education"];
+  //       updateEducation(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updateEducation, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (education) {

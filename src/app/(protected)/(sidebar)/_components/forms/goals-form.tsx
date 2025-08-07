@@ -74,18 +74,18 @@ export default function GoalsForm() {
     updateGoals({ title: data.title, items: data.items });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          title: value.title,
-          items: value.items,
-        } as ResumeData["goals"];
-        updateGoals(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateGoals, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         title: value.title,
+  //         items: value.items,
+  //       } as ResumeData["goals"];
+  //       updateGoals(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updateGoals, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (goals) {

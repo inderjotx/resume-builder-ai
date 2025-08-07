@@ -7,7 +7,10 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-  typescript: {
+  experimental : {
+    reactCompiler : true 
+  } , 
+  typescript: { 
     ignoreBuildErrors: true,
   },
   eslint: {

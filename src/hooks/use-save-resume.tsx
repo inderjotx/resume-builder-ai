@@ -23,25 +23,25 @@ export const useSaveResume = (resumeId: string) => {
   });
 
   // Subscribe to store changes on mount
-  useEffect(() => {
-    const unsubscribe = useResumeStore.subscribe((state) => {
-      if (timeOutId.current) {
-        clearTimeout(timeOutId.current);
-      }
-      timeOutId.current = setTimeout(() => {
-        console.log("saving resume");
-        mutate(state.getData());
-        timeOutId.current = null;
-      }, SAVE_RESUME_DELAY);
-    });
+  // useEffect(() => {
+  //   const unsubscribe = useResumeStore.subscribe((state) => {
+  //     if (timeOutId.current) {
+  //       clearTimeout(timeOutId.current);
+  //     }
+  //     timeOutId.current = setTimeout(() => {
+  //       console.log("saving resume");
+  //       mutate(state.getData());
+  //       timeOutId.current = null;
+  //     }, SAVE_RESUME_DELAY);
+  //   });
 
-    return () => {
-      unsubscribe();
-      if (timeOutId.current) {
-        clearTimeout(timeOutId.current);
-      }
-    };
-  }, [mutate, resumeId]);
+  //   return () => {
+  //     unsubscribe();
+  //     if (timeOutId.current) {
+  //       clearTimeout(timeOutId.current);
+  //     }
+  //   };
+  // }, [mutate, resumeId]);
 
   return {
     isPending,

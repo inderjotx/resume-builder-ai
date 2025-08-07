@@ -30,67 +30,72 @@ export const useHistoryStore = create<HistoryStore>((set) => ({
     isUndoRedoOperation: false,
     setIsUndoRedoOperation: (value) => set({ isUndoRedoOperation: value }),
 
-    saveState: (currentState) => set(state => {
-        if (state.isUndoRedoOperation) return state
+    // saveState: (currentState) => set(state => {
+    //     if (state.isUndoRedoOperation) return state
 
-        return {
-            past: [...state.past, currentState],
-            future: [],
-            canUndo: true,
-            canRedo: false,
-        }
-    }),
+    //     return {
+    //         past: [...state.past, currentState],
+    //         future: [],
+    //         canUndo: true,
+    //         canRedo: false,
+    //     }
+    // }),
 
-    undo: (restoreCallback) => set((state) => {
-        if (state.past.length < 2) return state;
+    // undo: (restoreCallback) => set((state) => {
+    //     if (state.past.length < 2) return state;
 
-        const newPast = state.past.slice(0, -1)
-        const currentState = state.past[state.past.length - 1]
-        const previousState = newPast[newPast.length - 1]
+    //     const newPast = state.past.slice(0, -1)
+    //     const currentState = state.past[state.past.length - 1]
+    //     const previousState = newPast[newPast.length - 1]
 
-        if (!previousState) return state;
+    //     if (!previousState) return state;
 
-        state.setIsUndoRedoOperation(true)
+    //     state.setIsUndoRedoOperation(true)
 
-        setTimeout(() => {
-            state.setIsUndoRedoOperation(false)
-            dispatchHistoryChange()
-        }, 100)
+    //     setTimeout(() => {
+    //         state.setIsUndoRedoOperation(false)
+    //         dispatchHistoryChange()
+    //     }, 100)
 
-        restoreCallback(previousState)
+    //     restoreCallback(previousState)
 
-        return {
-            past: newPast,
-            future: [currentState, ...state.future],
-            canUndo: newPast.length > 0,
-            canRedo: true,
-        }
-    }),
+    //     return {
+    //         past: newPast,
+    //         future: [currentState, ...state.future],
+    //         canUndo: newPast.length > 0,
+    //         canRedo: true,
+    //     }
+    // }),
 
-    redo: (restoreCallback) => set((state) => {
-        if (state.future.length === 0) return state;
+    // redo: (restoreCallback) => set((state) => {
+    //     if (state.future.length === 0) return state;
 
-        const nextState = state.future[0]
-        const newFuture = state.future.slice(1)
+    //     const nextState = state.future[0]
+    //     const newFuture = state.future.slice(1)
 
-        if (!nextState) return state;
+    //     if (!nextState) return state;
 
-        state.setIsUndoRedoOperation(true)
+    //     state.setIsUndoRedoOperation(true)
 
-        setTimeout(() => {
-            state.setIsUndoRedoOperation(false)
-            dispatchHistoryChange()
-        }, 100)
+    //     setTimeout(() => {
+    //         state.setIsUndoRedoOperation(false)
+    //         dispatchHistoryChange()
+    //     }, 100)
 
-        restoreCallback(nextState)
+    //     restoreCallback(nextState)
 
-        return {
-            past: [...state.past, nextState],
-            future: newFuture,
-            canUndo: true,
-            canRedo: newFuture.length > 0,
-        }
-    }),
+    //     return {
+    //         past: [...state.past, nextState],
+    //         future: newFuture,
+    //         canUndo: true,
+    //         canRedo: newFuture.length > 0,
+    //     }
+    // }),
+
+    // Dummy implementations to prevent errors
+    saveState: () => { },
+    undo: () => { },
+    redo: () => { },
 }))
 
 // Export the event name for components to use

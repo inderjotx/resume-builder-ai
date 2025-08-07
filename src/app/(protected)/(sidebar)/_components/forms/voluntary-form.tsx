@@ -74,25 +74,29 @@ export default function VoluntaryForm() {
     name: "items",
   });
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (!isUpdatingFromStore) {
-        const data = {
-          items: value.items,
-        } as ResumeData["voluntaryWork"];
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    updateVoluntaryWork({ title: data.title, items: data.items });
+  };
 
-        updateVoluntaryWork(data);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, updateVoluntaryWork, isUpdatingFromStore, form]);
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     if (!isUpdatingFromStore) {
+  //       const data = {
+  //         title: value.title,
+  //         items: value.items,
+  //       } as ResumeData["voluntaryWork"];
+  //       updateVoluntaryWork(data);
+  //     }
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form.watch, updateVoluntaryWork, isUpdatingFromStore, form]);
 
   useEffect(() => {
     if (voluntaryWork) {
       setIsUpdatingFromStore(true);
       form.reset({
         title: voluntaryWork.title ?? "",
-        items: voluntaryWork.items ?? [{}],
+        items: voluntaryWork.items ?? [],
       });
       setTimeout(() => setIsUpdatingFromStore(false), 0);
     }

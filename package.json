@@ -58,6 +58,7 @@
     "@tiptap/starter-kit": "^2.10.2",
     "@uploadthing/react": "^7.1.1",
     "ai": "^4.0.10",
+    "babel-plugin-react-compiler": "19.1.0-rc.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
