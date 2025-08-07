@@ -1,0 +1,1 @@
+ALTER TABLE "resume-builder_user" ADD COLUMN "user_plan" "plan_type" DEFAULT 'free';
