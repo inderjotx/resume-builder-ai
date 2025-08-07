@@ -66,6 +66,7 @@ type AchievementsSlice = {
 type OrderSlice = {
     order: { id: SectionKeys, title: string }[]
     setOrder: (order: { id: SectionKeys, title: string }[]) => void
+    removeSection: (sectionId: SectionKeys) => void
 }
 
 type SettingsSlice = {
@@ -175,6 +176,9 @@ const createGoalsSlice: StateCreator<ResumeStore, [], [], GoalsSlice> = (set) =>
 const createOrderSlice: StateCreator<ResumeStore, [], [], OrderSlice> = (set) => ({
     order: DEFAULT_SECTIONS,
     setOrder: (order) => set(() => ({ order })),
+    removeSection: (sectionId) => set((state) => ({
+        order: state.order.filter(section => section.id !== sectionId)
+    })),
 })
 
 const createSettingsSlice: StateCreator<ResumeStore, [], [], SettingsSlice> = (set) => ({

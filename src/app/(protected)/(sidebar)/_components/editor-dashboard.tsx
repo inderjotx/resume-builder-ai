@@ -4,10 +4,10 @@ import { useReactToPrint } from "react-to-print";
 import { SelectForms } from "./select-forms";
 import { useEffect, createElement, useRef, useState } from "react";
 import { useSaveResume } from "@/hooks/use-save-resume";
-import { Undo, Redo, ChevronsLeft } from "lucide-react";
+import { Undo, Redo, ChevronsLeft, Trash } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { type ResumeData } from "@/server/db/schema";
+// import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { type ResumeData, type SectionKeys } from "@/server/db/schema";
 import PersonalInfoForm from "./forms/user-info-form";
 import WorkExperienceForm from "./forms/work-experience-form";
 import EducationForm from "./forms/education-form";
@@ -22,22 +22,22 @@ import VoluntaryForm from "./forms/voluntary-form";
 import LanguagesForm from "./forms/languages-form";
 import ProjectsForm from "./forms/projects-form";
 import PublicationsForm from "./forms/publication-form";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  MeasuringStrategy,
-} from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+// import {
+//   DndContext,
+//   closestCenter,
+//   KeyboardSensor,
+//   PointerSensor,
+//   useSensor,
+//   useSensors,
+//   MeasuringStrategy,
+// } from "@dnd-kit/core";
+// import type { DragEndEvent } from "@dnd-kit/core";
+// import {
+//   arrayMove,
+//   SortableContext,
+//   sortableKeyboardCoordinates,
+//   verticalListSortingStrategy,
+// } from "@dnd-kit/sortable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DisplayContent from "./display-content";
 import {
@@ -71,6 +71,14 @@ import { usePathname } from "next/navigation";
 import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Eye } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function CustomAccordionItem({
   id,
@@ -95,6 +103,37 @@ function CustomAccordionItem({
 
   const { title, setTitle } = useUpdateTitle(id);
   const pathname = usePathname();
+  const removeSection = useResumeStore((state) => state.removeSection);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  // Define which sections are optional (can be deleted)
+  const optionalSections: SectionKeys[] = [
+    "achievements",
+    "awards",
+    "certifications",
+    "goals",
+    "references",
+    "publications",
+    "voluntaryWork",
+    "languages",
+    "socialMedia",
+  ];
+
+  const isOptionalSection = optionalSections.includes(id);
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent accordion from toggling
+    setShowDeleteDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
+    removeSection(id);
+    setShowDeleteDialog(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteDialog(false);
+  };
 
   // const style = {
   //   transform: transform
@@ -107,33 +146,67 @@ function CustomAccordionItem({
   // };
 
   return (
-    <AccordionItem
-      // ref={setNodeRef}
-      // style={style as unknown as React.CSSProperties}
-      value={value}
-      className="rounded-lg border bg-muted/40 p-1"
-    >
-      <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
-        <div className="flex items-center gap-2">
-          {/* <div
-            className="flex size-8 cursor-grab touch-none items-center justify-center rounded-md hover:bg-muted"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="h-4 w-4" />
-          </div> */}
-          <Icon className="size-5" />
-          <DynamicInput
-            as="h3"
-            value={title}
-            onValueChange={(value) => setTitle(value)}
-          />
-        </div>
-      </AccordionTrigger>
-      <AccordionContent id={`form-accordion-content-${id}`} className="p-4">
-        {children}
-      </AccordionContent>
-    </AccordionItem>
+    <>
+      <AccordionItem
+        // ref={setNodeRef}
+        // style={style as unknown as React.CSSProperties}
+        value={value}
+        className="rounded-lg border bg-muted/40 p-1"
+      >
+        <AccordionTrigger className="flex items-center rounded-md px-2 py-1 text-sm hover:no-underline">
+          <div className="flex w-full items-center justify-between gap-2 pr-2">
+            {/* <div
+              className="flex size-8 cursor-grab touch-none items-center justify-center rounded-md hover:bg-muted"
+              {...attributes}
+              {...listeners}
+            >
+              <GripVertical className="h-4 w-4" />
+            </div> */}
+            <div className="flex items-center gap-2">
+              <Icon className="size-5" />
+              <DynamicInput
+                as="h3"
+                value={title}
+                onValueChange={(value) => setTitle(value)}
+              />
+            </div>
+            {isOptionalSection && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="ml-auto h-6 w-6 text-destructive hover:text-destructive"
+                onClick={handleDeleteClick}
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </AccordionTrigger>
+        <AccordionContent id={`form-accordion-content-${id}`} className="p-4">
+          {children}
+        </AccordionContent>
+      </AccordionItem>
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Section</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete the &quot;{title}&quot; section?
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelDelete}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
