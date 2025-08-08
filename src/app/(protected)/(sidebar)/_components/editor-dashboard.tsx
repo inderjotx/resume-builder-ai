@@ -490,6 +490,33 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
           <Button variant="outline" size="icon" onClick={handlePrintResume}>
             <Printer className="size-4" />
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7"
+            onClick={async () => {
+              const previewUrl = `${window.location.origin}/resume/${resume.id}/preview`;
+              const res = await fetch("/api/print", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  resumeId: resume.id,
+                  previewUrl,
+                  settings: useResumeStore.getState().settings,
+                }),
+              });
+              if (!res.ok) return;
+              const blob = await res.blob();
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `resume-${resume.id}.pdf`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+          >
+            Export PDF
+          </Button>
         </div>
       </header>
       <ScrollArea className="mr-2 h-[calc(100vh-2.5rem)] bg-muted">

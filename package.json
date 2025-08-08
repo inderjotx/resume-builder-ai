@@ -16,8 +16,8 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
+    "print:build": "pnpm --filter resume-print-server build",
+    "print:start": "pnpm --filter resume-print-server start"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.0.4",
