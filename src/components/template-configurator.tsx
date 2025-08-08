@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { HeadlineCapitalization } from "@/server/db/schema";
+import { HeadlineCapitalization, PageSize } from "@/server/db/schema";
 
 export function TemplateConfigurator() {
   const settings = useResumeStore((s) => s.settings);
@@ -177,6 +177,29 @@ export function TemplateConfigurator() {
           )}
         </div>
       )}
+
+      {/* Page size selection */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label>Page Size</Label>
+          <Select
+            value={settings?.pageFormat ?? PageSize.A4}
+            onValueChange={(v) =>
+              updateSettings({ pageFormat: v as unknown as PageSize })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={PageSize.A4}>A4 (210 × 297 mm)</SelectItem>
+              <SelectItem value={PageSize.Letter}>
+                Letter (8.5 × 11 in)
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
     </div>
   );
 }

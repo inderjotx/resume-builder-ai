@@ -77,6 +77,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
+import { mockResumeData } from "../../../../store/resume/mock-data";
 import {
   Dialog,
   DialogContent,
@@ -318,6 +319,9 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
   // const historyStore = useHistoryStore();
   const { isPending } = useSaveResume(resume.id);
   const updateAll = useResumeStore((state) => state.updateAll);
+  const updateData = useResumeStore((state) => state.updateData);
+  const setOrder = useResumeStore((state) => state.setOrder);
+  // const formOrder = useResumeStore((state) => state.order);
   const setSelectedTemplateId = useResumeStore((s) => s.setSelectedTemplateId);
   const resumeRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
@@ -411,6 +415,39 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
         <div className="flex items-center gap-2">
           <span>Preview</span>
           <TemplatePicker />
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7"
+            onClick={() => {
+              // Fill data
+              updateData(mockResumeData.data);
+              // Ensure optional sections with data are selected in order
+              const existing = new Set(formOrder.map((s) => s.id));
+              const additions: { id: SectionKeys; title: string }[] = [];
+              (
+                Object.keys(mockResumeData.data) as Array<
+                  keyof typeof mockResumeData.data
+                >
+              ).forEach((key) => {
+                const sectionId = key as SectionKeys;
+                if (existing.has(sectionId)) return;
+                const section: any = (mockResumeData.data as any)[sectionId];
+                const hasItems = Array.isArray(section?.items)
+                  ? section.items.length > 0
+                  : Boolean(section);
+                if (hasItems) {
+                  additions.push({
+                    id: sectionId,
+                    title: section?.title ?? String(sectionId),
+                  });
+                }
+              });
+              if (additions.length) setOrder([...formOrder, ...additions]);
+            }}
+          >
+            Fill Mock Data
+          </Button>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" size="sm" className="h-7">

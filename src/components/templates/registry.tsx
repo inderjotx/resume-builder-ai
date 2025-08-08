@@ -1,7 +1,5 @@
 "use client";
 import type React from "react";
-import { ClassyTemplate } from "@/components/templates/classy";
-import { SmartTemplate } from "@/components/templates/smart";
 import { ElegantSidebarTemplate } from "@/components/templates/elegant-sidebar";
 
 export type TemplateDefinition = {
@@ -25,68 +23,6 @@ export type TemplateDefinition = {
 // a distinct layout is added.
 
 export const TEMPLATES: TemplateDefinition[] = [
-  {
-    id: "classy",
-    name: "Classy",
-    thumbnail: "/resume/classy.png",
-    component: ClassyTemplate,
-    supports: {
-      colors: true,
-      headingFont: true,
-      bodyFont: true,
-      capitalization: true,
-      backgroundColor: true,
-      iconVariant: true,
-    },
-  },
-  {
-    id: "smart",
-    name: "Smart",
-    thumbnail: "/resume/smart.png",
-    component: SmartTemplate,
-    supports: {
-      colors: true,
-      headingFont: true,
-      bodyFont: true,
-      capitalization: true,
-      backgroundColor: true,
-    },
-  },
-  {
-    id: "postcard",
-    name: "Postcard",
-    thumbnail: "/resume/postcard.png",
-    component: ClassyTemplate,
-    supports: { colors: true, headingFont: true, backgroundColor: true },
-  },
-  {
-    id: "sharp",
-    name: "Sharp",
-    thumbnail: "/resume/sharp.png",
-    component: SmartTemplate,
-    supports: { colors: true, bodyFont: true },
-  },
-  {
-    id: "soft",
-    name: "Soft",
-    thumbnail: "/resume/soft.png",
-    component: ClassyTemplate,
-    supports: { colors: true },
-  },
-  {
-    id: "doodle",
-    name: "Doodle",
-    thumbnail: "/resume/doodle.png",
-    component: SmartTemplate,
-    supports: { colors: true, backgroundColor: true },
-  },
-  {
-    id: "gradient",
-    name: "Gradient",
-    thumbnail: "/resume/gradient.png",
-    component: ClassyTemplate,
-    supports: { colors: true },
-  },
   {
     id: "elegant-sidebar",
     name: "Elegant Sidebar",
