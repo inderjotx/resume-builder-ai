@@ -218,6 +218,8 @@ interface ResumeStore extends
     updateAll: (data: ResumeDataStore) => void,
     activeSection: SectionKeys
     setActiveSection: (section: SectionKeys) => void
+    selectedTemplateId: string
+    setSelectedTemplateId: (templateId: string) => void
     // data: Partial<ResumeData>
 }
 
@@ -241,6 +243,11 @@ export const useResumeStore = create<ResumeStore>((set, get, ...rest) => ({
 
     activeSection: "personalInfo",
     setActiveSection: (section) => set(() => ({ activeSection: section })),
+    selectedTemplateId: "classy",
+    setSelectedTemplateId: (templateId) => set((state) => ({
+        selectedTemplateId: templateId,
+        settings: { ...state.settings, templateId }
+    })),
     getData: () => ({
         data: {
             personalInfo: get()?.personalInfo,

@@ -477,6 +477,7 @@ export type ResumeSettings = {
   pageFormat: PageSize;
   pageNumber: PageNumber;
   dateFormat: DateFormat;
+  templateId?: string;
   background: {
     className: string;
     opacity: number;

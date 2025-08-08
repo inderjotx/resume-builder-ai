@@ -71,6 +71,7 @@ import { usePathname } from "next/navigation";
 import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Eye } from "lucide-react";
+import { TemplatePicker } from "@/components/template-picker";
 import {
   Dialog,
   DialogContent,
@@ -312,6 +313,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
   const historyStore = useHistoryStore();
   const { isPending } = useSaveResume(resume.id);
   const updateAll = useResumeStore((state) => state.updateAll);
+  const setSelectedTemplateId = useResumeStore((s) => s.setSelectedTemplateId);
   const resumeRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
     contentRef: resumeRef as React.RefObject<HTMLDivElement>,
@@ -332,6 +334,9 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
       settings: resume.settings!,
       order: resume.order!,
     });
+    if (resume.settings?.templateId) {
+      setSelectedTemplateId(resume.settings.templateId);
+    }
   }, [resume, updateAll]);
 
   useEffect(() => {
@@ -398,7 +403,10 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
   const ResumePreview = () => (
     <div className="flex-1">
       <header className="flex h-10 w-full items-center justify-between border-b px-8 lg:px-4">
-        <div>Preview</div>
+        <div className="flex items-center gap-2">
+          <span>Preview</span>
+          <TemplatePicker />
+        </div>
         <div className="flex items-center gap-2">
           {/* <Button
             variant="outline"
@@ -426,6 +434,8 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
       </ScrollArea>
     </div>
   );
+
+  // TemplatePicker provided as a component
 
   return (
     <div className="h-screen w-full bg-background">

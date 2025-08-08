@@ -2,13 +2,17 @@ import React, { Suspense } from "react";
 import { CreateSection } from "./_components/create-section";
 import { ResumeSkeleton } from "./_components/resume-skeleton";
 import { ResumeCards } from "./_components/resume-card";
+import { TemplateBar } from "./_components/template-bar";
 
 import { getUserResumes } from "@/services/user";
 
 export default function DashboardPage() {
   return (
     <div className="mx-auto flex h-screen w-full flex-col gap-8 px-10 py-8">
-      <CreateSection />
+      <div className="flex flex-col gap-4 lg:w-[70%]">
+        <TemplateBar />
+        <CreateSection />
+      </div>
       <Suspense fallback={<ResumeSkeleton />}>
         <ResumeSection />
       </Suspense>
