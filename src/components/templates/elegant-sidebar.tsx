@@ -1,7 +1,11 @@
 "use client";
-import type React from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useResumeStore } from "@/store/resume/data-store";
-import type { SectionKeys } from "@/server/db/schema";
+import {
+  type SectionKeys,
+  PageSize,
+  HeadlineCapitalization,
+} from "@/server/db/schema";
 import { prettyDate } from "@/lib/utils";
 import Image from "next/image";
 
@@ -20,76 +24,159 @@ export function ElegantSidebarTemplate({
     ? { fontFamily: settings.fontFace }
     : undefined;
 
-  const sectionMap: Record<SectionKeys, React.ComponentType> = {
-    personalInfo: HeaderSection,
-    workExperience: WorkExperienceSection,
-    education: EducationSection,
-    skills: SkillsSection,
-    languages: LanguagesSection,
-    projects: ProjectsSection,
-    certifications: CertificationsSection,
-    achievements: AchievementsSection,
-    goals: GoalsSection,
-    voluntaryWork: VoluntaryWorkSection,
-    awards: AwardsSection,
-    references: ReferencesSection,
-    publications: PublicationsSection,
-    socialMedia: SocialMediaSection,
+  const sectionMap = useMemo<Record<SectionKeys, React.ComponentType>>(
+    () => ({
+      personalInfo: HeaderSection,
+      workExperience: WorkExperienceSection,
+      education: EducationSection,
+      skills: SkillsSection,
+      languages: LanguagesSection,
+      projects: ProjectsSection,
+      certifications: CertificationsSection,
+      achievements: AchievementsSection,
+      goals: GoalsSection,
+      voluntaryWork: VoluntaryWorkSection,
+      awards: AwardsSection,
+      references: ReferencesSection,
+      publications: PublicationsSection,
+      socialMedia: SocialMediaSection,
+    }),
+    [],
+  );
+
+  // (removed old aspect ratio snippet)
+
+  // Determine screen pixel dimensions per page size (96 DPI approximation)
+  const { pageWidth, pageHeight } = useMemo(() => {
+    const size = settings?.pageFormat ?? PageSize.A4;
+    if (size === PageSize.Letter) {
+      return { pageWidth: 816, pageHeight: 1056 }; // 8.5 * 96, 11 * 96
+    }
+    // A4 210x297mm => 8.27x11.69in at 96dpi
+    return { pageWidth: 794, pageHeight: 1123 };
+  }, [settings?.pageFormat]);
+
+  // Build main sections in the selected order (excluding sidebar-only sections)
+  const mainSectionKeys = useMemo(
+    () =>
+      order
+        ?.filter(
+          (s) =>
+            !["personalInfo", "education", "skills", "languages"].includes(
+              s.id,
+            ),
+        )
+        .map((s) => s.id) ?? [],
+    [order],
+  );
+
+  const sectionElements = useMemo(() => {
+    const elements: React.ReactNode[] = [
+      <MainHeader key="header" primary={primary} />,
+    ];
+    mainSectionKeys.forEach((key) => {
+      const Cmp = sectionMap[key as SectionKeys];
+      elements.push(<Cmp key={key} />);
+    });
+    return elements;
+  }, [mainSectionKeys, primary, sectionMap]);
+
+  // Pagination: measure section heights offscreen, then split into pages
+  const measureRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const [pages, setPages] = useState<React.ReactNode[][]>([]);
+
+  // Compute pages in one pass (state-free) to avoid multiple renders
+  useEffect(() => {
+    const paddingY = 32 * 2;
+    const innerHeight = pageHeight - paddingY;
+    const gap = 32;
+    const heights = measureRefs.current.map((el) => el?.offsetHeight ?? 0);
+    const result: React.ReactNode[][] = [];
+    let current: React.ReactNode[] = [];
+    let used = 0;
+    sectionElements.forEach((el, i) => {
+      const h = heights[i] ?? 0;
+      const needed = current.length === 0 ? h : h + gap;
+      if (used + needed > innerHeight && current.length > 0) {
+        result.push(current);
+        current = [el];
+        used = h;
+      } else {
+        current.push(el);
+        used += needed;
+      }
+    });
+    if (current.length) result.push(current);
+    setPages(result);
+  }, [sectionElements, pageHeight]);
+
+  const pageStyleFixed: React.CSSProperties = {
+    width: `${pageWidth}px`,
+    height: `${pageHeight}px`,
+    backgroundColor: bg,
+    ...(bodyFont ?? {}),
+    fontSize: settings?.fontSize ?? "16px",
+    lineHeight: settings?.lineHeight ?? "1.5",
   };
 
-  // Determine realistic aspect ratio based on selected page size
-  const pageStyle: React.CSSProperties = (() => {
-    const size = settings?.pageFormat ?? "A4";
-    // A4 ratio ≈ 1 : 1.4142, Letter ≈ 1 : 1.2941
-    const ratio = size === "letter" ? 1 / 1.2941 : 1 / 1.4142;
-    return {
-      aspectRatio: `1 / ${size === "letter" ? 1.2941 : 1.4142}`,
-    } as React.CSSProperties;
-  })();
-
   return (
-    <div
-      ref={ref}
-      className="mx-auto w-full max-w-5xl bg-white print:shadow-none"
-      style={{
-        backgroundColor: bg,
-        ...(bodyFont ?? {}),
-        fontSize: settings?.fontSize ?? "16px",
-        lineHeight: settings?.lineHeight ?? "1.5",
-        ...pageStyle,
-      }}
-    >
-      <div className="grid grid-cols-3">
-        <aside
-          className="col-span-1 flex h-full flex-col gap-6 p-6 text-white"
-          style={{ backgroundColor: secondary }}
-        >
-          <SidebarPersonal />
-          <SidebarContact />
-          <SidebarEducation />
-          <SidebarSkills />
-          <SidebarLanguages />
-        </aside>
-        <main className="col-span-2 p-8">
-          <MainHeader primary={primary} />
-          <div className="mt-8 flex flex-col gap-8">
-            {order
-              ?.filter(
-                (s) =>
-                  ![
-                    "personalInfo",
-                    "education",
-                    "skills",
-                    "languages",
-                  ].includes(s.id),
-              )
-              .map((section) => {
-                const Section = sectionMap[section.id];
-                return <Section key={section.id} />;
-              })}
+    <div className="mx-auto flex w-full max-w-full flex-col items-center gap-6">
+      {/* Hidden measurement container */}
+      <div
+        style={{
+          position: "absolute",
+          left: -99999,
+          top: 0,
+          width: `${pageWidth * (2 / 3) - 64}px`,
+        }}
+      >
+        {sectionElements.map((el, i) => (
+          <div
+            key={`m-${i}`}
+            ref={(node) => {
+              measureRefs.current[i] = node;
+            }}
+            className="mb-8"
+          >
+            {/* mimic main padding context width */}
+            <div className="p-0">{el}</div>
           </div>
-        </main>
+        ))}
       </div>
+
+      {/* Render paginated pages */}
+      {pages.map((content, pageIndex) => (
+        <div
+          key={`page-${pageIndex}`}
+          className="shadow print:shadow-none"
+          style={pageStyleFixed}
+          ref={pageIndex === 0 ? ref : undefined}
+        >
+          <div className="grid h-full grid-cols-3">
+            {pageIndex === 0 ? (
+              <aside
+                className="col-span-1 flex h-full flex-col gap-6 p-6 text-white"
+                style={{ backgroundColor: secondary }}
+              >
+                <SidebarPersonal />
+                <SidebarContact />
+                <SidebarEducation />
+                <SidebarSkills />
+                <SidebarLanguages />
+              </aside>
+            ) : (
+              // Keep a blank rail to preserve layout width, but don't duplicate sidebar data
+              <aside
+                className="col-span-1 h-full"
+                style={{ backgroundColor: secondary }}
+              />
+            )}
+            <main className="col-span-2 p-8">
+              <div className="flex flex-col gap-8">{content}</div>
+            </main>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -139,7 +226,7 @@ function SidebarContact() {
       <div className="space-y-1">
         {p?.phoneNumber && <div>{p.phoneNumber}</div>}
         {p?.email && <div>{p.email}</div>}
-        {(p?.address || p?.city || p?.country) && (
+        {(p?.address ?? p?.city ?? p?.country) && (
           <div>
             {[p?.address, p?.city, p?.country].filter(Boolean).join(", ")}
           </div>
@@ -211,13 +298,14 @@ function MainHeader({ primary }: { primary: string }) {
   const role = personal?.title ?? "";
   const headingStyle: React.CSSProperties = {
     color: primary,
-    fontFamily: settings?.headingFontFace || undefined,
+    fontFamily: settings?.headingFontFace ?? undefined,
     textTransform:
-      settings?.headlineCapitalization === "uppercase"
+      settings?.headlineCapitalization === HeadlineCapitalization.Uppercase
         ? "uppercase"
-        : settings?.headlineCapitalization === "lowercase"
+        : settings?.headlineCapitalization === HeadlineCapitalization.Lowercase
           ? "lowercase"
-          : settings?.headlineCapitalization === "capitalize"
+          : settings?.headlineCapitalization ===
+              HeadlineCapitalization.Capitalize
             ? "capitalize"
             : undefined,
   };
@@ -233,13 +321,16 @@ function MainHeader({ primary }: { primary: string }) {
         <div
           className="mt-1 text-base font-medium tracking-widest text-zinc-700"
           style={{
-            fontFamily: settings?.headingFontFace || undefined,
+            fontFamily: settings?.headingFontFace ?? undefined,
             textTransform:
-              settings?.headlineCapitalization === "uppercase"
+              settings?.headlineCapitalization ===
+              HeadlineCapitalization.Uppercase
                 ? "uppercase"
-                : settings?.headlineCapitalization === "lowercase"
+                : settings?.headlineCapitalization ===
+                    HeadlineCapitalization.Lowercase
                   ? "lowercase"
-                  : settings?.headlineCapitalization === "capitalize"
+                  : settings?.headlineCapitalization ===
+                      HeadlineCapitalization.Capitalize
                     ? "capitalize"
                     : undefined,
           }}
@@ -265,13 +356,14 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   const settings = useResumeStore((s) => s.settings);
   const primary = settings?.color ?? "#0f172a";
   const style: React.CSSProperties = {
-    fontFamily: settings?.headingFontFace || undefined,
+    fontFamily: settings?.headingFontFace ?? undefined,
     textTransform:
-      settings?.headlineCapitalization === "uppercase"
+      settings?.headlineCapitalization === HeadlineCapitalization.Uppercase
         ? "uppercase"
-        : settings?.headlineCapitalization === "lowercase"
+        : settings?.headlineCapitalization === HeadlineCapitalization.Lowercase
           ? "lowercase"
-          : settings?.headlineCapitalization === "capitalize"
+          : settings?.headlineCapitalization ===
+              HeadlineCapitalization.Capitalize
             ? "capitalize"
             : undefined,
     color: primary,
