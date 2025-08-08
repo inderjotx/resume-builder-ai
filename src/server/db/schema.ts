@@ -467,13 +467,17 @@ export enum PageNumber {
 }
 
 export type ResumeSettings = {
-  color: string;
+  color: string; // primary color
+  secondaryColor?: string;
+  accentColor?: string;
   format: number;
   fontFace: string;
+  headingFontFace?: string;
   fontSize: string;
   lineHeight: string;
   headlineCapitalization: HeadlineCapitalization;
   iconType: IconType;
+  iconVariant?: IconVariant;
   pageFormat: PageSize;
   pageNumber: PageNumber;
   dateFormat: DateFormat;
@@ -481,6 +485,7 @@ export type ResumeSettings = {
   background: {
     className: string;
     opacity: number;
+    color?: string;
   };
   addressFormat: {
     order: { id: SectionKeys, title: string }[]

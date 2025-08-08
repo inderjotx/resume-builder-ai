@@ -36,7 +36,7 @@ import {
   InstagramIcon,
   YoutubeIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils";
 
 interface SocialIconProps {
   platform?: SocialMediaPlatform;
@@ -129,6 +129,7 @@ export function ClassyTemplate({
 function HeaderSection() {
   const personalInfo = useResumeStore((state) => state.personalInfo);
   const settings = useResumeStore((state) => state.settings);
+  console.log("settings", settings);
   return (
     <SectionWrapper sectionKey="personalInfo">
       <header className="">
@@ -183,13 +184,13 @@ function HeaderSection() {
           {personalInfo?.website && (
             <div className="group flex items-center gap-1">
               <Globe
-                className={cn(
-                  `size-3 shrink-0 group-hover:text-${settings?.color}`,
-                )}
+                className="size-3 shrink-0"
+                style={{ color: settings?.color }}
               />
               <a
                 href={personalInfo.website}
-                className={cn(`truncate group-hover:text-${settings?.color}`)}
+                className="truncate"
+                style={{ color: settings?.color }}
               >
                 {personalInfo.website}
               </a>
@@ -396,7 +397,7 @@ function ProjectsSection() {
                         href={project.projectLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:text-primary/80"
+                        style={{ color: settings?.color }}
                       >
                         <LinkIcon className="h-4 w-4 shrink-0" />
                       </a>
@@ -464,7 +465,8 @@ function CertificationsSection() {
                     href={cert.certificationLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80"
+                    className="inline-flex items-center gap-1 text-sm"
+                    style={{ color: settings?.color }}
                   >
                     <LinkIcon className="h-4 w-4 shrink-0" />
                     View Certificate
@@ -613,7 +615,8 @@ function AwardsSection() {
                   href={award.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80"
+                  className="mt-2 inline-flex items-center gap-1 text-sm"
+                  style={{ color: settings?.color }}
                 >
                   <LinkIcon className="h-4 w-4" />
                   View Award
@@ -700,7 +703,8 @@ function PublicationsSection() {
                   href={pub.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80"
+                  className="mt-2 inline-flex items-center gap-1 text-sm"
+                  style={{ color: settings?.color }}
                 >
                   <LinkIcon className="h-4 w-4" />
                   View Publication
@@ -733,7 +737,8 @@ function SocialMediaSection() {
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-primary hover:text-primary/80"
+              className="flex items-center gap-2 text-sm"
+              style={{ color: settings?.color }}
             >
               <SocialIcon
                 platform={item.platform}
@@ -760,7 +765,9 @@ export const SectionHeading = ({
   return (
     <div className="flex items-center gap-2 text-2xl font-semibold">
       <Icon className="size-5 shrink-0" />
-      <h3 className={cn("text-lg", color && `text-[${color}]`)}>{heading}</h3>
+      <h3 className="text-lg" style={{ color }}>
+        {heading}
+      </h3>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useReactToPrint } from "react-to-print";
 import { SelectForms } from "./select-forms";
 import { useEffect, createElement, useRef, useState } from "react";
 import { useSaveResume } from "@/hooks/use-save-resume";
-import { Undo, Redo, ChevronsLeft, Trash } from "lucide-react";
+import { ChevronsLeft, Trash } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
 // import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { type ResumeData, type SectionKeys } from "@/server/db/schema";
@@ -47,8 +47,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { GripVertical, type LucideIcon } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
+import { type LucideIcon } from "lucide-react";
 import {
   Trophy,
   Award,
@@ -66,12 +65,18 @@ import {
 } from "lucide-react";
 import { useUpdateTitle } from "@/store/resume/data-store";
 import { DynamicInput } from "@/components/ui/dynamic-input";
-import { useHistoryStore } from "@/store/resume/history-store";
-import { usePathname } from "next/navigation";
+// import { useHistoryStore } from "@/store/resume/history-store";
+// import { usePathname } from "next/navigation";
 import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Eye } from "lucide-react";
+// import { Eye } from "lucide-react";
 import { TemplatePicker } from "@/components/template-picker";
+import { TemplateConfigurator } from "@/components/template-configurator";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
@@ -103,7 +108,7 @@ function CustomAccordionItem({
   // } = useSortable({ id });
 
   const { title, setTitle } = useUpdateTitle(id);
-  const pathname = usePathname();
+  // const pathname = usePathname();
   const removeSection = useResumeStore((state) => state.removeSection);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -310,7 +315,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const activeSection = useResumeStore((state) => state.activeSection);
   const setActiveSection = useResumeStore((state) => state.setActiveSection);
-  const historyStore = useHistoryStore();
+  // const historyStore = useHistoryStore();
   const { isPending } = useSaveResume(resume.id);
   const updateAll = useResumeStore((state) => state.updateAll);
   const setSelectedTemplateId = useResumeStore((s) => s.setSelectedTemplateId);
@@ -337,7 +342,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
     if (resume.settings?.templateId) {
       setSelectedTemplateId(resume.settings.templateId);
     }
-  }, [resume, updateAll]);
+  }, [resume, updateAll, setSelectedTemplateId]);
 
   useEffect(() => {
     const content = document.getElementById(
@@ -372,7 +377,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
   // };
 
   const formOrder = useResumeStore((state) => state.order);
-  const setFormOrder = useResumeStore((state) => state.setOrder);
+  // const setFormOrder = useResumeStore((state) => state.setOrder);
 
   // const sensors = useSensors(
   //   useSensor(PointerSensor),
@@ -406,6 +411,18 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
         <div className="flex items-center gap-2">
           <span>Preview</span>
           <TemplatePicker />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" className="h-7">
+                Template Settings
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-[520px] p-0">
+              <div className="max-h-[70vh] overflow-auto p-4">
+                <TemplateConfigurator />
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="flex items-center gap-2">
           {/* <Button
@@ -454,6 +471,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
           >
             <div className="space-y-4 p-4">
               <h2 className="text-2xl font-bold">Editor</h2>
+              {/* Controls moved into header popover */}
               {/* <DndContext
                 // sensors={sensors}
                 collisionDetection={closestCenter}
