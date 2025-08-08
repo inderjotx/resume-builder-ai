@@ -317,7 +317,7 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
   const activeSection = useResumeStore((state) => state.activeSection);
   const setActiveSection = useResumeStore((state) => state.setActiveSection);
   // const historyStore = useHistoryStore();
-  const { isPending } = useSaveResume(resume.id);
+  const { isPending, isDirty, save } = useSaveResume(resume.id);
   const updateAll = useResumeStore((state) => state.updateAll);
   const updateData = useResumeStore((state) => state.updateData);
   const setOrder = useResumeStore((state) => state.setOrder);
@@ -447,6 +447,15 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
             }}
           >
             Fill Mock Data
+          </Button>
+          <Button
+            variant={isDirty ? "default" : "outline"}
+            size="sm"
+            className="h-7"
+            onClick={save}
+            disabled={isPending}
+          >
+            {isPending ? "Saving..." : isDirty ? "Save Changes" : "Saved"}
           </Button>
           <Popover>
             <PopoverTrigger asChild>
