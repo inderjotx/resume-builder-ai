@@ -7,12 +7,13 @@ export async function POST(req: NextRequest) {
             previewUrl: string;
             settings?: Record<string, unknown>;
         };
+        const cookie = req.headers.get("cookie") ?? "";
 
         const res = await fetch(process.env.PRINT_SERVER_URL ?? "http://localhost:4001/print", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             // Forward only needed fields; ensure pageFormat matches server expectations
-            body: JSON.stringify({ resumeId, previewUrl, settings: { pageFormat: settings?.pageFormat } }),
+            body: JSON.stringify({ resumeId, previewUrl, settings: { pageFormat: (settings as any)?.pageFormat }, cookie }),
         });
 
         if (!res.ok) {

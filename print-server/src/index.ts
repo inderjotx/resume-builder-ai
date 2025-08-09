@@ -15,9 +15,10 @@ app.use(bodyParser.json({ limit: '1mb' }));
 
 app.post('/print', (req: Request, res: Response) => {
     void (async () => {
-        const { previewUrl, settings } = (req.body ?? {}) as {
+        const { previewUrl, settings, cookie } = (req.body ?? {}) as {
             previewUrl?: string;
             settings?: { pageFormat?: string };
+            cookie?: string;
         };
         if (!previewUrl) {
             res.status(400).send('previewUrl required');
@@ -31,6 +32,9 @@ app.post('/print', (req: Request, res: Response) => {
                 headless: true,
             });
             const page = await browser.newPage();
+            if (cookie) {
+                await page.setExtraHTTPHeaders({ cookie });
+            }
             await page.goto(previewUrl, { waitUntil: 'networkidle0' });
 
             const pageFormat: PDFOptions['format'] =
@@ -39,8 +43,9 @@ app.post('/print', (req: Request, res: Response) => {
             const pdfBuffer = await page.pdf({
                 format: pageFormat,
                 printBackground: true,
-                margin: { top: '0.5in', right: '0.5in', bottom: '0.5in', left: '0.5in' },
-                preferCSSPageSize: false,
+                margin: { top: '0', right: '0', bottom: '0', left: '0' },
+                preferCSSPageSize: true,
+                scale: 1,
             });
 
             res.setHeader('Content-Type', 'application/pdf');
