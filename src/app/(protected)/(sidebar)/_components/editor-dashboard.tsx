@@ -4,7 +4,7 @@ import { useReactToPrint } from "react-to-print";
 import { SelectForms } from "./select-forms";
 import { useEffect, createElement, useRef, useState } from "react";
 import { useSaveResume } from "@/hooks/use-save-resume";
-import { ChevronsLeft, Trash } from "lucide-react";
+import { ChevronsLeft, Trash, Loader2 } from "lucide-react";
 import { useResumeStore } from "@/store/resume/data-store";
 // import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { type ResumeData, type SectionKeys } from "@/server/db/schema";
@@ -77,6 +77,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
+import { toast } from "sonner";
 import { mockResumeData } from "../../../../store/resume/mock-data";
 import {
   Dialog,
@@ -409,69 +410,71 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
     handlePrint();
   }
 
-  const ResumePreview = () => (
-    <div className="flex-1">
-      <header className="flex h-10 w-full items-center justify-between border-b px-8 lg:px-4">
-        <div className="flex items-center gap-2">
-          <span>Preview</span>
-          <TemplatePicker />
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7"
-            onClick={() => {
-              // Fill data
-              updateData(mockResumeData.data);
-              // Ensure optional sections with data are selected in order
-              const existing = new Set(formOrder.map((s) => s.id));
-              const additions: { id: SectionKeys; title: string }[] = [];
-              (
-                Object.keys(mockResumeData.data) as Array<
-                  keyof typeof mockResumeData.data
-                >
-              ).forEach((key) => {
-                const sectionId = key as SectionKeys;
-                if (existing.has(sectionId)) return;
-                const section: any = (mockResumeData.data as any)[sectionId];
-                const hasItems = Array.isArray(section?.items)
-                  ? section.items.length > 0
-                  : Boolean(section);
-                if (hasItems) {
-                  additions.push({
-                    id: sectionId,
-                    title: section?.title ?? String(sectionId),
-                  });
-                }
-              });
-              if (additions.length) setOrder([...formOrder, ...additions]);
-            }}
-          >
-            Fill Mock Data
-          </Button>
-          <Button
-            variant={isDirty ? "default" : "outline"}
-            size="sm"
-            className="h-7"
-            onClick={save}
-            disabled={isPending}
-          >
-            {isPending ? "Saving..." : isDirty ? "Save Changes" : "Saved"}
-          </Button>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="h-7">
-                Template Settings
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="start" className="w-[520px] p-0">
-              <div className="max-h-[70vh] overflow-auto p-4">
-                <TemplateConfigurator />
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* <Button
+  const ResumePreview = () => {
+    const [isExporting, setIsExporting] = useState(false);
+    return (
+      <div className="flex-1">
+        <header className="flex h-10 w-full items-center justify-between border-b px-8 lg:px-4">
+          <div className="flex items-center gap-2">
+            <span>Preview</span>
+            <TemplatePicker />
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7"
+              onClick={() => {
+                // Fill data
+                updateData(mockResumeData.data);
+                // Ensure optional sections with data are selected in order
+                const existing = new Set(formOrder.map((s) => s.id));
+                const additions: { id: SectionKeys; title: string }[] = [];
+                (
+                  Object.keys(mockResumeData.data) as Array<
+                    keyof typeof mockResumeData.data
+                  >
+                ).forEach((key) => {
+                  const sectionId = key as SectionKeys;
+                  if (existing.has(sectionId)) return;
+                  const section: any = (mockResumeData.data as any)[sectionId];
+                  const hasItems = Array.isArray(section?.items)
+                    ? section.items.length > 0
+                    : Boolean(section);
+                  if (hasItems) {
+                    additions.push({
+                      id: sectionId,
+                      title: section?.title ?? String(sectionId),
+                    });
+                  }
+                });
+                if (additions.length) setOrder([...formOrder, ...additions]);
+              }}
+            >
+              Fill Mock Data
+            </Button>
+            <Button
+              variant={isDirty ? "default" : "outline"}
+              size="sm"
+              className="h-7"
+              onClick={save}
+              disabled={isPending}
+            >
+              {isPending ? "Saving..." : isDirty ? "Save Changes" : "Saved"}
+            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-7">
+                  Template Settings
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-[520px] p-0">
+                <div className="max-h-[70vh] overflow-auto p-4">
+                  <TemplateConfigurator />
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="flex items-center gap-2">
+            {/* <Button
             variant="outline"
             size="icon"
             onClick={handleUndo}
@@ -487,43 +490,66 @@ export default function EditorDashboard({ resume }: { resume: Resume }) {
           >
             <Redo className="size-4" />
           </Button> */}
-          <Button variant="outline" size="icon" onClick={handlePrintResume}>
-            <Printer className="size-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7"
-            onClick={async () => {
-              const previewUrl = `${window.location.origin}/resume/${resume.id}/preview`;
-              const res = await fetch("/api/print", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  resumeId: resume.id,
-                  previewUrl,
-                  settings: useResumeStore.getState().settings,
-                }),
-              });
-              if (!res.ok) return;
-              const blob = await res.blob();
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url;
-              a.download = `resume-${resume.id}.pdf`;
-              a.click();
-              URL.revokeObjectURL(url);
-            }}
-          >
-            Export PDF
-          </Button>
-        </div>
-      </header>
-      <ScrollArea className="mr-2 h-[calc(100vh-2.5rem)] bg-muted">
-        <DisplayContent ref={resumeRef as React.RefObject<HTMLDivElement>} />
-      </ScrollArea>
-    </div>
-  );
+            <Button variant="outline" size="icon" onClick={handlePrintResume}>
+              <Printer className="size-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7"
+              disabled={isExporting}
+              onClick={async () => {
+                const toastId = toast.loading("Exporting PDF...", {
+                  duration: Infinity,
+                });
+                setIsExporting(true);
+                try {
+                  const previewUrl = `${window.location.origin}/resume/${resume.id}/preview`;
+                  const res = await fetch("/api/print", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      resumeId: resume.id,
+                      previewUrl,
+                      settings: useResumeStore.getState().settings,
+                    }),
+                  });
+                  if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(text || "Failed to export PDF");
+                  }
+                  const blob = await res.blob();
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `resume-${resume.id}.pdf`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  toast.success("PDF exported successfully");
+                } catch (e: any) {
+                  toast.error(e?.message ?? "Failed to export PDF");
+                } finally {
+                  toast.dismiss(toastId);
+                  setIsExporting(false);
+                }
+              }}
+            >
+              {isExporting ? (
+                <span className="inline-flex items-center gap-2">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Exporting...
+                </span>
+              ) : (
+                "Export PDF"
+              )}
+            </Button>
+          </div>
+        </header>
+        <ScrollArea className="mr-2 h-[calc(100vh-2.5rem)] bg-muted">
+          <DisplayContent ref={resumeRef as React.RefObject<HTMLDivElement>} />
+        </ScrollArea>
+      </div>
+    );
+  };
 
   // TemplatePicker provided as a component
 

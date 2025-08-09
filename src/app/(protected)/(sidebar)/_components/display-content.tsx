@@ -2,8 +2,10 @@ import React, { forwardRef } from "react";
 import { useResumeStore } from "@/store/resume/data-store";
 import { getTemplateById } from "@/components/templates/registry";
 
-const DisplayContent = forwardRef<HTMLDivElement, Record<string, never>>(
-  function DisplayContent(_, ref) {
+type DisplayContentProps = {};
+
+const DisplayContent = forwardRef<HTMLDivElement, DisplayContentProps>(
+  function DisplayContent(_props, ref) {
     const selectedTemplateId = useResumeStore((s) => s.selectedTemplateId);
     const Template = getTemplateById(selectedTemplateId).component;
     return (
