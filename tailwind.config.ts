@@ -23,6 +23,7 @@ export default {
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				middleground: 'hsl(var(--middleground))',
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
@@ -55,7 +56,10 @@ export default {
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				chart: {
-					'1': 'hsl(var(--chart-1))',
+					'1': {
+						DEFAULT: 'hsl(var(--chart-1))',
+						foreground: 'hsl(var(--primary-foreground))'
+					},
 					'2': 'hsl(var(--chart-2))',
 					'3': 'hsl(var(--chart-3))',
 					'4': 'hsl(var(--chart-4))',
