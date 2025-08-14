@@ -78,18 +78,18 @@ export default function VoluntaryForm() {
     updateVoluntaryWork({ title: data.title, items: data.items });
   };
 
-  // useEffect(() => {
-  //   const subscription = form.watch((value) => {
-  //     if (!isUpdatingFromStore) {
-  //       const data = {
-  //         title: value.title,
-  //         items: value.items,
-  //       } as ResumeData["voluntaryWork"];
-  //       updateVoluntaryWork(data);
-  //     }
-  //   });
-  //   return () => subscription.unsubscribe();
-  // }, [form.watch, updateVoluntaryWork, isUpdatingFromStore, form]);
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["voluntaryWork"];
+        updateVoluntaryWork(data);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, updateVoluntaryWork, isUpdatingFromStore]);
 
   useEffect(() => {
     if (voluntaryWork) {

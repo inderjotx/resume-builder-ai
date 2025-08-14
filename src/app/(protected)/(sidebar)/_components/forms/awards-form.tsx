@@ -73,18 +73,18 @@ export default function AwardsForm() {
     updateAwards({ title: data.title, items: data.items });
   };
 
-  // useEffect(() => {
-  //   const subscription = form.watch((value) => {
-  //     if (!isUpdatingFromStore) {
-  //       const data = {
-  //         title: value.title,
-  //         items: value.items,
-  //       } as ResumeData["awards"];
-  //       updateAwards(data);
-  //     }
-  //   });
-  //   return () => subscription.unsubscribe();
-  // }, [form.watch, updateAwards, isUpdatingFromStore, form]);
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.items,
+        } as ResumeData["awards"];
+        updateAwards(data);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, updateAwards, isUpdatingFromStore]);
 
   useEffect(() => {
     if (awards) {

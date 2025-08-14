@@ -69,14 +69,14 @@ export default function PersonalInfoForm() {
     }
   }, [session.data?.user?.image, form]);
 
-  // useEffect(() => {
-  //   const subscription = form.watch((value) => {
-  //     if (!isUpdatingFromStore) {
-  //       updatePersonalInfo(value as Partial<ResumeData["personalInfo"]>);
-  //     }
-  //   });
-  //   return () => subscription.unsubscribe();
-  // }, [form.watch, updatePersonalInfo, isUpdatingFromStore, form]);
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (!isUpdatingFromStore) {
+        updatePersonalInfo(value as Partial<ResumeData["personalInfo"]>);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, updatePersonalInfo, isUpdatingFromStore]);
 
   useEffect(() => {
     if (personalInfo) {

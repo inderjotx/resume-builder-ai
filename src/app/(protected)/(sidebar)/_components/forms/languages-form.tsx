@@ -83,17 +83,17 @@ export default function LanguagesForm() {
     updateLanguages({ items: data.items });
   };
 
-  // useEffect(() => {
-  //   const subscription = form.watch((value) => {
-  //     if (!isUpdatingFromStore) {
-  //       const data = {
-  //         items: value.items,
-  //       } as ResumeData["languages"];
-  //       updateLanguages(data);
-  //     }
-  //   });
-  //   return () => subscription.unsubscribe();
-  // }, [form.watch, updateLanguages, isUpdatingFromStore, form]);
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (!isUpdatingFromStore) {
+        const data = {
+          items: value.items,
+        } as ResumeData["languages"];
+        updateLanguages(data);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, updateLanguages, isUpdatingFromStore]);
 
   useEffect(() => {
     if (languages) {

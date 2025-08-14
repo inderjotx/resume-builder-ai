@@ -1,6 +1,7 @@
 "use client";
 import type React from "react";
 import { ElegantSidebarTemplate } from "@/components/templates/elegant-sidebar";
+import { ProfileBannerTemplate } from "@/components/templates/profile-banner";
 
 export type TemplateDefinition = {
   id: string;
@@ -28,6 +29,19 @@ export const TEMPLATES: TemplateDefinition[] = [
     name: "Elegant Sidebar",
     thumbnail: "/resume/resume2.png",
     component: ElegantSidebarTemplate,
+    supports: {
+      colors: true,
+      headingFont: true,
+      bodyFont: true,
+      capitalization: true,
+      backgroundColor: true,
+    },
+  },
+  {
+    id: "profile-banner",
+    name: "Profile Banner",
+    thumbnail: "/resume/gradient.png",
+    component: ProfileBannerTemplate,
     supports: {
       colors: true,
       headingFont: true,

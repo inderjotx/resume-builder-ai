@@ -90,18 +90,18 @@ export default function WorkExperienceForm() {
     updateWorkExperience({ title: data.title, items: data.experiences });
   };
 
-  // useEffect(() => {
-  //   const subscription = form.watch((value) => {
-  //     if (!isUpdatingFromStore) {
-  //       const data = {
-  //         title: value.title,
-  //         items: value.experiences,
-  //       } as ResumeData["workExperience"];
-  //       updateWorkExperience(data);
-  //     }
-  //   });
-  //   return () => subscription.unsubscribe();
-  // }, [form.watch, updateWorkExperience, isUpdatingFromStore, form]);
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (!isUpdatingFromStore) {
+        const data = {
+          title: value.title,
+          items: value.experiences,
+        } as ResumeData["workExperience"];
+        updateWorkExperience(data);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, updateWorkExperience, isUpdatingFromStore]);
 
   useEffect(() => {
     if (workExperience) {
